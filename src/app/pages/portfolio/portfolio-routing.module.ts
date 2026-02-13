@@ -1,16 +1,18 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PortfolioPage } from './portfolio.page';
+
+// CAMBIA ESTO: De PortfolioPage a PortafolioPage
+import { PortafolioPage } from './portfolio.page'; 
 
 const routes: Routes = [
-    {
-        path: '',
-        component: PortfolioPage
-    }
+  {
+    path: '',
+    component: PortafolioPage // CAMBIA ESTO
+  }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule],
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class PortfolioPageRoutingModule { }
+export class PortfolioPageRoutingModule {}

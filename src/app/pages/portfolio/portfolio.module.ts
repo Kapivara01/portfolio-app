@@ -3,17 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { PortfolioPageRoutingModule } from './portfolio-routing.module';
-import { PortfolioPage } from './portfolio.page';
-import { FooterComponent } from '../../components/footer/footer.component';
+
+// CAMBIA ESTO: De PortfolioPage a PortafolioPage
+import { PortafolioPage } from './portfolio.page'; 
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        IonicModule,
-        PortfolioPageRoutingModule,
-        FooterComponent
-    ],
-    declarations: [PortfolioPage]
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    PortfolioPageRoutingModule
+  ],
+  declarations: [PortafolioPage] // CAMBIA ESTO TAMBIÉN
 })
-export class PortfolioPageModule { }
+export class PortfolioPageModule {}

@@ -1,31 +1,63 @@
 <ion-header [translucent]="true">
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
-            <img src="assets/images/civ-logo.png" alt="CIV" style="height: 40px; margin-left: 8px;">
-        </ion-buttons>
-        <ion-title>
-            <ion-icon name="briefcase" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
-            Portafolio de Proyectos
-        </ion-title>
-        <ion-buttons slot="end">
-            <img src="assets/images/uneti-logo.jpg" alt="UNETI"
-                style="height: 40px; margin-right: 8px; border-radius: 50%;">
-        </ion-buttons>
-    </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Portafolio</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar color="primary">
+    <ion-segment [(ngModel)]="categoriaActiva">
+      <ion-segment-button value="Telecomunicaciones">
+        <ion-label>Telecom</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Informática">
+        <ion-label>Informática</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-    <ion-header collapse="condense">
-        <ion-toolbar>
-            <ion-title size="large">Portafolio</ion-title>
-        </ion-toolbar>
-    </ion-header>
+<ion-content class="ion-padding">
+  
+  <ion-grid>
+    <ion-row>
+      <ng-container *ngFor="let proyecto of proyectos">
+        <ion-col size="12" size-md="6" *ngIf="proyecto.category === categoriaActiva">
+          
+          <ion-card style="margin: 8px 0; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            
+            <div style="width: 100%; height: 130px; overflow: hidden; background: #f0f0f0;">
+              <img [src]="proyecto.image_url" 
+                   *ngIf="proyecto.image_url" 
+                   style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
 
-    <div class="ion-padding">
-        <h2>Mis Proyectos</h2>
-        <p>Lista de proyectos realizados.</p>
-    </div>
+            <ion-card-header style="padding: 8px 12px;">
+              <ion-card-title style="font-size: 0.95rem; font-weight: 700; color: #003366;">
+                {{ proyecto.title }}
+              </ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content style="padding: 0 12px 10px 12px;">
+              <p style="font-size: 0.8rem; line-height: 1.2; color: #555;">
+                {{ proyecto.description }}
+              </p>
+              
+              <ion-button fill="clear" size="small" [href]="proyecto.project_url" *ngIf="proyecto.project_url" style="margin-top: 5px; --padding-start: 0; font-weight: 600;">
+                DETALLES <ion-icon name="chevron-forward" slot="end"></ion-icon>
+              </ion-button>
+            </ion-card-content>
+
+          </ion-card>
+        </ion-col>
+      </ng-container>
+    </ion-row>
+  </ion-grid>
+
+  <div *ngIf="proyectos.length === 0" class="ion-text-center" style="margin-top: 40px;">
+    <ion-icon name="cloud-download-outline" style="font-size: 48px; color: #ccc;"></ion-icon>
+    <p style="color: #999;">Cargando datos...</p>
+  </div>
+
 </ion-content>
-
-<app-footer></app-footer>
