@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
     <ion-toolbar>
-        <ion-title>Admin Login</ion-title>
+        <ion-title>Acceso Administrador</ion-title>
     </ion-toolbar>
 </ion-header>
 
@@ -9,12 +9,14 @@
         <h2>Acceso Administrador</h2>
         <ion-item>
             <ion-label position="floating">Email</ion-label>
-            <ion-input type="email"></ion-input>
+            <ion-input type="email" [(ngModel)]="email"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label position="floating">Password</ion-label>
-            <ion-input type="password"></ion-input>
+            <ion-input type="password" [(ngModel)]="password"></ion-input>
         </ion-item>
-        <ion-button expand="block" class="ion-margin-top">Ingresar</ion-button>
+        <ion-button expand="block" class="ion-margin-top" (click)="onLogin()">Ingresar</ion-button>
     </div>
 </ion-content>
+
+<app-footer></app-footer>

@@ -2,8 +2,16 @@
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
+            <img src="assets/images/civ-logo.png" alt="CIV" style="height: 40px; margin-left: 8px;">
         </ion-buttons>
-        <ion-title>Inicio</ion-title>
+        <ion-title>
+            <ion-icon name="home" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
+            Inicio
+        </ion-title>
+        <ion-buttons slot="end">
+            <img src="assets/images/uneti-logo.jpg" alt="UNETI"
+                style="height: 40px; margin-right: 8px; border-radius: 50%;">
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
@@ -15,7 +23,15 @@
     </ion-header>
 
     <div id="container">
-        <strong>Bienvenido a mi Portafolio</strong>
-        <p>Explora mi experiencia y proyectos.</p>
+        <div class="profile-avatar-wrapper"
+            style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1.5rem; border: 4px solid var(--ion-color-primary-tint); box-shadow: 0 8px 24px rgba(56, 128, 255, 0.3); overflow: hidden;">
+            <img src="assets/images/profile.jpg" alt="Jorge Luis Linares"
+                style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <strong>Ing. Jorge Luis Linares</strong>
+        <p>Ingeniero en Telecomunicaciones e Informática</p>
+        <p>Bienvenido a mi Portafolio Profesional</p>
     </div>
 </ion-content>
+
+<app-footer></app-footer>

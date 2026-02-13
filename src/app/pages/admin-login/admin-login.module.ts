@@ -4,13 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { AdminLoginPageRoutingModule } from './admin-login-routing.module';
 import { AdminLoginPage } from './admin-login.page';
+import { FooterComponent } from '../../components/footer/footer.component';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         IonicModule,
-        AdminLoginPageRoutingModule
+        AdminLoginPageRoutingModule,
+        FooterComponent
     ],
     declarations: [AdminLoginPage]
 })

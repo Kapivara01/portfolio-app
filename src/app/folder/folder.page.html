@@ -8,14 +8,20 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">{{ folder }}</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong class="capitalize">{{ folder }}</strong>
-    <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <div id="container" style="padding: 16px;">
+    <h2 class="capitalize">{{ folder }}</h2>
+    
+    <ion-card>
+      <ion-card-content>
+        <p>Bienvenido a la sección <strong>{{ folder }}</strong>.</p>
+        <p>Aquí gestionaremos el contenido del portafolio.</p>
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Jorge Linares - Ing. de Sistemas © 2026</ion-title>
+  </ion-toolbar>
+</ion-footer>

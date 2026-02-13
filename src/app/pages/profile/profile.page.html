@@ -2,8 +2,16 @@
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
+            <img src="assets/images/civ-logo.png" alt="CIV" style="height: 40px; margin-left: 8px;">
         </ion-buttons>
-        <ion-title>Perfil Profesional</ion-title>
+        <ion-title>
+            <ion-icon name="person" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
+            Perfil Profesional
+        </ion-title>
+        <ion-buttons slot="end">
+            <img src="assets/images/uneti-logo.jpg" alt="UNETI"
+                style="height: 40px; margin-right: 8px; border-radius: 50%;">
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
@@ -15,7 +23,34 @@
     </ion-header>
 
     <div class="ion-padding">
-        <h2>Mi Perfil</h2>
-        <p>Aquí irá la información del profesional.</p>
+        <div class="center-content">
+            <div class="profile-avatar-wrapper" style="overflow: hidden;">
+                <img src="assets/images/profile.jpg" alt="Jorge Luis Linares"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+
+        <ion-card>
+            <ion-card-header>
+                <ion-card-title>Ing. Jorge Luis Linares</ion-card-title>
+                <ion-card-subtitle>Ingeniero en Telecomunicaciones e Informática</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+                <p><ion-icon name="mail"></ion-icon> <strong>Email:</strong> jluis7616&#64;gmail.com</p>
+                <br>
+                <h3><ion-icon name="person"></ion-icon> Sobre mí</h3>
+                <p>Profesional dedicado al desarrollo de soluciones tecnológicas innovadoras, con especial enfoque en
+                    Inteligencia Artificial y Telecomunicaciones.</p>
+            </ion-card-content>
+        </ion-card>
+
+        <ion-button expand="block" href="https://jorge-linares-ia-uneti.netlify.app" target="_blank"
+            rel="noopener noreferrer">
+            <ion-icon slot="start" name="rocket"></ion-icon>
+            Visitar mi Motor IA
+            <ion-icon slot="end" name="open-outline"></ion-icon>
+        </ion-button>
     </div>
 </ion-content>
+
+<app-footer></app-footer>

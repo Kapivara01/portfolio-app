@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Panel de Administración</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <div class="ion-padding">
+        <h2>Bienvenido Administrador</h2>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-card button routerLink="/profile">
+                        <ion-card-header>
+                            <ion-card-title>Editar Perfil</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>Actualiza tu información personal.</ion-card-content>
+                    </ion-card>
+                </ion-col>
+                <ion-col>
+                    <ion-card button routerLink="/portfolio">
+                        <ion-card-header>
+                            <ion-card-title>Gestionar Proyectos</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>Añade o edita proyectos.</ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+</ion-content>
+
+<app-footer></app-footer>

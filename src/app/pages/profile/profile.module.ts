@@ -4,13 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ProfilePageRoutingModule } from './profile-routing.module';
 import { ProfilePage } from './profile.page';
+import { FooterComponent } from '../../components/footer/footer.component';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         IonicModule,
-        ProfilePageRoutingModule
+        ProfilePageRoutingModule,
+        FooterComponent
     ],
     declarations: [ProfilePage]
 })
