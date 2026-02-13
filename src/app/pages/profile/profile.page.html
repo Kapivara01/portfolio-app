@@ -1,56 +1,83 @@
 <ion-header [translucent]="true">
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
-            <img src="assets/images/civ-logo.png" alt="CIV" style="height: 40px; margin-left: 8px;">
-        </ion-buttons>
-        <ion-title>
-            <ion-icon name="person" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
-            Perfil Profesional
-        </ion-title>
-        <ion-buttons slot="end">
-            <img src="assets/images/uneti-logo.jpg" alt="UNETI"
-                style="height: 40px; margin-right: 8px; border-radius: 50%;">
-        </ion-buttons>
-    </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <img src="assets/images/civ-logo.png" alt="CIV" style="height: 25px; margin-left: 8px;">
+    </ion-buttons>
+    <ion-title>Perfil Profesional</ion-title>
+    <ion-buttons slot="end">
+      <img src="assets/images/uneti-logo.jpg" alt="UNETI" style="height: 25px; margin-right: 8px; border-radius: 50%;">
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <ion-header collapse="condense">
-        <ion-toolbar>
-            <ion-title size="large">Perfil</ion-title>
-        </ion-toolbar>
-    </ion-header>
+  <div class="ion-padding">
+    
+    <ion-card style="margin: 0; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.12); border: 1px solid #ddd;">
+      
+      <div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: #f4f7f9; border-bottom: 2px solid var(--ion-color-primary);">
+        <div style="width: 65px; height: 65px; min-width: 65px; border-radius: 50%; overflow: hidden; border: 2px solid var(--ion-color-primary); background: white;">
+          <img src="assets/images/profile.jpg" alt="Jorge Luis Linares" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div>
+          <h2 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #003366;">Ing. Jorge Luis Linares</h2>
+          <p style="margin: 0; font-size: 0.8rem; color: #555; font-weight: 600;">Telecomunicaciones e Informática</p>
+        </div>
+      </div>
 
-    <div class="ion-padding">
-        <div class="center-content">
-            <div class="profile-avatar-wrapper" style="overflow: hidden;">
-                <img src="assets/images/profile.jpg" alt="Jorge Luis Linares"
-                    style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
+      <ion-card-content style="height: 420px; overflow-y: auto; padding: 15px; background: #ffffff;">
+        
+        <h3 style="color: var(--ion-color-primary); border-bottom: 1px solid #eee; padding-bottom: 4px; margin: 0 0 12px 0; font-weight: 700; font-size: 1rem;">
+          <ion-icon name="briefcase" style="vertical-align: middle; margin-right: 5px;"></ion-icon> 
+          Trayectoria Laboral (1976 - 2026)
+        </h3>
+        
+        <div style="margin-bottom: 15px;">
+          <p style="margin: 0; font-weight: 700; color: #1a1a1a; font-size: 0.95rem;">Gerente de Red Carabobo | CANTV</p>
+          <p style="margin: 4px 0; font-size: 0.85rem; line-height: 1.3; color: #444;">Gerencia de Operación y Mantenimiento (Conmutación, Transmisión, Datos y Planta Externa). Manejo de presupuesto y personal regional.</p>
         </div>
 
-        <ion-card>
-            <ion-card-header>
-                <ion-card-title>Ing. Jorge Luis Linares</ion-card-title>
-                <ion-card-subtitle>Ingeniero en Telecomunicaciones e Informática</ion-card-subtitle>
-            </ion-card-header>
-            <ion-card-content>
-                <p><ion-icon name="mail"></ion-icon> <strong>Email:</strong> jluis7616&#64;gmail.com</p>
-                <br>
-                <h3><ion-icon name="person"></ion-icon> Sobre mí</h3>
-                <p>Profesional dedicado al desarrollo de soluciones tecnológicas innovadoras, con especial enfoque en
-                    Inteligencia Artificial y Telecomunicaciones.</p>
-            </ion-card-content>
-        </ion-card>
+        <div style="margin-bottom: 15px;">
+          <p style="margin: 0; font-weight: 700; color: #1a1a1a; font-size: 0.95rem;">Supervisor de Transmisión | CANTV</p>
+          <p style="margin: 4px 0; font-size: 0.85rem; line-height: 1.3; color: #444;">Ejecución de mantenimiento preventivo y correctivo. Manejo de personal técnico y labores administrativas del área técnica.</p>
+        </div>
 
-        <ion-button expand="block" href="https://jorge-linares-ia-uneti.netlify.app" target="_blank"
-            rel="noopener noreferrer">
-            <ion-icon slot="start" name="rocket"></ion-icon>
-            Visitar mi Motor IA
-            <ion-icon slot="end" name="open-outline"></ion-icon>
-        </ion-button>
+        <div style="margin-bottom: 15px;">
+          <p style="margin: 0; font-weight: 700; color: #1a1a1a; font-size: 0.95rem;">Técnico Especialista en Transmisión | CANTV</p>
+          <p style="margin: 4px 0; font-size: 0.85rem; line-height: 1.3; color: #444;">Operación y mantenimiento de equipos Radio analógicos y digitales, sistemas PDH, SDH y Fibra Óptica.</p>
+        </div>
+
+        <h3 style="color: var(--ion-color-primary); border-bottom: 1px solid #eee; padding-bottom: 4px; margin: 25px 0 12px 0; font-weight: 700; font-size: 1rem;">
+          <ion-icon name="school" style="vertical-align: middle; margin-right: 5px;"></ion-icon> 
+          Formación Académica
+        </h3>
+        <ul style="padding-left: 20px; color: #222; font-size: 0.88rem; line-height: 1.5; margin: 0;">
+          <li style="margin-bottom: 5px;"><strong>Ingeniería Informática</strong> - UNETI (Trayecto 4 - 2026)</li>
+          <li style="margin-bottom: 5px;"><strong>Ingeniería en Telecomunicaciones</strong> - UNETI (2025)</li>
+          <li style="margin-bottom: 5px;"><strong>TSU en Informática</strong> - UNETI (Culminado, 2024)</li>
+          <li style="margin-bottom: 5px;"><strong>TSU en Telecomunicaciones</strong> - CET CANTV (1983)</li>
+          <li><strong>Técnico Medio en Electrónica</strong> - ETI Joaquín Abellán (1975)</li>
+        </ul>
+
+      </ion-card-content>
+    </ion-card>
+
+    <div style="margin-top: 15px;">
+      <ion-button expand="block" 
+                  style="--background: #004080; --color: white; --border-radius: 10px; font-weight: 700; height: 48px;"
+                  href="mailto:jluis7616@gmail.com?subject=Solicitud de CV - Jorge Linares">
+        <ion-icon slot="start" name="mail"></ion-icon> 
+        SOLICITAR CV DETALLADO (PDF)
+      </ion-button>
+      
+      <ion-button expand="block" color="secondary" 
+                  style="--border-radius: 10px; margin-top: 10px; font-weight: 700; height: 48px;" 
+                  href="https://jorge-linares-ia-uneti.netlify.app" target="_blank">
+        <ion-icon slot="start" name="rocket"></ion-icon> 
+        CONSULTAR ASISTENTE IA
+      </ion-button>
     </div>
-</ion-content>
 
-<app-footer></app-footer>
+  </div>
+</ion-content>
