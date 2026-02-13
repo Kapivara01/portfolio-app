@@ -1,84 +1,63 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
-import { environment } from '../../environments/environment';
+import { createClient, SupabaseClient, AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class SupabaseService {
-    private supabase: SupabaseClient;
+  private supabase: SupabaseClient;
 
-    constructor() {
-        this.supabase = createClient(environment.supabase.url, environment.supabase.key);
-    }
+  constructor() {
+    this.supabase = createClient(
+      environment.supabase.url,
+      environment.supabase.key
+    );
+  }
 
-    get client(): SupabaseClient {
-        return this.supabase;
-    }
+  // --- AUTENTICACIÓN ---
+  get user() {
+    return this.supabase.auth.getUser();
+  }
 
-    async signIn(email: string) {
-        return this.supabase.auth.signInWithOtp({ email });
-    }
+  authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {
+    return this.supabase.auth.onAuthStateChange(callback);
+  }
 
-    async signOut() {
-        return this.supabase.auth.signOut();
-    }
+  // Opción A: Enlace al correo
+  async signInWithMagicLink(email: string) {
+    return await this.supabase.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: window.location.origin + '/admin-dashboard'
+      }
+    });
+  }
 
-    async getUser(): Promise<User | null> {
-        const { data: { user } } = await this.supabase.auth.getUser();
-        return user;
-    }
+  // Opción B: Contraseña tradicional
+  async signInWithPassword(email: string, pass: string) {
+    return await this.supabase.auth.signInWithPassword({
+      email: email,
+      password: pass,
+    });
+  }
 
-    // --- Profile ---
-    async getProfile(userId: string) {
-        return this.supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', userId)
-            .single();
-    }
+  async signOut() {
+    return await this.supabase.auth.signOut();
+  }
 
-    async updateProfile(userId: string, profile: any) {
-        const updateHelper = {
-            ...profile,
-            updated_at: new Date(),
-        };
-        return this.supabase
-            .from('profiles')
-            .upsert(updateHelper);
-    }
+  // --- BASE DE DATOS (PROYECTOS) ---
+  async getProyectos() {
+    return await this.supabase
+      .from('proyectos')
+      .select('*')
+      .order('id', { ascending: false });
+  }
 
-    // --- Portfolio ---
-    async getPortfolio() {
-        return this.supabase
-            .from('portfolio_items')
-            .select('*')
-            .order('created_at', { ascending: false });
-    }
-
-    async createPortfolioItem(item: any) {
-        return this.supabase
-            .from('portfolio_items')
-            .insert(item);
-    }
-
-    async deletePortfolioItem(id: string) {
-        return this.supabase
-            .from('portfolio_items')
-            .delete()
-            .eq('id', id);
-    }
-
-    // --- Storage ---
-    async uploadFile(file: File, path: string) {
-        return this.supabase.storage
-            .from('portfolio-files') // El bucket que acabamos de crear
-            .upload(path, file);
-    }
-
-    getPublicUrl(path: string) {
-        return this.supabase.storage
-            .from('portfolio-files')
-            .getPublicUrl(path);
-    }
+  async addProyecto(proyecto: any) {
+    // Importante: Enviar como array [proyecto]
+    return await this.supabase
+      .from('proyectos')
+      .insert([proyecto]);
+  }
 }

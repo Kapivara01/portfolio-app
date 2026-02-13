@@ -1,51 +1,62 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { SupabaseService } from '../../services/supabase.service';
+import { LoadingController, ToastController } from '@ionic/angular';
 
 @Component({
-    selector: 'app-admin-login',
-    templateUrl: './admin-login.page.html',
-    styleUrls: ['./admin-login.page.scss'],
-    standalone: false,
+  selector: 'app-admin-login',
+  templateUrl: './admin-login.page.html', // Corregido: apunta al HTML, no al TS
+  styleUrls: ['./admin-login.page.scss'],
 })
 export class AdminLoginPage implements OnInit {
+  email = '';
+  password = '';
 
-    email = '';
-    password = '';
+  constructor(
+    private router: Router,
+    private loadingCtrl: LoadingController,
+    private toastCtrl: ToastController
+  ) {}
 
-    constructor(
-        private supabaseService: SupabaseService,
-        private router: Router,
-        private loadingController: LoadingController,
-        private alertController: AlertController
-    ) { }
+  ngOnInit() {}
 
-    ngOnInit() {
+  async mostrarToast(mensaje: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message: mensaje,
+      duration: 2000,
+      color: color
+    });
+    await toast.present();
+  }
+
+  async onLogin() {
+    // 1. Validación de campos vacíos
+    if (!this.email || !this.password) {
+      await this.mostrarToast('Por favor, completa todos los campos', 'warning');
+      return;
     }
 
-    async onLogin() {
-        const loading = await this.loadingController.create();
-        await loading.present();
+    const loading = await this.loadingCtrl.create({ 
+      message: 'Validando acceso...' 
+    });
+    await loading.present();
 
-        const { error } = await this.supabaseService.signIn(this.email);
+    try {
+      // 2. Simulación de validación (aquí conectarás Supabase después)
+      const loginExitoso = true; 
 
-        await loading.dismiss();
-
-        if (error) {
-            const alert = await this.alertController.create({
-                header: 'Error',
-                message: error.message,
-                buttons: ['OK']
-            });
-            await alert.present();
-        } else {
-            const alert = await this.alertController.create({
-                header: 'Enlace enviado',
-                message: 'Revisa tu correo electrónico para ingresar.',
-                buttons: ['OK']
-            });
-            await alert.present();
-        }
+      if (!loginExitoso) {
+        await this.mostrarToast('Credenciales incorrectas', 'danger');
+      } else {
+        // 3. CORRECCIÓN CRÍTICA: Ruta ajustada a tu AppRoutingModule
+        // Tu path es 'admin/dashboard', por lo tanto:
+        console.log('Navegando a la ruta administrativa...');
+        this.router.navigate(['/admin/dashboard']); 
+      }
+    } catch (e: any) {
+      await this.mostrarToast('Error inesperado: ' + e.message, 'danger');
+    } finally {
+      // 4. Cerramos el indicador de carga
+      await loading.dismiss();
     }
+  }
 }

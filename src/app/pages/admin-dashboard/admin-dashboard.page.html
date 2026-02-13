@@ -1,36 +1,54 @@
 <ion-header [translucent]="true">
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
-        </ion-buttons>
-        <ion-title>Panel de Administración</ion-title>
-    </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-title>Gestión de Portafolio</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="salir()">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-    <div class="ion-padding">
-        <h2>Bienvenido Administrador</h2>
-        <ion-grid>
-            <ion-row>
-                <ion-col>
-                    <ion-card button routerLink="/profile">
-                        <ion-card-header>
-                            <ion-card-title>Editar Perfil</ion-card-title>
-                        </ion-card-header>
-                        <ion-card-content>Actualiza tu información personal.</ion-card-content>
-                    </ion-card>
-                </ion-col>
-                <ion-col>
-                    <ion-card button routerLink="/portfolio">
-                        <ion-card-header>
-                            <ion-card-title>Gestionar Proyectos</ion-card-title>
-                        </ion-card-header>
-                        <ion-card-content>Añade o edita proyectos.</ion-card-content>
-                    </ion-card>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-    </div>
-</ion-content>
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Nuevo Proyecto</ion-card-title>
+      <ion-card-subtitle>Añade trabajos a tu portafolio profesional</ion-card-subtitle>
+    </ion-card-header>
 
-<app-footer></app-footer>
+    <ion-card-content>
+      <ion-item fill="outline" mode="md" class="ion-margin-bottom">
+        <ion-label position="floating">Título del Proyecto</ion-label>
+        <ion-input [(ngModel)]="nuevoProyecto.title" type="text" placeholder="Ej: Red de Datos CANTV"></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline" mode="md" class="ion-margin-bottom">
+        <ion-label position="floating">Categoría</ion-label>
+        <ion-select [(ngModel)]="nuevoProyecto.category" interface="popover">
+          <ion-select-option value="Telecomunicaciones">Telecomunicaciones</ion-select-option>
+          <ion-select-option value="Informática">Informática</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline" mode="md" class="ion-margin-bottom">
+        <ion-label position="floating">Descripción breve</ion-label>
+        <ion-textarea [(ngModel)]="nuevoProyecto.description" rows="3" placeholder="Explica brevemente tu rol o el proyecto..."></ion-textarea>
+      </ion-item>
+
+      <ion-item fill="outline" mode="md" class="ion-margin-bottom">
+        <ion-label position="floating">URL de la Imagen</ion-label>
+        <ion-input [(ngModel)]="nuevoProyecto.image_url" type="url" placeholder="https://ejemplo.com/foto.jpg"></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline" mode="md" class="ion-margin-bottom">
+        <ion-label position="floating">Enlace al Proyecto (Opcional)</ion-label>
+        <ion-input [(ngModel)]="nuevoProyecto.project_url" type="url" placeholder="https://github.com/tu-usuario"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" (click)="guardarProyecto()" class="ion-margin-top" shape="round">
+        <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+        Guardar en Portafolio
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
