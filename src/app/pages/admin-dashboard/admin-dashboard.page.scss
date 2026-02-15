@@ -1,0 +1,36 @@
+// Estilo para el encabezado y las pestañas
+ion-toolbar {
+  --background: #3880ff; // Azul Ionic principal
+  --color: #ffffff;
+}
+
+ion-segment-button {
+  --color: #ffffff;              // Color de texto normal
+  --color-checked: #ffffff;       // Color de texto cuando está seleccionado
+  --indicator-color: #ffffff;     // Color de la barrita de abajo
+  font-weight: 800 !important;    // ¡NEGRITA FUERTE para el menú!
+  text-transform: uppercase;      // Todo en mayúsculas para mejor lectura
+  letter-spacing: 1px;            // Un poco de espacio entre letras
+}
+
+// Estilo para las tarjetas del formulario
+ion-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+// Estilo para que las etiquetas no se encimen (Negrita en los títulos de campo)
+ion-label {
+  font-weight: 600 !important;
+  color: #444 !important;
+  margin-bottom: 8px !important;
+}
+
+// Botón de guardar más llamativo
+.btn-guardar {
+  --border-radius: 8px;
+  font-weight: bold;
+  height: 50px;
+  margin-top: 20px;
+}
