@@ -1,18 +1,18 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Portafolio</ion-title>
+    <ion-title>Ing. Jorge Luis Linares</ion-title>
   </ion-toolbar>
 
   <ion-toolbar color="primary">
     <ion-segment [(ngModel)]="categoriaActiva">
       <ion-segment-button value="Todas">
-        <ion-label>Todas</ion-label>
+        <ion-label>TODAS</ion-label>
       </ion-segment-button>
       <ion-segment-button value="Telecomunicaciones">
-        <ion-label>Telecom</ion-label>
+        <ion-label>TELECOM</ion-label>
       </ion-segment-button>
       <ion-segment-button value="Informática">
-        <ion-label>Informática</ion-label>
+        <ion-label>INFORMÁTICA</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -21,16 +21,17 @@
 <ion-content class="ion-padding">
 
   <div *ngIf="proyectos.length === 0" class="ion-text-center ion-padding-top">
-    <ion-icon name="cloud-offline-outline" style="font-size: 64px;" color="medium"></ion-icon>
-    <p>No se encontraron proyectos en la base de datos.</p>
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando proyectos...</p>
   </div>
 
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-md="6" *ngFor="let p of proyectos">
-        <ion-card *ngIf="categoriaActiva === 'Todas' || p.category === categoriaActiva">
+        
+        <ion-card *ngIf="categoriaActiva === 'Todas' || (p.category && p.category.toLowerCase() === categoriaActiva.toLowerCase())">
           
-          <img [src]="p.image_url || 'https://via.placeholder.com/800x400?text=Ingeniería+Nattier'" alt="Proyecto" />
+          <img [src]="p.image_url || 'https://via.placeholder.com/800x400?text=Ingeniería'" alt="Proyecto" />
           
           <ion-card-header>
             <ion-card-subtitle color="tertiary">{{ p.category }}</ion-card-subtitle>
@@ -44,6 +45,7 @@
             </ion-button>
           </ion-card-content>
         </ion-card>
+
       </ion-col>
     </ion-row>
   </ion-grid>

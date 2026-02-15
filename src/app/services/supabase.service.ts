@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient, AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,62 +9,28 @@ export class SupabaseService {
   private supabase: SupabaseClient;
 
   constructor() {
-    this.supabase = createClient(
-      environment.supabase.url,
-      environment.supabase.key
-    );
+    this.supabase = createClient(environment.supabase.url, environment.supabase.key);
   }
 
-  // --- AUTENTICACIÓN ---
-  get user() {
-    return this.supabase.auth.getUser();
-  }
-
-  authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {
-    return this.supabase.auth.onAuthStateChange(callback);
-  }
-
-  async signInWithPassword(email: string, pass: string) {
-    return await this.supabase.auth.signInWithPassword({
-      email: email,
-      password: pass,
-    });
-  }
-
-  async signOut() {
-    return await this.supabase.auth.signOut();
-  }
-
-  // --- BASE DE DATOS (GESTIÓN DE PORTAFOLIO) ---
-  
-  // 1. OBTENER: Trae todos los proyectos de la tabla
+  // Obtener proyectos
   async getProyectos() {
-    return await this.supabase
-      .from('portfolio_items')
-      .select('*')
-      .order('id', { ascending: false });
+    return await this.supabase.from('portfolio_items').select('*').order('id', { ascending: false });
   }
 
-  // 2. CREAR: Guarda un nuevo proyecto
+  // Añadir proyecto
   async addProyecto(proyecto: any) {
-    return await this.supabase
-      .from('portfolio_items')
-      .insert([proyecto]);
+    const p = { ...proyecto, user_id: '10cd155f-092d-481c-baae-f3adc02e5bc0' };
+    return await this.supabase.from('portfolio_items').insert([p]);
   }
 
-  // 3. ACTUALIZAR: Modifica un proyecto que ya existe (NUEVA FUNCIÓN)
-  async updateProyecto(id: number, datosActualizados: any) {
-    return await this.supabase
-      .from('portfolio_items')
-      .update(datosActualizados)
-      .eq('id', id);
+  // Actualizar proyecto (Limpia datos automáticos para evitar errores)
+  async updateProyecto(id: number, datos: any) {
+    const { id: _, created_at: __, ...soloDatos } = datos;
+    return await this.supabase.from('portfolio_items').update(soloDatos).eq('id', id);
   }
 
-  // 4. ELIMINAR: Borra un proyecto definitivamente
+  // Eliminar proyecto
   async deleteProyecto(id: number) {
-    return await this.supabase
-      .from('portfolio_items')
-      .delete()
-      .eq('id', id);
+    return await this.supabase.from('portfolio_items').delete().eq('id', id);
   }
 }

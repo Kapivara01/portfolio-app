@@ -10,9 +10,6 @@ import { AlertController, ToastController } from '@ionic/angular';
 export class AdminDashboardPage implements OnInit {
   seccionActiva: string = 'portafolio';
   proyectos: any[] = [];
-  cargando: boolean = false;
-  
-  // Variables para controlar la edición
   editando: boolean = false;
   idProyectoAEditar: number | null = null;
 
@@ -34,75 +31,57 @@ export class AdminDashboardPage implements OnInit {
   }
 
   async cargarProyectos() {
-    this.cargando = true;
     const { data, error } = await this.supabaseService.getProyectos();
     if (!error) {
       this.proyectos = data || [];
     }
-    this.cargando = false;
   }
 
   async guardarProyecto() {
-    if (!this.nuevoProyecto.title) {
-      this.mostrarToast('El título es obligatorio');
+    if (!this.nuevoProyecto.title || !this.nuevoProyecto.category) {
+      this.mostrarToast('Por favor completa los campos obligatorios');
       return;
     }
 
-    this.cargando = true;
-
     if (this.editando && this.idProyectoAEditar) {
-      // Lógica de ACTUALIZAR
       const { error } = await this.supabaseService.updateProyecto(this.idProyectoAEditar, this.nuevoProyecto);
       if (!error) {
-        this.mostrarToast('Proyecto actualizado con éxito');
+        this.mostrarToast('✅ Proyecto actualizado');
         this.limpiarFormulario();
-      } else {
-        this.mostrarToast('Error al actualizar');
       }
     } else {
-      // Lógica de CREAR NUEVO
       const { error } = await this.supabaseService.addProyecto(this.nuevoProyecto);
       if (!error) {
-        this.mostrarToast('Proyecto guardado correctamente');
+        this.mostrarToast('🚀 Proyecto creado');
         this.limpiarFormulario();
-      } else {
-        this.mostrarToast('Error al guardar');
       }
     }
-    
     this.cargarProyectos();
-    this.cargando = false;
   }
 
-  prepararEdicion(proyecto: any) {
+  prepararEdicion(p: any) {
     this.editando = true;
-    this.idProyectoAEditar = proyecto.id;
-    // Copiamos los datos al formulario
+    this.idProyectoAEditar = p.id;
     this.nuevoProyecto = {
-      title: proyecto.title,
-      category: proyecto.category,
-      description: proyecto.description,
-      image_url: proyecto.image_url
+      title: p.title,
+      category: p.category,
+      description: p.description,
+      image_url: p.image_url
     };
-    // Subimos el scroll al formulario
-    this.seccionActiva = 'portafolio';
-    this.mostrarToast('Editando: ' + proyecto.title);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async eliminarProyecto(id: number) {
     const alert = await this.alertCtrl.create({
-      header: '¿Dar de baja?',
-      message: '¿Estás seguro de que deseas eliminar este proyecto definitivamente?',
+      header: '¿Eliminar?',
+      message: 'Esta acción no se puede deshacer.',
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: 'No' },
         {
-          text: 'Eliminar',
+          text: 'Sí, borrar',
           handler: async () => {
-            const { error } = await this.supabaseService.deleteProyecto(id);
-            if (!error) {
-              this.mostrarToast('Proyecto eliminado');
-              this.cargarProyectos();
-            }
+            await this.supabaseService.deleteProyecto(id);
+            this.cargarProyectos();
           }
         }
       ]
@@ -116,12 +95,8 @@ export class AdminDashboardPage implements OnInit {
     this.nuevoProyecto = { title: '', category: '', description: '', image_url: '' };
   }
 
-  async mostrarToast(mensaje: string) {
-    const toast = await this.toastCtrl.create({
-      message: mensaje,
-      duration: 2000,
-      position: 'bottom'
-    });
+  async mostrarToast(msg: string) {
+    const toast = await this.toastCtrl.create({ message: msg, duration: 2000 });
     toast.present();
   }
 }
