@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Panel de Administración</ion-title>
+    <ion-title>Administración Nattier</ion-title>
   </ion-toolbar>
   
   <ion-toolbar color="primary">
@@ -24,64 +24,73 @@
     
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Nuevo Proyecto</ion-card-title>
+        <ion-card-title>
+          <ion-icon [name]="editando ? 'create-outline' : 'add-circle-outline'"></ion-icon>
+          {{ editando ? 'Modificar Proyecto' : 'Nuevo Proyecto' }}
+        </ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <ion-item class="ion-margin-bottom">
           <ion-label position="stacked">Título del Proyecto</ion-label>
-          <ion-input type="text" [(ngModel)]="nuevoProyecto.title" placeholder="Ej: Red de Datos CANTV"></ion-input>
+          <ion-input type="text" [(ngModel)]="nuevoProyecto.title" placeholder="Ej: Empalme de Fibra"></ion-input>
         </ion-item>
 
         <ion-item class="ion-margin-bottom">
           <ion-label position="stacked">Categoría</ion-label>
-          <ion-select [(ngModel)]="nuevoProyecto.category" placeholder="Seleccione una categoría">
-            <ion-select-option value="telecom">Telecomunicaciones</ion-select-option>
-            <ion-select-option value="sistemas">Sistemas</ion-select-option>
+          <ion-select [(ngModel)]="nuevoProyecto.category" placeholder="Seleccione una">
+            <ion-select-option value="Telecomunicaciones">Telecomunicaciones</ion-select-option>
+            <ion-select-option value="Informática">Informática</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item class="ion-margin-bottom">
-          <ion-label position="stacked">Descripción breve</ion-label>
-          <ion-textarea [(ngModel)]="nuevoProyecto.description" placeholder="Explica tu rol en el proyecto..." [autoGrow]="true"></ion-textarea>
+          <ion-label position="stacked">Descripción</ion-label>
+          <ion-textarea [(ngModel)]="nuevoProyecto.description" placeholder="Detalles del trabajo..." [autoGrow]="true"></ion-textarea>
         </ion-item>
 
         <ion-item class="ion-margin-bottom">
           <ion-label position="stacked">URL de la Imagen</ion-label>
-          <ion-input type="url" [(ngModel)]="nuevoProyecto.image_url" placeholder="https://enlace-a-tu-foto.jpg"></ion-input>
+          <ion-input type="url" [(ngModel)]="nuevoProyecto.image_url" placeholder="https://enlace-foto.jpg"></ion-input>
         </ion-item>
 
-        <ion-button expand="block" shape="round" class="ion-margin-top" (click)="guardarProyecto()" [disabled]="cargando">
-          <ion-icon slot="start" [name]="cargando ? 'sync-outline' : 'save-outline'"></ion-icon>
-          {{ cargando ? 'Guardando...' : 'Guardar Proyecto' }}
+        <ion-button expand="block" shape="round" class="ion-margin-top" 
+                    [color]="editando ? 'success' : 'primary'" 
+                    (click)="guardarProyecto()" [disabled]="cargando">
+          <ion-icon slot="start" [name]="editando ? 'checkmark-done-outline' : 'save-outline'"></ion-icon>
+          {{ cargando ? 'Procesando...' : (editando ? 'Actualizar Cambios' : 'Guardar Proyecto') }}
+        </ion-button>
+
+        <ion-button *ngIf="editando" expand="block" fill="clear" color="medium" (click)="limpiarFormulario()">
+          Cancelar Edición
         </ion-button>
       </ion-card-content>
     </ion-card>
 
-    <hr class="ion-margin-vertical">
-
-    <h3 class="ion-padding-start">Proyectos en la Base de Datos</h3>
+    <h3 class="ion-padding-start">Proyectos Actuales</h3>
     
     <ion-list lines="full">
       <ion-item *ngIf="proyectos.length === 0">
-        <ion-label color="medium" class="ion-text-center">No hay proyectos para mostrar aún</ion-label>
+        <ion-label color="medium" class="ion-text-center">Cargando proyectos...</ion-label>
       </ion-item>
 
       <ion-item-sliding *ngFor="let p of proyectos">
         <ion-item>
-          <ion-thumbnail slot="start" *ngIf="p.image_url">
-            <img [src]="p.image_url" alt="miniatura" />
+          <ion-thumbnail slot="start">
+            <img [src]="p.image_url || 'https://via.placeholder.com/150?text=Ingeniero'" />
           </ion-thumbnail>
           
           <ion-label>
             <h2>{{ p.title }}</h2>
             <p>{{ p.category }}</p>
           </ion-label>
-
-          <ion-note slot="end">ID: {{ p.id }}</ion-note>
         </ion-item>
 
         <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="prepararEdicion(p)">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-item-option>
+
           <ion-item-option color="danger" (click)="eliminarProyecto(p.id)">
             <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
           </ion-item-option>
@@ -92,20 +101,7 @@
 
   <div *ngIf="seccionActiva === 'perfil'">
     <ion-card>
-      <ion-card-header>
-        <ion-card-title>Información de Perfil</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Aquí configuraremos tu nombre y foto de perfil pronto.</p>
-      </ion-card-content>
-    </ion-card>
-  </div>
-
-  <div *ngIf="seccionActiva === 'archivos'">
-    <ion-card class="ion-text-center ion-padding">
-      <ion-icon name="images-outline" style="font-size: 64px;" color="medium"></ion-icon>
-      <h3>Biblioteca Multimedia</h3>
-      <p>Gestión de fotos para tus proyectos.</p>
+      <ion-card-content>Próximamente: Configura tu perfil profesional aquí.</ion-card-content>
     </ion-card>
   </div>
 

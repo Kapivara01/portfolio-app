@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SupabaseService } from '../../services/supabase.service';
+import { AlertController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -8,8 +9,12 @@ import { SupabaseService } from '../../services/supabase.service';
 })
 export class AdminDashboardPage implements OnInit {
   seccionActiva: string = 'portafolio';
+  proyectos: any[] = [];
   cargando: boolean = false;
-  proyectos: any[] = []; // Lista de proyectos
+  
+  // Variables para controlar la edición
+  editando: boolean = false;
+  idProyectoAEditar: number | null = null;
 
   nuevoProyecto = {
     title: '',
@@ -18,66 +23,105 @@ export class AdminDashboardPage implements OnInit {
     image_url: ''
   };
 
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(
+    private supabaseService: SupabaseService,
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController
+  ) {}
 
   ngOnInit() {
     this.cargarProyectos();
   }
 
   async cargarProyectos() {
+    this.cargando = true;
     const { data, error } = await this.supabaseService.getProyectos();
-    if (error) {
-      console.error('Error al obtener proyectos:', error);
-    } else {
+    if (!error) {
       this.proyectos = data || [];
     }
+    this.cargando = false;
   }
 
   async guardarProyecto() {
     if (!this.nuevoProyecto.title) {
-      alert('Por favor, ingresa un título.');
+      this.mostrarToast('El título es obligatorio');
       return;
     }
 
     this.cargando = true;
-    const proyectoParaGuardar = {
-      ...this.nuevoProyecto,
-      user_id: '10cd155f-092d-481c-baae-f3adc02e5bc0' // Tu ID de Admin
-    };
 
-    try {
-      const { error } = await this.supabaseService.addProyecto(proyectoParaGuardar);
-      if (error) {
-        alert('Error al guardar: ' + error.message);
-      } else {
-        alert('¡Proyecto guardado con éxito!');
+    if (this.editando && this.idProyectoAEditar) {
+      // Lógica de ACTUALIZAR
+      const { error } = await this.supabaseService.updateProyecto(this.idProyectoAEditar, this.nuevoProyecto);
+      if (!error) {
+        this.mostrarToast('Proyecto actualizado con éxito');
         this.limpiarFormulario();
-        this.cargarProyectos(); 
+      } else {
+        this.mostrarToast('Error al actualizar');
       }
-    } catch (err) {
-      alert('Error inesperado.');
-    } finally {
-      this.cargando = false;
+    } else {
+      // Lógica de CREAR NUEVO
+      const { error } = await this.supabaseService.addProyecto(this.nuevoProyecto);
+      if (!error) {
+        this.mostrarToast('Proyecto guardado correctamente');
+        this.limpiarFormulario();
+      } else {
+        this.mostrarToast('Error al guardar');
+      }
     }
+    
+    this.cargarProyectos();
+    this.cargando = false;
   }
 
-  // ESTA ES LA FUNCIÓN QUE FALTABA Y CAUSABA EL ERROR
-  async eliminarProyecto(id: any) {
-    if (confirm('¿Estás seguro de que deseas eliminar este proyecto?')) {
-      try {
-        // Nota: Por ahora solo avisamos, para borrar de la DB 
-        // necesitaríamos una función extra en el servicio.
-        alert('Botón de borrar presionado para el ID: ' + id);
-        
-        // Refrescamos para asegurar que el error visual desaparezca
-        this.cargarProyectos();
-      } catch (err) {
-        console.error(err);
-      }
-    }
+  prepararEdicion(proyecto: any) {
+    this.editando = true;
+    this.idProyectoAEditar = proyecto.id;
+    // Copiamos los datos al formulario
+    this.nuevoProyecto = {
+      title: proyecto.title,
+      category: proyecto.category,
+      description: proyecto.description,
+      image_url: proyecto.image_url
+    };
+    // Subimos el scroll al formulario
+    this.seccionActiva = 'portafolio';
+    this.mostrarToast('Editando: ' + proyecto.title);
+  }
+
+  async eliminarProyecto(id: number) {
+    const alert = await this.alertCtrl.create({
+      header: '¿Dar de baja?',
+      message: '¿Estás seguro de que deseas eliminar este proyecto definitivamente?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Eliminar',
+          handler: async () => {
+            const { error } = await this.supabaseService.deleteProyecto(id);
+            if (!error) {
+              this.mostrarToast('Proyecto eliminado');
+              this.cargarProyectos();
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   limpiarFormulario() {
+    this.editando = false;
+    this.idProyectoAEditar = null;
     this.nuevoProyecto = { title: '', category: '', description: '', image_url: '' };
+  }
+
+  async mostrarToast(mensaje: string) {
+    const toast = await this.toastCtrl.create({
+      message: mensaje,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
   }
 }

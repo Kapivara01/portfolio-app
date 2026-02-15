@@ -37,7 +37,7 @@ export class SupabaseService {
 
   // --- BASE DE DATOS (GESTIÓN DE PORTAFOLIO) ---
   
-  // Trae todos los proyectos de la tabla
+  // 1. OBTENER: Trae todos los proyectos de la tabla
   async getProyectos() {
     return await this.supabase
       .from('portfolio_items')
@@ -45,14 +45,22 @@ export class SupabaseService {
       .order('id', { ascending: false });
   }
 
-  // Guarda un nuevo proyecto (recuerda que el RLS debe estar desactivado o con permiso)
+  // 2. CREAR: Guarda un nuevo proyecto
   async addProyecto(proyecto: any) {
     return await this.supabase
       .from('portfolio_items')
       .insert([proyecto]);
   }
 
-  // --- FUNCIÓN AÑADIDA: Para eliminar proyectos ---
+  // 3. ACTUALIZAR: Modifica un proyecto que ya existe (NUEVA FUNCIÓN)
+  async updateProyecto(id: number, datosActualizados: any) {
+    return await this.supabase
+      .from('portfolio_items')
+      .update(datosActualizados)
+      .eq('id', id);
+  }
+
+  // 4. ELIMINAR: Borra un proyecto definitivamente
   async deleteProyecto(id: number) {
     return await this.supabase
       .from('portfolio_items')
