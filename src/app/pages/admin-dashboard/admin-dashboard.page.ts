@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SupabaseService } from '../../services/supabase.service';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,6 +12,7 @@ export class AdminDashboardPage implements OnInit {
   proyectos: any[] = [];
   editando: boolean = false;
   idProyectoAEditar: number | null = null;
+  filtroCategoria: string = 'Todos';
 
   nuevoProyecto = {
     title: '',
@@ -23,11 +24,19 @@ export class AdminDashboardPage implements OnInit {
   constructor(
     private supabaseService: SupabaseService,
     private alertCtrl: AlertController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
     this.cargarProyectos();
+  }
+
+  get proyectosFiltrados() {
+    if (this.filtroCategoria === 'Todos') {
+      return this.proyectos;
+    }
+    return this.proyectos.filter(p => p.category === this.filtroCategoria);
   }
 
   async cargarProyectos() {
@@ -59,16 +68,31 @@ export class AdminDashboardPage implements OnInit {
     this.cargarProyectos();
   }
 
+  // FUNCIÓN PARA CERRAR SESIÓN (LOGOUT)
+  async cerrarSesion() {
+    const alert = await this.alertCtrl.create({
+      header: 'Cerrar Sesión',
+      message: '¿Está seguro de que desea salir del panel administrativo?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Salir',
+          handler: async () => {
+            await this.supabaseService.signOut();
+            this.navCtrl.navigateRoot('/admin-login'); // Te manda de vuelta al login
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   prepararEdicion(p: any) {
     this.editando = true;
     this.idProyectoAEditar = p.id;
-    this.nuevoProyecto = {
-      title: p.title,
-      category: p.category,
-      description: p.description,
-      image_url: p.image_url
-    };
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.nuevoProyecto = { ...p };
+    const content = document.querySelector('ion-content');
+    if (content) content.scrollToTop(500);
   }
 
   async eliminarProyecto(id: number) {

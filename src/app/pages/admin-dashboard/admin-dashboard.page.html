@@ -1,6 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Admin Nattier</ion-title>
+    <ion-title>Admin Ing. Jorge Luis Linares</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarSesion()" color="light">
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        Salir
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   
   <ion-toolbar color="primary">
@@ -10,6 +17,9 @@
       </ion-segment-button>
       <ion-segment-button value="perfil">
         <ion-label>Perfil</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="archivos">
+        <ion-label>Archivos / IA</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -64,22 +74,33 @@
 
     <h3 class="ion-padding-start" style="font-weight: bold;">Proyectos Publicados</h3>
     
+    <ion-segment [(ngModel)]="filtroCategoria" color="tertiary" class="ion-margin-bottom">
+      <ion-segment-button value="Todos">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Informática">
+        <ion-label>Informática</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Telecomunicaciones">
+        <ion-label>Telecom</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+    
     <ion-list lines="inset">
-      <ion-item *ngFor="let p of proyectos">
+      <ion-item *ngFor="let p of proyectosFiltrados">
         <ion-thumbnail slot="start">
           <img [src]="p.image_url || 'https://via.placeholder.com/150'" />
         </ion-thumbnail>
         
         <ion-label>
           <h2 style="font-weight: bold;">{{ p.title }}</h2>
-          <p>Categoría: <b>{{ p.category }}</b></p>
+          <p>Categoría: <ion-badge color="light">{{ p.category }}</ion-badge></p>
         </ion-label>
 
         <div slot="end" style="display: flex;">
           <ion-button fill="clear" color="primary" (click)="prepararEdicion(p)">
             <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
           </ion-button>
-          
           <ion-button fill="clear" color="danger" (click)="eliminarProyecto(p.id)">
             <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
           </ion-button>
@@ -88,4 +109,24 @@
     </ion-list>
   </div>
 
+  <div *ngIf="seccionActiva === 'perfil'">
+    <ion-card>
+      <ion-card-header><ion-card-title color="primary">Información Profesional</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <p><strong>Ingeniero:</strong> Jorge Luis Linares</p>
+        <p><strong>Institución:</strong> UNETI Trayecto 4</p>
+        <p><strong>Experiencia:</strong> 1976 - 2026</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="seccionActiva === 'archivos'">
+    <ion-card>
+      <ion-card-header><ion-card-title color="primary">Gestión de Archivos e IA</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <input type="file" class="ion-margin-bottom">
+        <ion-button expand="block" color="success">Cargar a Supabase</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

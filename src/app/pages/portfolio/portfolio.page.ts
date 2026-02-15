@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SupabaseService } from '../../services/supabase.service'; // Importamos el servicio
+import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
   selector: 'app-portafolio',
@@ -7,33 +7,42 @@ import { SupabaseService } from '../../services/supabase.service'; // Importamos
   styleUrls: ['./portfolio.page.scss'],
 })
 export class PortafolioPage implements OnInit {
-
-  categoriaActiva: string = 'Todas';
-  
-  // 1. Dejamos la lista vacía para que se llene con lo que hay en Supabase
   proyectos: any[] = [];
+  filtroCategoria: string = 'Todos';
 
-  // 2. Metemos el servicio en el constructor
-  constructor(private supabaseService: SupabaseService) { }
+  constructor(private supabaseService: SupabaseService) {}
 
-  // 3. Al iniciar la página, llamamos a la nube
-  ngOnInit() {
-    this.obtenerDatosDeLaNube();
+  async ionViewWillEnter() {
+    const { data, error } = await this.supabaseService.getProyectos();
+    if (!error) {
+      this.proyectos = data || [];
+      console.log('Datos cargados de Supabase:', this.proyectos); // Esto nos dirá en consola qué llega exactamente
+    }
   }
 
-  async obtenerDatosDeLaNube() {
-    try {
-      const { data, error } = await this.supabaseService.getProyectos();
-      
-      if (error) {
-        console.error('Error al obtener datos:', error);
-      } else {
-        // 4. Aquí es donde ocurre la magia: 
-        // 'proyectos' ahora tendrá lo que viste en el Table Editor
-        this.proyectos = data || [];
-      }
-    } catch (err) {
-      console.error('Error inesperado:', err);
+  ngOnInit() {
+    this.ionViewWillEnter();
+  }
+
+  get proyectosFiltrados() {
+    if (this.filtroCategoria === 'Todos') {
+      return this.proyectos;
     }
+    
+    // Función mejorada para limpiar texto de tildes y espacios
+    const normalizar = (texto: string) => 
+      texto ? texto.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
+
+    const categoriaBuscada = normalizar(this.filtroCategoria);
+
+    return this.proyectos.filter(p => {
+      // Comprobamos ambos campos posibles de la base de datos
+      const catProyecto = normalizar(p.category || p.categoria || "");
+      return catProyecto === categoriaBuscada;
+    });
+  }
+
+  segmentChanged(event: any) {
+    this.filtroCategoria = event.detail.value;
   }
 }

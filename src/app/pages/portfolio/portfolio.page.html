@@ -1,53 +1,45 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
-    <ion-title>Ing. Jorge Luis Linares</ion-title>
+    <ion-title>Mi Portafolio</ion-title>
   </ion-toolbar>
 
-  <ion-toolbar color="primary">
-    <ion-segment [(ngModel)]="categoriaActiva">
-      <ion-segment-button value="Todas">
-        <ion-label>TODAS</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Telecomunicaciones">
-        <ion-label>TELECOM</ion-label>
+  <ion-toolbar color="light">
+    <ion-segment (ionChange)="segmentChanged($event)" [value]="filtroCategoria" mode="md">
+      <ion-segment-button value="Todos">
+        <ion-label>TODOS</ion-label>
       </ion-segment-button>
       <ion-segment-button value="Informática">
         <ion-label>INFORMÁTICA</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Telecomunicaciones">
+        <ion-label>TELECOM.</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-
-  <div *ngIf="proyectos.length === 0" class="ion-text-center ion-padding-top">
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>Cargando proyectos...</p>
-  </div>
-
+<ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="12" size-md="6" *ngFor="let p of proyectos">
-        
-        <ion-card *ngIf="categoriaActiva === 'Todas' || (p.category && p.category.toLowerCase() === categoriaActiva.toLowerCase())">
-          
-          <img [src]="p.image_url || 'https://via.placeholder.com/800x400?text=Ingeniería'" alt="Proyecto" />
-          
+      <ion-col size="12" size-md="6" *ngFor="let proyecto of proyectosFiltrados">
+        <ion-card mode="ios">
+          <img [src]="proyecto.image_url || 'https://via.placeholder.com/400x200'" style="width: 100%; height: 200px; object-fit: cover;" />
           <ion-card-header>
-            <ion-card-subtitle color="tertiary">{{ p.category }}</ion-card-subtitle>
-            <ion-card-title>{{ p.title }}</ion-card-title>
+            <ion-note color="primary" style="text-transform: uppercase;">
+              {{ proyecto.category || proyecto.categoria }}
+            </ion-note>
+            <ion-card-title>{{ proyecto.title }}</ion-card-title>
           </ion-card-header>
-
           <ion-card-content>
-            <p>{{ p.description }}</p>
-            <ion-button fill="clear" class="ion-no-padding ion-margin-top">
-              DETALLES <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
-            </ion-button>
+            {{ proyecto.description }}
           </ion-card-content>
         </ion-card>
-
       </ion-col>
     </ion-row>
-  </ion-grid>
 
+    <div *ngIf="proyectosFiltrados.length === 0" class="ion-text-center ion-padding">
+      <ion-icon name="alert-circle-outline" style="font-size: 48px; color: #ccc;"></ion-icon>
+      <p>No hay datos para la categoría: <b>{{ filtroCategoria }}</b></p>
+    </div>
+  </ion-grid>
 </ion-content>
