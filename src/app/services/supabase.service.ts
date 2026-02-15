@@ -24,17 +24,6 @@ export class SupabaseService {
     return this.supabase.auth.onAuthStateChange(callback);
   }
 
-  // Opción A: Enlace al correo
-  async signInWithMagicLink(email: string) {
-    return await this.supabase.auth.signInWithOtp({
-      email: email,
-      options: {
-        emailRedirectTo: window.location.origin + '/admin-dashboard'
-      }
-    });
-  }
-
-  // Opción B: Contraseña tradicional
   async signInWithPassword(email: string, pass: string) {
     return await this.supabase.auth.signInWithPassword({
       email: email,
@@ -46,18 +35,28 @@ export class SupabaseService {
     return await this.supabase.auth.signOut();
   }
 
-  // --- BASE DE DATOS (PROYECTOS) ---
+  // --- BASE DE DATOS (GESTIÓN DE PORTAFOLIO) ---
+  
+  // Trae todos los proyectos de la tabla
   async getProyectos() {
     return await this.supabase
-      .from('proyectos')
+      .from('portfolio_items')
       .select('*')
       .order('id', { ascending: false });
   }
 
+  // Guarda un nuevo proyecto (recuerda que el RLS debe estar desactivado o con permiso)
   async addProyecto(proyecto: any) {
-    // Importante: Enviar como array [proyecto]
     return await this.supabase
-      .from('proyectos')
+      .from('portfolio_items')
       .insert([proyecto]);
+  }
+
+  // --- FUNCIÓN AÑADIDA: Para eliminar proyectos ---
+  async deleteProyecto(id: number) {
+    return await this.supabase
+      .from('portfolio_items')
+      .delete()
+      .eq('id', id);
   }
 }

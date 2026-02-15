@@ -21,6 +21,7 @@
 <ion-content class="ion-padding">
 
   <div *ngIf="seccionActiva === 'portafolio'">
+    
     <ion-card>
       <ion-card-header>
         <ion-card-title>Nuevo Proyecto</ion-card-title>
@@ -29,12 +30,12 @@
       <ion-card-content>
         <ion-item class="ion-margin-bottom">
           <ion-label position="stacked">Título del Proyecto</ion-label>
-          <ion-input type="text" placeholder="Ej: Red de Datos CANTV"></ion-input>
+          <ion-input type="text" [(ngModel)]="nuevoProyecto.title" placeholder="Ej: Red de Datos CANTV"></ion-input>
         </ion-item>
 
         <ion-item class="ion-margin-bottom">
           <ion-label position="stacked">Categoría</ion-label>
-          <ion-select placeholder="Seleccione una categoría">
+          <ion-select [(ngModel)]="nuevoProyecto.category" placeholder="Seleccione una categoría">
             <ion-select-option value="telecom">Telecomunicaciones</ion-select-option>
             <ion-select-option value="sistemas">Sistemas</ion-select-option>
           </ion-select>
@@ -42,20 +43,51 @@
 
         <ion-item class="ion-margin-bottom">
           <ion-label position="stacked">Descripción breve</ion-label>
-          <ion-textarea placeholder="Explica tu rol en el proyecto..." [autoGrow]="true"></ion-textarea>
+          <ion-textarea [(ngModel)]="nuevoProyecto.description" placeholder="Explica tu rol en el proyecto..." [autoGrow]="true"></ion-textarea>
         </ion-item>
 
         <ion-item class="ion-margin-bottom">
           <ion-label position="stacked">URL de la Imagen</ion-label>
-          <ion-input type="url" placeholder="https://enlace-a-tu-foto.jpg"></ion-input>
+          <ion-input type="url" [(ngModel)]="nuevoProyecto.image_url" placeholder="https://enlace-a-tu-foto.jpg"></ion-input>
         </ion-item>
 
-        <ion-button expand="block" shape="round" class="ion-margin-top">
-          <ion-icon slot="start" name="save-outline"></ion-icon>
-          Guardar Proyecto
+        <ion-button expand="block" shape="round" class="ion-margin-top" (click)="guardarProyecto()" [disabled]="cargando">
+          <ion-icon slot="start" [name]="cargando ? 'sync-outline' : 'save-outline'"></ion-icon>
+          {{ cargando ? 'Guardando...' : 'Guardar Proyecto' }}
         </ion-button>
       </ion-card-content>
     </ion-card>
+
+    <hr class="ion-margin-vertical">
+
+    <h3 class="ion-padding-start">Proyectos en la Base de Datos</h3>
+    
+    <ion-list lines="full">
+      <ion-item *ngIf="proyectos.length === 0">
+        <ion-label color="medium" class="ion-text-center">No hay proyectos para mostrar aún</ion-label>
+      </ion-item>
+
+      <ion-item-sliding *ngFor="let p of proyectos">
+        <ion-item>
+          <ion-thumbnail slot="start" *ngIf="p.image_url">
+            <img [src]="p.image_url" alt="miniatura" />
+          </ion-thumbnail>
+          
+          <ion-label>
+            <h2>{{ p.title }}</h2>
+            <p>{{ p.category }}</p>
+          </ion-label>
+
+          <ion-note slot="end">ID: {{ p.id }}</ion-note>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="eliminarProyecto(p.id)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
   </div>
 
   <div *ngIf="seccionActiva === 'perfil'">
@@ -64,23 +96,16 @@
         <ion-card-title>Información de Perfil</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <ion-item>
-          <ion-label position="stacked">Nombre Profesional</ion-label>
-          <ion-input type="text"></ion-input>
-        </ion-item>
-        <ion-button expand="block" color="success" shape="round" class="ion-margin-top">
-          Actualizar Perfil
-        </ion-button>
+        <p>Aquí configuraremos tu nombre y foto de perfil pronto.</p>
       </ion-card-content>
     </ion-card>
   </div>
 
   <div *ngIf="seccionActiva === 'archivos'">
     <ion-card class="ion-text-center ion-padding">
-      <ion-icon name="cloud-upload-outline" style="font-size: 64px;" color="medium"></ion-icon>
-      <h3>Biblioteca</h3>
-      <p>Sube y gestiona tus archivos multimedia aquí.</p>
-      <ion-button fill="outline" shape="round">Subir Archivo</ion-button>
+      <ion-icon name="images-outline" style="font-size: 64px;" color="medium"></ion-icon>
+      <h3>Biblioteca Multimedia</h3>
+      <p>Gestión de fotos para tus proyectos.</p>
     </ion-card>
   </div>
 
