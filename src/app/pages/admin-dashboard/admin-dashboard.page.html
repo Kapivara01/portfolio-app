@@ -11,60 +11,35 @@
   <ion-toolbar color="primary">
     <ion-segment [(ngModel)]="seccionActiva" mode="md">
       <ion-segment-button value="portafolio"><ion-label>PORTAFOLIO</ion-label></ion-segment-button>
-      <ion-segment-button value="perfil"><ion-label>PERFIL</ion-label></ion-segment-button>
-      <ion-segment-button value="archivos"><ion-label>ARCHIVOS / IA</ion-label></ion-segment-button>
+      <ion-segment-button value="perfil"><ion-label>PERFIL / CV</ion-label></ion-segment-button>
+      <ion-segment-button value="archivos"><ion-label>ARCHIVOS</ion-label></ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-
+  
   <div *ngIf="seccionActiva === 'portafolio'">
     <ion-card>
-      <ion-card-header>
-        <ion-card-title>{{ editando ? 'Modificar' : 'Crear' }} Proyecto</ion-card-title>
-      </ion-card-header>
       <ion-card-content>
-        <ion-item>
-          <ion-label position="floating">Título</ion-label>
-          <ion-input [(ngModel)]="nuevoProyecto.title"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="floating">Categoría</ion-label>
-          <ion-select [(ngModel)]="nuevoProyecto.category" interface="popover" placeholder="Seleccione una">
+        <ion-item><ion-label position="floating">Título</ion-label><ion-input [(ngModel)]="nuevoProyecto.title"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Categoría</ion-label>
+          <ion-select [(ngModel)]="nuevoProyecto.category" interface="popover">
             <ion-select-option value="TELECOMUNICACIONES">TELECOMUNICACIONES</ion-select-option>
-            <ion-select-option value="INFORÁTICA">INFORÁTICA</ion-select-option>
+            <ion-select-option value="INFORMÁTICA">INFORMÁTICA</ion-select-option>
           </ion-select>
         </ion-item>
-
-        <ion-item>
-          <ion-label position="floating">Descripción</ion-label>
-          <ion-textarea [(ngModel)]="nuevoProyecto.description"></ion-textarea>
-        </ion-item>
-        <ion-item>
-          <ion-label position="floating">URL de Imagen</ion-label>
-          <ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input>
-        </ion-item>
-        <ion-button expand="block" (click)="guardarProyecto()" class="ion-margin-top">
-          {{ editando ? 'Actualizar Cambios' : 'Publicar Proyecto' }}
-        </ion-button>
+        <ion-item><ion-label position="floating">URL Imagen</ion-label><ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input></ion-item>
+        <ion-button expand="block" (click)="guardarProyecto()" class="ion-margin-top">{{ editando ? 'Actualizar' : 'Publicar' }}</ion-button>
         <ion-button *ngIf="editando" expand="block" color="light" (click)="limpiarFormulario()">Cancelar</ion-button>
       </ion-card-content>
     </ion-card>
 
-    <ion-list-header><ion-label>Proyectos en Base de Datos</ion-label></ion-list-header>
     <ion-list>
       <ion-item *ngFor="let p of proyectos">
-        <ion-thumbnail slot="start">
-          <img [src]="p.image_url || 'https://via.placeholder.com/150'" />
-        </ion-thumbnail>
-        <ion-label>
-          <h2>{{ p.title }}</h2>
-          <p color="primary">{{ p.category }}</p>
-        </ion-label>
+        <ion-label><h2>{{ p.title }}</h2><p>{{ p.category }}</p></ion-label>
         <ion-buttons slot="end">
-          <ion-button color="primary" (click)="prepararEdicion(p)"><ion-icon name="create-outline"></ion-icon></ion-button>
+          <ion-button (click)="prepararEdicion(p)"><ion-icon name="create-outline"></ion-icon></ion-button>
           <ion-button color="danger" (click)="eliminarProyecto(p.id)"><ion-icon name="trash-outline"></ion-icon></ion-button>
         </ion-buttons>
       </ion-item>
@@ -73,44 +48,53 @@
 
   <div *ngIf="seccionActiva === 'perfil'">
     <ion-card>
-      <ion-card-header><ion-card-title>Gestión de Perfil</ion-card-title></ion-card-header>
+      <ion-card-header><ion-card-title>Mi Perfil Profesional</ion-card-title></ion-card-header>
       <ion-card-content>
-        <ion-item><ion-label position="floating">Nombre Completo</ion-label><ion-input [(ngModel)]="perfil.nombre"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Título Profesional</ion-label><ion-input [(ngModel)]="perfil.titulo"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Biografía</ion-label><ion-textarea [(ngModel)]="perfil.descripcion" rows="4"></ion-textarea></ion-item>
-        <ion-button expand="block" color="success" class="ion-margin-top" (click)="guardarPerfil()">Guardar Cambios</ion-button>
+        
+        <ion-item lines="none" class="ion-text-center">
+          <ion-avatar style="width: 100px; height: 100px; margin: 0 auto;">
+            <img [src]="perfil.foto_url || 'assets/icon/favicon.png'" />
+          </ion-avatar>
+        </ion-item>
+        <ion-item>
+          <ion-label>Cambiar Foto</ion-label>
+          <input type="file" (change)="subirFotoPerfil($event)" accept="image/*">
+        </ion-item>
+
+        <ion-item><ion-label position="floating">Nombres y Apellidos</ion-label><ion-input [(ngModel)]="perfil.nombres_apellidos"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Especialidad</ion-label><ion-input [(ngModel)]="perfil.subtitulos"></ion-input></ion-item>
+        
+        <ion-item><ion-label position="floating">Teléfono</ion-label><ion-input [(ngModel)]="perfil.telefono" type="tel"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Correo Electrónico</ion-label><ion-input [(ngModel)]="perfil.correo" type="email"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Dirección</ion-label><ion-input [(ngModel)]="perfil.direccion"></ion-input></ion-item>
+
+        <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria (CANTV)</ion-label><ion-textarea [(ngModel)]="perfil.trayectoria" rows="6"></ion-textarea></ion-item>
+        <ion-item><ion-label position="floating">Formación</ion-label><ion-textarea [(ngModel)]="perfil.formacion" rows="4"></ion-textarea></ion-item>
+        
+        <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">
+          <ion-icon name="save-outline" slot="start"></ion-icon> Guardar Hoja de Vida
+        </ion-button>
       </ion-card-content>
     </ion-card>
   </div>
 
   <div *ngIf="seccionActiva === 'archivos'">
     <ion-card>
-      <ion-card-header><ion-card-title color="primary">Gestión de Archivos e IA</ion-card-title></ion-card-header>
       <ion-card-content>
-        <div style="border: 1px dashed #ccc; padding: 20px; border-radius: 8px; text-align: center;">
+        <div style="border: 1px dashed #ccc; padding: 10px; text-align: center;">
           <input type="file" (change)="onFileSelected($event)">
-          <p *ngIf="nombreArchivo"><b>Listo:</b> {{ nombreArchivo }}</p>
         </div>
-        <ion-button expand="block" color="success" class="ion-margin-top" (click)="subirArchivo()">Cargar a Supabase</ion-button>
+        <ion-button expand="block" (click)="subirArchivo()" class="ion-margin-top">Cargar Archivo</ion-button>
       </ion-card-content>
     </ion-card>
-
-    <ion-list-header><ion-label>Archivos en la Nube (Real)</ion-label></ion-list-header>
     <ion-list>
       <ion-item *ngFor="let archivo of listaArchivosReales">
-        <ion-icon name="document-text-outline" slot="start" color="primary"></ion-icon>
-        <ion-label>
-          <h2>{{ archivo.name }}</h2>
-          <p>{{ (archivo.metadata.size / 1024).toFixed(2) }} KB</p>
-        </ion-label>
+        <ion-label>{{ archivo.name }}</ion-label>
         <ion-buttons slot="end">
-          <ion-button color="medium" (click)="archivarArchivo(archivo.name)"><ion-icon name="archive-outline"></ion-icon></ion-button>
-          <ion-button color="primary" (click)="exportarArchivo(archivo.name)"><ion-icon name="download-outline"></ion-icon></ion-button>
-          <ion-button color="secondary" (click)="compartirArchivo(archivo.name)"><ion-icon name="share-social-outline"></ion-icon></ion-button>
+          <ion-button (click)="compartirArchivo(archivo.name)"><ion-icon name="share-social-outline"></ion-icon></ion-button>
           <ion-button color="danger" (click)="borrarArchivoDashboard(archivo.name)"><ion-icon name="trash-outline"></ion-icon></ion-button>
         </ion-buttons>
       </ion-item>
     </ion-list>
   </div>
-
 </ion-content>

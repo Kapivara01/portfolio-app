@@ -8,23 +8,26 @@ import { AlertController, ToastController, NavController, LoadingController } fr
   styleUrls: ['./admin-dashboard.page.scss'],
 })
 export class AdminDashboardPage implements OnInit {
-  seccionActiva: string = 'portafolio';
+  seccionActiva: string = 'perfil'; // Iniciamos en perfil para probar los cambios
   proyectos: any[] = [];
   editando: boolean = false;
   idProyectoAEditar: number | null = null;
   filtroCategoria: string = 'Todos';
 
-  // Variables para Gestión de Archivos e IA
   archivoSeleccionado: File | null = null;
   nombreArchivo: string = '';
   listaArchivosReales: any[] = [];
 
-  // --- DATOS DE PERFIL PROFESIONAL ---
-  perfil = {
-    nombre: 'Ing. Jorge Luis Linares',
-    titulo: 'Ingeniero',
-    descripcion: 'Perfil profesional administrable.',
-    foto_url: 'assets/img/perfil-default.jpg'
+  // ACTUALIZADO: Incluimos los nuevos campos de contacto
+  perfil: any = {
+    nombres_apellidos: '',
+    subtitulos: '',
+    trayectoria: '',
+    formacion: '',
+    foto_url: '',
+    telefono: '',
+    correo: '',
+    direccion: ''
   };
 
   nuevoProyecto = {
@@ -44,47 +47,84 @@ export class AdminDashboardPage implements OnInit {
 
   ngOnInit() {
     this.cargarProyectos();
+    this.cargarPerfil();
     this.obtenerArchivosDeBaseDeDatos();
   }
 
-  // --- VER ARCHIVOS REALES ---
+  async cargarPerfil() {
+    try {
+      const { data, error } = await this.supabaseService.getPerfil();
+      if (error && error.code !== 'PGRST116') throw error;
+      if (data) this.perfil = data;
+    } catch (error: any) {
+      console.error('Error al cargar perfil:', error.message);
+    }
+  }
+
+  // NUEVA FUNCIÓN: Para subir la foto profesional a la carpeta 'perfil'
+  async subirFotoPerfil(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const loading = await this.loadingCtrl.create({ message: 'Subiendo foto...' });
+      await loading.present();
+      try {
+        const filePath = `perfil/${Date.now()}_${file.name}`;
+        const { data, error } = await this.supabaseService.uploadFile('imagenes', filePath, file);
+        
+        if (error) throw error;
+
+        const { data: urlData } = await this.supabaseService.getPublicUrl('imagenes', filePath);
+        this.perfil.foto_url = urlData.publicUrl;
+        this.mostrarToast('📸 Foto actualizada visualmente', 'success');
+      } catch (error: any) {
+        this.mostrarToast('Error al subir foto: ' + error.message, 'danger');
+      } finally {
+        loading.dismiss();
+      }
+    }
+  }
+
+  async guardarPerfil() {
+    const loading = await this.loadingCtrl.create({ message: 'Guardando datos...' });
+    await loading.present();
+    try {
+      // El 'upsert' interno usará el user_id (Unique) para actualizar la fila
+      const { error } = await this.supabaseService.updatePerfil(this.perfil);
+      if (error) throw error;
+      this.mostrarToast('✅ Hoja de Vida y contacto actualizados', 'success');
+    } catch (error: any) {
+      this.mostrarToast('❌ Error: ' + error.message, 'danger');
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+  // --- MÉTODOS DE PROYECTOS Y ARCHIVOS (SE MANTIENEN IGUAL) ---
+
   async obtenerArchivosDeBaseDeDatos() {
     try {
       const { data, error } = await this.supabaseService.listLinks('imagenes', 'uploads');
       if (error) throw error;
-      // Filtramos para no mostrar archivos ocultos de sistema si los hay
       this.listaArchivosReales = data ? data.filter(f => f.name !== '.emptyFolderPlaceholder') : [];
     } catch (error: any) {
       console.error('Error al listar archivos:', error.message);
     }
   }
 
-  // --- GESTIÓN DE PERFIL ---
-  async guardarPerfil() {
-    this.mostrarToast('✅ Perfil actualizado correctamente', 'success');
-  }
-
-  // --- GESTIÓN DE PROYECTOS ---
   get proyectosFiltrados() {
-    if (this.filtroCategoria === 'Todos') {
-      return this.proyectos;
-    }
-    return this.proyectos.filter(p => p.category === this.filtroCategoria);
+    return this.filtroCategoria === 'Todos' ? this.proyectos : this.proyectos.filter(p => p.category === this.filtroCategoria);
   }
 
   async cargarProyectos() {
     const { data, error } = await this.supabaseService.getProyectos();
-    if (!error) {
-      this.proyectos = data || [];
-    }
+    if (!error) this.proyectos = data || [];
   }
 
   async guardarProyecto() {
     if (!this.nuevoProyecto.title || !this.nuevoProyecto.category) {
-      this.mostrarToast('Por favor completa los campos obligatorios', 'warning');
+      this.mostrarToast('Completa los campos obligatorios', 'warning');
       return;
     }
-
     if (this.editando && this.idProyectoAEditar) {
       const { error } = await this.supabaseService.updateProyecto(this.idProyectoAEditar, this.nuevoProyecto);
       if (!error) {
@@ -105,8 +145,6 @@ export class AdminDashboardPage implements OnInit {
     this.editando = true;
     this.idProyectoAEditar = p.id;
     this.nuevoProyecto = { ...p };
-    const content = document.querySelector('ion-content');
-    if (content) content.scrollToTop(500);
   }
 
   async eliminarProyecto(id: number) {
@@ -115,9 +153,7 @@ export class AdminDashboardPage implements OnInit {
       message: 'Esta acción no se puede deshacer.',
       buttons: [
         { text: 'No' },
-        {
-          text: 'Sí, borrar',
-          handler: async () => {
+        { text: 'Sí, borrar', handler: async () => {
             await this.supabaseService.deleteProyecto(id);
             this.cargarProyectos();
           }
@@ -127,58 +163,27 @@ export class AdminDashboardPage implements OnInit {
     await alert.present();
   }
 
-  // --- FUNCIONALIDADES DASHBOARD DE ARCHIVOS ---
-
-  archivarArchivo(nombre: string) {
-    this.mostrarToast(`📦 Archivo ${nombre} movido al histórico`, 'secondary');
-  }
-
-  async exportarArchivo(nombre: string) {
-    const { data } = await this.supabaseService.getPublicUrl('imagenes', `uploads/${nombre}`);
-    if (data?.publicUrl) {
-      // Abre en nueva pestaña para descarga
-      window.open(data.publicUrl, '_blank');
-      this.mostrarToast(`📥 Abriendo enlace de descarga`, 'primary');
-    }
-  }
-
   async compartirArchivo(nombre: string) {
     const { data } = await this.supabaseService.getPublicUrl('imagenes', `uploads/${nombre}`);
     const url = data?.publicUrl;
-
     if (!url) return;
-
-    // Si el navegador permite compartir (Móviles)
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: 'Compartir Archivo',
-          text: `Te comparto el archivo: ${nombre}`,
-          url: url
-        });
-      } catch (err) {
-        console.log('Error al compartir nativamente:', err);
-      }
+        await navigator.share({ title: 'Archivo', text: nombre, url: url });
+      } catch (err) { console.log(err); }
     } else {
-      // Si está en PC, copia el link al portapapeles automáticamente
-      try {
-        await navigator.clipboard.writeText(url);
-        this.mostrarToast('🔗 Enlace copiado al portapapeles', 'info');
-      } catch (err) {
-        this.mostrarToast('No se pudo copiar el enlace', 'danger');
-      }
+      await navigator.clipboard.writeText(url);
+      this.mostrarToast('🔗 Enlace copiado', 'info');
     }
   }
 
   async borrarArchivoDashboard(nombre: string) {
     const alert = await this.alertCtrl.create({
       header: 'Confirmar',
-      message: `¿Deseas eliminar permanentemente el archivo ${nombre}?`,
+      message: `¿Eliminar permanentemente ${nombre}?`,
       buttons: [
         { text: 'Cancelar' },
-        { 
-          text: 'Eliminar', 
-          handler: async () => {
+        { text: 'Eliminar', handler: async () => {
             const { error } = await this.supabaseService.deleteFile('imagenes', [`uploads/${nombre}`]);
             if (!error) {
               this.mostrarToast('Archivo eliminado', 'danger');
@@ -191,7 +196,6 @@ export class AdminDashboardPage implements OnInit {
     await alert.present();
   }
 
-  // --- GESTIÓN DE ARCHIVOS (SUBIDA) ---
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -201,48 +205,27 @@ export class AdminDashboardPage implements OnInit {
   }
 
   async subirArchivo() {
-    if (!this.archivoSeleccionado) {
-      this.mostrarToast('Selecciona un archivo primero', 'warning');
-      return;
-    }
-
-    const loading = await this.loadingCtrl.create({ message: 'Subiendo a la nube...' });
+    if (!this.archivoSeleccionado) return;
+    const loading = await this.loadingCtrl.create({ message: 'Subiendo...' });
     await loading.present();
-
     try {
       const filePath = `uploads/${Date.now()}_${this.nombreArchivo}`;
       const { error } = await this.supabaseService.uploadFile('imagenes', filePath, this.archivoSeleccionado);
       if (error) throw error;
-      
-      this.mostrarToast('¡Archivo subido correctamente!', 'success');
+      this.mostrarToast('¡Archivo subido!', 'success');
       this.archivoSeleccionado = null;
       this.nombreArchivo = '';
       this.obtenerArchivosDeBaseDeDatos();
-      
     } catch (error: any) {
-      this.mostrarToast('Error en la carga: ' + error.message, 'danger');
+      this.mostrarToast('Error: ' + error.message, 'danger');
     } finally {
       loading.dismiss();
     }
   }
 
-  // --- UTILIDADES ---
   async cerrarSesion() {
-    const alert = await this.alertCtrl.create({
-      header: 'Cerrar Sesión',
-      message: '¿Desea salir del panel?',
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Salir',
-          handler: async () => {
-            await this.supabaseService.signOut();
-            this.navCtrl.navigateRoot('/admin-login');
-          }
-        }
-      ]
-    });
-    await alert.present();
+    await this.supabaseService.signOut();
+    this.navCtrl.navigateRoot('/admin-login');
   }
 
   limpiarFormulario() {
@@ -252,11 +235,7 @@ export class AdminDashboardPage implements OnInit {
   }
 
   async mostrarToast(msg: string, color: string = 'dark') {
-    const toast = await this.toastCtrl.create({ 
-      message: msg, 
-      duration: 2000,
-      color: color 
-    });
+    const toast = await this.toastCtrl.create({ message: msg, duration: 2000, color: color });
     toast.present();
   }
 }

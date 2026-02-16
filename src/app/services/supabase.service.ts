@@ -7,17 +7,40 @@ import { environment } from 'src/environments/environment';
 })
 export class SupabaseService {
   private supabase: SupabaseClient;
+  // Guardamos tu ID de usuario como una constante para que sea más fácil de usar
+  private readonly MI_USER_ID = '10cd155f-092d-481c-baae-f3adc02e5bc0';
 
   constructor() {
     this.supabase = createClient(environment.supabase.url, environment.supabase.key);
   }
+
+  // --- NUEVAS FUNCIONES PARA EL PERFIL (HOJA DE VIDA) ---
+  
+  // Esta función sirve para traer tus datos desde la tabla perfil_profesional
+  async getPerfil() {
+    return await this.supabase
+      .from('perfil_profesional')
+      .select('*')
+      .eq('user_id', this.MI_USER_ID)
+      .single();
+  }
+
+  // Esta función sirve para guardar o actualizar tus datos en la tabla
+  async updatePerfil(datos: any) {
+    const datosCompletos = { ...datos, user_id: this.MI_USER_ID };
+    return await this.supabase
+      .from('perfil_profesional')
+      .upsert(datosCompletos, { onConflict: 'user_id' });
+  }
+
+  // --- TUS FUNCIONES DE PROYECTOS (MANTENIDAS Y CORREGIDAS) ---
 
   async getProyectos() {
     return await this.supabase.from('portfolio_items').select('*').order('id', { ascending: false });
   }
 
   async addProyecto(proyecto: any) {
-    const p = { ...proyecto, user_id: '10cd155f-092d-481c-baae-f3adc02e5bc0' };
+    const p = { ...proyecto, user_id: this.MI_USER_ID };
     return await this.supabase.from('portfolio_items').insert([p]);
   }
 
@@ -29,6 +52,8 @@ export class SupabaseService {
   async deleteProyecto(id: number) {
     return await this.supabase.from('portfolio_items').delete().eq('id', id);
   }
+
+  // --- GESTIÓN DE ARCHIVOS Y SESIÓN ---
 
   async signOut() {
     return await this.supabase.auth.signOut();
