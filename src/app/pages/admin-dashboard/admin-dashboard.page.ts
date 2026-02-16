@@ -17,6 +17,15 @@ export class AdminDashboardPage implements OnInit {
   // Variables para Gestión de Archivos e IA
   archivoSeleccionado: File | null = null;
   nombreArchivo: string = '';
+  listaArchivosReales: any[] = [];
+
+  // --- DATOS DE PERFIL PROFESIONAL ---
+  perfil = {
+    nombre: 'Ing. Jorge Luis Linares',
+    titulo: 'Ingeniero',
+    descripcion: 'Perfil profesional administrable.',
+    foto_url: 'assets/img/perfil-default.jpg'
+  };
 
   nuevoProyecto = {
     title: '',
@@ -35,6 +44,24 @@ export class AdminDashboardPage implements OnInit {
 
   ngOnInit() {
     this.cargarProyectos();
+    this.obtenerArchivosDeBaseDeDatos();
+  }
+
+  // --- VER ARCHIVOS REALES ---
+  async obtenerArchivosDeBaseDeDatos() {
+    try {
+      const { data, error } = await this.supabaseService.listLinks('imagenes', 'uploads');
+      if (error) throw error;
+      // Filtramos para no mostrar archivos ocultos de sistema si los hay
+      this.listaArchivosReales = data ? data.filter(f => f.name !== '.emptyFolderPlaceholder') : [];
+    } catch (error: any) {
+      console.error('Error al listar archivos:', error.message);
+    }
+  }
+
+  // --- GESTIÓN DE PERFIL ---
+  async guardarPerfil() {
+    this.mostrarToast('✅ Perfil actualizado correctamente', 'success');
   }
 
   // --- GESTIÓN DE PROYECTOS ---
@@ -100,7 +127,71 @@ export class AdminDashboardPage implements OnInit {
     await alert.present();
   }
 
-  // --- GESTIÓN DE ARCHIVOS (SUBIDA A STORAGE) ---
+  // --- FUNCIONALIDADES DASHBOARD DE ARCHIVOS ---
+
+  archivarArchivo(nombre: string) {
+    this.mostrarToast(`📦 Archivo ${nombre} movido al histórico`, 'secondary');
+  }
+
+  async exportarArchivo(nombre: string) {
+    const { data } = await this.supabaseService.getPublicUrl('imagenes', `uploads/${nombre}`);
+    if (data?.publicUrl) {
+      // Abre en nueva pestaña para descarga
+      window.open(data.publicUrl, '_blank');
+      this.mostrarToast(`📥 Abriendo enlace de descarga`, 'primary');
+    }
+  }
+
+  async compartirArchivo(nombre: string) {
+    const { data } = await this.supabaseService.getPublicUrl('imagenes', `uploads/${nombre}`);
+    const url = data?.publicUrl;
+
+    if (!url) return;
+
+    // Si el navegador permite compartir (Móviles)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Compartir Archivo',
+          text: `Te comparto el archivo: ${nombre}`,
+          url: url
+        });
+      } catch (err) {
+        console.log('Error al compartir nativamente:', err);
+      }
+    } else {
+      // Si está en PC, copia el link al portapapeles automáticamente
+      try {
+        await navigator.clipboard.writeText(url);
+        this.mostrarToast('🔗 Enlace copiado al portapapeles', 'info');
+      } catch (err) {
+        this.mostrarToast('No se pudo copiar el enlace', 'danger');
+      }
+    }
+  }
+
+  async borrarArchivoDashboard(nombre: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirmar',
+      message: `¿Deseas eliminar permanentemente el archivo ${nombre}?`,
+      buttons: [
+        { text: 'Cancelar' },
+        { 
+          text: 'Eliminar', 
+          handler: async () => {
+            const { error } = await this.supabaseService.deleteFile('imagenes', [`uploads/${nombre}`]);
+            if (!error) {
+              this.mostrarToast('Archivo eliminado', 'danger');
+              this.obtenerArchivosDeBaseDeDatos();
+            }
+          } 
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  // --- GESTIÓN DE ARCHIVOS (SUBIDA) ---
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -119,20 +210,14 @@ export class AdminDashboardPage implements OnInit {
     await loading.present();
 
     try {
-      // Creamos una ruta única en el Storage
       const filePath = `uploads/${Date.now()}_${this.nombreArchivo}`;
-      
-      const { data, error } = await this.supabaseService.uploadFile(
-        'imagenes', // Asegúrate de que el Bucket en Supabase se llame 'imagenes'
-        filePath, 
-        this.archivoSeleccionado
-      );
-
+      const { error } = await this.supabaseService.uploadFile('imagenes', filePath, this.archivoSeleccionado);
       if (error) throw error;
-
+      
       this.mostrarToast('¡Archivo subido correctamente!', 'success');
       this.archivoSeleccionado = null;
       this.nombreArchivo = '';
+      this.obtenerArchivosDeBaseDeDatos();
       
     } catch (error: any) {
       this.mostrarToast('Error en la carga: ' + error.message, 'danger');

@@ -34,13 +34,24 @@ export class SupabaseService {
     return await this.supabase.auth.signOut();
   }
 
-  // Soporte para archivos y perfil
   async uploadFile(bucket: string, fileName: string, file: File) {
     return await this.supabase.storage.from(bucket).upload(fileName, file);
   }
 
+  async listLinks(bucket: string, folder: string) {
+    return await this.supabase.storage.from(bucket).list(folder, {
+      limit: 100,
+      offset: 0,
+      sortBy: { column: 'name', order: 'asc' },
+    });
+  }
+
   getPublicUrl(bucket: string, fileName: string) {
     const { data } = this.supabase.storage.from(bucket).getPublicUrl(fileName);
-    return data.publicUrl;
+    return { data };
+  }
+
+  async deleteFile(bucket: string, paths: string[]) {
+    return await this.supabase.storage.from(bucket).remove(paths);
   }
 }
