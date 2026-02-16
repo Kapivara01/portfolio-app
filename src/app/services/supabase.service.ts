@@ -7,34 +7,36 @@ import { environment } from 'src/environments/environment';
 })
 export class SupabaseService {
   private supabase: SupabaseClient;
-  // Guardamos tu ID de usuario como una constante para que sea más fácil de usar
   private readonly MI_USER_ID = '10cd155f-092d-481c-baae-f3adc02e5bc0';
 
   constructor() {
     this.supabase = createClient(environment.supabase.url, environment.supabase.key);
   }
 
-  // --- NUEVAS FUNCIONES PARA EL PERFIL (HOJA DE VIDA) ---
-  
-  // Esta función sirve para traer tus datos desde la tabla perfil_profesional
+  /* --- CRUD PERFIL PROFESIONAL (Sincronizado con todas las columnas) --- */
   async getPerfil() {
     return await this.supabase
       .from('perfil_profesional')
       .select('*')
       .eq('user_id', this.MI_USER_ID)
-      .single();
+      .order('id', { ascending: false })
+      .limit(1);
   }
 
-  // Esta función sirve para guardar o actualizar tus datos en la tabla
-  async updatePerfil(datos: any) {
-    const datosCompletos = { ...datos, user_id: this.MI_USER_ID };
+  async addPerfil(datos: any) {
     return await this.supabase
       .from('perfil_profesional')
-      .upsert(datosCompletos, { onConflict: 'user_id' });
+      .insert([{ ...datos, user_id: this.MI_USER_ID }]);
   }
 
-  // --- TUS FUNCIONES DE PROYECTOS (MANTENIDAS Y CORREGIDAS) ---
+  async updatePerfil(id: any, datos: any) {
+    return await this.supabase
+      .from('perfil_profesional')
+      .update(datos)
+      .eq('id', id);
+  }
 
+  /* --- CRUD PORTAFOLIO / PROYECTOS (No borrar para no dañar Dashboard) --- */
   async getProyectos() {
     return await this.supabase.from('portfolio_items').select('*').order('id', { ascending: false });
   }
@@ -44,39 +46,34 @@ export class SupabaseService {
     return await this.supabase.from('portfolio_items').insert([p]);
   }
 
-  async updateProyecto(id: number, datos: any) {
+  async updateProyecto(id: any, datos: any) {
     const { id: _, created_at: __, ...soloDatos } = datos;
     return await this.supabase.from('portfolio_items').update(soloDatos).eq('id', id);
   }
 
-  async deleteProyecto(id: number) {
+  async deleteProyecto(id: any) {
     return await this.supabase.from('portfolio_items').delete().eq('id', id);
   }
 
-  // --- GESTIÓN DE ARCHIVOS Y SESIÓN ---
-
-  async signOut() {
-    return await this.supabase.auth.signOut();
+  /* --- GESTIÓN DE ARCHIVOS Y STORAGE (Crucial para el Dashboard) --- */
+  async listLinks(bucket: string, folder: string) {
+    return await this.supabase.storage.from(bucket).list(folder);
   }
 
   async uploadFile(bucket: string, fileName: string, file: File) {
     return await this.supabase.storage.from(bucket).upload(fileName, file);
   }
 
-  async listLinks(bucket: string, folder: string) {
-    return await this.supabase.storage.from(bucket).list(folder, {
-      limit: 100,
-      offset: 0,
-      sortBy: { column: 'name', order: 'asc' },
-    });
+  async deleteFile(bucket: string, paths: string[]) {
+    return await this.supabase.storage.from(bucket).remove(paths);
   }
 
   getPublicUrl(bucket: string, fileName: string) {
-    const { data } = this.supabase.storage.from(bucket).getPublicUrl(fileName);
-    return { data };
+    return this.supabase.storage.from(bucket).getPublicUrl(fileName);
   }
 
-  async deleteFile(bucket: string, paths: string[]) {
-    return await this.supabase.storage.from(bucket).remove(paths);
+  /* --- AUTENTICACIÓN --- */
+  async signOut() {
+    return await this.supabase.auth.signOut();
   }
 }
