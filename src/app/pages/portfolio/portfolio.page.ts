@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
@@ -8,41 +8,51 @@ import { SupabaseService } from '../../services/supabase.service';
 })
 export class PortafolioPage implements OnInit {
   proyectos: any[] = [];
+  proyectosFiltrados: any[] = [];
   filtroCategoria: string = 'Todos';
 
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(
+    private supabaseService: SupabaseService, 
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  async ngOnInit() {
+    await this.cargarDatos();
+  }
 
   async ionViewWillEnter() {
+    await this.cargarDatos();
+  }
+
+  async cargarDatos() {
     const { data, error } = await this.supabaseService.getProyectos();
     if (!error) {
       this.proyectos = data || [];
-      console.log('Datos cargados de Supabase:', this.proyectos); // Esto nos dirá en consola qué llega exactamente
+      this.aplicarFiltro();
     }
-  }
-
-  ngOnInit() {
-    this.ionViewWillEnter();
-  }
-
-  get proyectosFiltrados() {
-    if (this.filtroCategoria === 'Todos') {
-      return this.proyectos;
-    }
-    
-    // Función mejorada para limpiar texto de tildes y espacios
-    const normalizar = (texto: string) => 
-      texto ? texto.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
-
-    const categoriaBuscada = normalizar(this.filtroCategoria);
-
-    return this.proyectos.filter(p => {
-      // Comprobamos ambos campos posibles de la base de datos
-      const catProyecto = normalizar(p.category || p.categoria || "");
-      return catProyecto === categoriaBuscada;
-    });
+    this.cdr.detectChanges();
   }
 
   segmentChanged(event: any) {
     this.filtroCategoria = event.detail.value;
+    this.aplicarFiltro();
+  }
+
+  aplicarFiltro() {
+    if (this.filtroCategoria === 'Todos') {
+      this.proyectosFiltrados = this.proyectos;
+    } else {
+      // Normalizamos: quitamos puntos, tildes y pasamos a mayúsculas
+      const buscado = this.filtroCategoria.toUpperCase().replace('.', '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+      
+      this.proyectosFiltrados = this.proyectos.filter(p => {
+        const cat = (p.category || p.categoria || "").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const desc = (p.description || "").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        
+        // Si el valor del botón está contenido en la categoría o descripción, lo muestra
+        return cat.includes(buscado) || desc.includes(buscado);
+      });
+    }
+    this.cdr.detectChanges();
   }
 }

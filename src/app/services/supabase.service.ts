@@ -9,22 +9,7 @@ export class SupabaseService {
   private supabase: SupabaseClient;
 
   constructor() {
-    this.supabase = createClient(environment.supabase.url, environment.supabase.key, {
-      auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
-        // Agregamos una llave específica para que el token no se confunda al cambiar de página
-        storageKey: 'supabase.auth.token', 
-        storage: window.localStorage 
-      }
-    });
-  }
-
-  // Mejoramos esta función para que devuelva la sesión activa directamente
-  async getSession() {
-    const { data } = await this.supabase.auth.getSession();
-    return data.session;
+    this.supabase = createClient(environment.supabase.url, environment.supabase.key);
   }
 
   async getProyectos() {
@@ -47,5 +32,15 @@ export class SupabaseService {
 
   async signOut() {
     return await this.supabase.auth.signOut();
+  }
+
+  // Soporte para archivos y perfil
+  async uploadFile(bucket: string, fileName: string, file: File) {
+    return await this.supabase.storage.from(bucket).upload(fileName, file);
+  }
+
+  getPublicUrl(bucket: string, fileName: string) {
+    const { data } = this.supabase.storage.from(bucket).getPublicUrl(fileName);
+    return data.publicUrl;
   }
 }

@@ -8,11 +8,13 @@
       <ion-segment-button value="Todos">
         <ion-label>TODOS</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="Informática">
-        <ion-label>INFORMÁTICA</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Telecomunicaciones">
+      
+      <ion-segment-button value="TELECOM">
         <ion-label>TELECOM.</ion-label>
+      </ion-segment-button>
+
+      <ion-segment-button value="INFORMATICA">
+        <ion-label>INFORMÁTICA</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -23,9 +25,10 @@
     <ion-row>
       <ion-col size="12" size-md="6" *ngFor="let proyecto of proyectosFiltrados">
         <ion-card mode="ios">
-          <img [src]="proyecto.image_url || 'https://via.placeholder.com/400x200'" style="width: 100%; height: 200px; object-fit: cover;" />
+          <img [src]="proyecto.image_url || 'https://via.placeholder.com/400x200'" 
+               style="width: 100%; height: 200px; object-fit: cover;" />
           <ion-card-header>
-            <ion-note color="primary" style="text-transform: uppercase;">
+            <ion-note color="primary" style="text-transform: uppercase; font-weight: bold;">
               {{ proyecto.category || proyecto.categoria }}
             </ion-note>
             <ion-card-title>{{ proyecto.title }}</ion-card-title>
@@ -37,9 +40,11 @@
       </ion-col>
     </ion-row>
 
-    <div *ngIf="proyectosFiltrados.length === 0" class="ion-text-center ion-padding">
-      <ion-icon name="alert-circle-outline" style="font-size: 48px; color: #ccc;"></ion-icon>
-      <p>No hay datos para la categoría: <b>{{ filtroCategoria }}</b></p>
+    <div *ngIf="proyectosFiltrados.length === 0" class="ion-text-center ion-padding" style="margin-top: 40px;">
+      <ion-icon name="search-outline" style="font-size: 64px; color: #ccc;"></ion-icon>
+      <p style="color: #888;">No se encontraron proyectos para: <br>
+        <b style="color: var(--ion-color-primary);">{{ filtroCategoria }}</b>
+      </p>
     </div>
   </ion-grid>
 </ion-content>
