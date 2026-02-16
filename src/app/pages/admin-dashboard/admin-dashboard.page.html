@@ -1,25 +1,24 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-title>Admin Ing. Jorge Luis Linares</ion-title>
-    
     <ion-buttons slot="end">
-      <ion-button (click)="cerrarSesion()" color="light">
+      <ion-button (click)="cerrarSesion()">
         <ion-icon slot="start" name="log-out-outline"></ion-icon>
         Salir
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  
+
   <ion-toolbar color="primary">
-    <ion-segment [(ngModel)]="seccionActiva">
+    <ion-segment [(ngModel)]="seccionActiva" mode="md">
       <ion-segment-button value="portafolio">
-        <ion-label>Portafolio</ion-label>
+        <ion-label>PORTAFOLIO</ion-label>
       </ion-segment-button>
       <ion-segment-button value="perfil">
-        <ion-label>Perfil</ion-label>
+        <ion-label>PERFIL</ion-label>
       </ion-segment-button>
       <ion-segment-button value="archivos">
-        <ion-label>Archivos / IA</ion-label>
+        <ion-label>ARCHIVOS / IA</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -28,105 +27,84 @@
 <ion-content class="ion-padding">
 
   <div *ngIf="seccionActiva === 'portafolio'">
-    
-    <ion-card style="border-radius: 12px; margin-bottom: 20px;">
-      <ion-card-header>
-        <ion-card-title>
-          <ion-icon [name]="editando ? 'create' : 'add-circle'" color="primary"></ion-icon>
-          {{ editando ? ' Editar Proyecto' : ' Nuevo Proyecto' }}
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <ion-item lines="full" class="ion-margin-bottom">
-          <ion-label position="stacked">Título del Proyecto</ion-label>
-          <ion-input type="text" [(ngModel)]="nuevoProyecto.title"></ion-input>
-        </ion-item>
-
-        <ion-item lines="full" class="ion-margin-bottom">
-          <ion-label position="stacked">Categoría (Filtro)</ion-label>
-          <ion-select [(ngModel)]="nuevoProyecto.category" placeholder="Selecciona una">
-            <ion-select-option value="Telecomunicaciones">Telecomunicaciones</ion-select-option>
-            <ion-select-option value="Informática">Informática</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item lines="full" class="ion-margin-bottom">
-          <ion-label position="stacked">Descripción</ion-label>
-          <ion-textarea [(ngModel)]="nuevoProyecto.description" [autoGrow]="true"></ion-textarea>
-        </ion-item>
-
-        <ion-item lines="full" class="ion-margin-bottom">
-          <ion-label position="stacked">Enlace de Imagen (URL)</ion-label>
-          <ion-input type="url" [(ngModel)]="nuevoProyecto.image_url"></ion-input>
-        </ion-item>
-
-        <ion-button expand="block" shape="round" [color]="editando ? 'success' : 'primary'" (click)="guardarProyecto()">
-          <ion-icon slot="start" [name]="editando ? 'save' : 'cloud-upload'"></ion-icon>
-          {{ editando ? 'Actualizar Cambios' : 'Subir al Portafolio' }}
-        </ion-button>
-
-        <ion-button *ngIf="editando" expand="block" fill="clear" color="medium" (click)="limpiarFormulario()">
-          Cancelar Edición
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
-
-    <h3 class="ion-padding-start" style="font-weight: bold;">Proyectos Publicados</h3>
-    
-    <ion-segment [(ngModel)]="filtroCategoria" color="tertiary" class="ion-margin-bottom">
-      <ion-segment-button value="Todos">
-        <ion-label>Todos</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Informática">
-        <ion-label>Informática</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Telecomunicaciones">
-        <ion-label>Telecom</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-    
-    <ion-list lines="inset">
-      <ion-item *ngFor="let p of proyectosFiltrados">
-        <ion-thumbnail slot="start">
-          <img [src]="p.image_url || 'https://via.placeholder.com/150'" />
-        </ion-thumbnail>
-        
-        <ion-label>
-          <h2 style="font-weight: bold;">{{ p.title }}</h2>
-          <p>Categoría: <ion-badge color="light">{{ p.category }}</ion-badge></p>
-        </ion-label>
-
-        <div slot="end" style="display: flex;">
-          <ion-button fill="clear" color="primary" (click)="prepararEdicion(p)">
-            <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
-          </ion-button>
-          <ion-button fill="clear" color="danger" (click)="eliminarProyecto(p.id)">
-            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
-          </ion-button>
-        </div>
-      </ion-item>
-    </ion-list>
-  </div>
-
-  <div *ngIf="seccionActiva === 'perfil'">
     <ion-card>
-      <ion-card-header><ion-card-title color="primary">Información Profesional</ion-card-title></ion-card-header>
+      <ion-card-header>
+        <ion-card-title>{{ editando ? 'Modificar' : 'Crear' }} Proyecto</ion-card-title>
+      </ion-card-header>
       <ion-card-content>
-        <p><strong>Ingeniero:</strong> Jorge Luis Linares</p>
-        <p><strong>Institución:</strong> UNETI Trayecto 4</p>
-        <p><strong>Experiencia:</strong> 1976 - 2026</p>
+        <ion-item>
+          <ion-label position="floating">Título</ion-label>
+          <ion-input [(ngModel)]="nuevoProyecto.title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Categoría</ion-label>
+          <ion-input [(ngModel)]="nuevoProyecto.category" placeholder="TELECOM o INFORMATICA"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Descripción</ion-label>
+          <ion-textarea [(ngModel)]="nuevoProyecto.description"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">URL de Imagen</ion-label>
+          <ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" (click)="guardarProyecto()" class="ion-margin-top">
+          {{ editando ? 'Actualizar Cambios' : 'Publicar Proyecto' }}
+        </ion-button>
+        <ion-button *ngIf="editando" expand="block" color="light" (click)="limpiarFormulario()">
+          Cancelar
+        </ion-button>
       </ion-card-content>
     </ion-card>
+
+    <ion-list-header>
+      <ion-label>Proyectos en Base de Datos</ion-label>
+    </ion-list-header>
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let p of proyectos">
+        <ion-item>
+          <ion-thumbnail slot="start">
+            <img [src]="p.image_url || 'https://via.placeholder.com/150'" />
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{ p.title }}</h2>
+            <p color="primary">{{ p.category }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="prepararEdicion(p)">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="eliminarProyecto(p.id)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
   </div>
 
   <div *ngIf="seccionActiva === 'archivos'">
     <ion-card>
-      <ion-card-header><ion-card-title color="primary">Gestión de Archivos e IA</ion-card-title></ion-card-header>
+      <ion-card-header>
+        <ion-card-title color="primary">Gestión de Archivos e IA</ion-card-title>
+      </ion-card-header>
       <ion-card-content>
-        <input type="file" class="ion-margin-bottom">
-        <ion-button expand="block" color="success">Cargar a Supabase</ion-button>
+        <div style="border: 1px dashed #ccc; padding: 20px; border-radius: 8px; text-align: center;">
+          <input type="file" (change)="onFileSelected($event)" id="fileInput">
+          <p *ngIf="nombreArchivo" class="ion-margin-top">
+            <b>Listo:</b> {{ nombreArchivo }}
+          </p>
+        </div>
+
+        <ion-button expand="block" color="success" class="ion-margin-top" (click)="subirArchivo()">
+          <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+          Cargar a Supabase
+        </ion-button>
       </ion-card-content>
     </ion-card>
   </div>
+
 </ion-content>
