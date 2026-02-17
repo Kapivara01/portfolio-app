@@ -1,17 +1,43 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar color="primary" style="--min-height: 100px;">
+    
+    <ion-buttons slot="start" style="margin-left: 10px;">
       <ion-menu-button></ion-menu-button>
+      <img src="assets/icon/logo_colegio.png" 
+           style="height: 75px; width: auto; filter: drop-shadow(0px 0px 2px rgba(255,255,255,0.4));" 
+           alt="Logo Colegio">
     </ion-buttons>
-    <ion-title>{{ folder }}</ion-title>
+
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+      <ion-title style="font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; text-transform: uppercase;">
+        {{ folder }}
+      </ion-title>
+      
+      <div style="display: flex; gap: 20px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-top: 5px;">
+        <a style="color: white; text-decoration: none;">Inicio</a>
+        <span style="opacity: 0.5;">|</span>
+        <a style="color: white; text-decoration: none;">Perfil Profesional</a>
+        <span style="opacity: 0.5;">|</span>
+        <a style="color: white; text-decoration: none;">Portafolio</a>
+      </div>
+    </div>
+
+    <ion-buttons slot="end" style="margin-right: 15px;">
+      <div style="background: transparent; display: flex; align-items: center; justify-content: center;">
+        <img src="assets/icon/logo_universidad.png" 
+             style="height: 75px; width: auto; mix-blend-mode: multiply; filter: contrast(110%);" 
+             alt="Logo Universidad">
+      </div>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div id="container" style="padding: 16px;">
-    <h2 class="capitalize">{{ folder }}</h2>
+    <h2 class="capitalize" style="color: var(--ion-color-primary); font-weight: bold;">{{ folder }}</h2>
     
-    <ion-card>
+    <ion-card mode="ios">
       <ion-card-content>
         <p>Bienvenido a la sección <strong>{{ folder }}</strong>.</p>
         <p>Aquí gestionaremos el contenido del portafolio.</p>
@@ -19,9 +45,3 @@
     </ion-card>
   </div>
 </ion-content>
-
-<ion-footer>
-  <ion-toolbar>
-    <ion-title>Jorge Linares - Ing. de Sistemas © 2026</ion-title>
-  </ion-toolbar>
-</ion-footer>

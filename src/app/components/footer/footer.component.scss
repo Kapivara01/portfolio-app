@@ -8,6 +8,7 @@
     width: 100%;
 }
 
+
 .footer-section {
     text-align: center;
 
@@ -24,7 +25,7 @@
         align-items: center;
         justify-content: center;
         gap: 0.4rem;
-        font-size: 0.75rem;
+        font-size: 0.95rem;
         opacity: 0.9;
 
         ion-icon {
@@ -79,7 +80,7 @@
     .footer-section {
         text-align: left;
         flex: 0 1 auto;
-        min-width: 150px;
+        min-width: 100px;
 
         p {
             justify-content: flex-start;
@@ -88,7 +89,7 @@
         &.copyright {
             flex-basis: 100%;
             text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(122, 120, 120, 0.1);
             margin-top: 0.3rem;
 
             p {

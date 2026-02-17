@@ -125,7 +125,7 @@ ion-menu {
 
         &.selected {
             --background: var(--ion-color-primary);
-            --color: white;
+            --color: rgb(237, 240, 242);
 
             ion-icon {
                 color: white;
@@ -136,5 +136,5 @@ ion-menu {
 
 // Ajuste para el contenido principal
 #main-content {
-    --background: #ffffff;
+    --background: #eff4f6;
 }

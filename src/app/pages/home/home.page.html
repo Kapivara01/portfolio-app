@@ -1,37 +1,47 @@
-<ion-header [translucent]="true">
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
-            <img src="assets/images/civ-logo.png" alt="CIV" style="height: 40px; margin-left: 8px;">
-        </ion-buttons>
-        <ion-title>
-            <ion-icon name="home" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
-            Inicio
-        </ion-title>
-        <ion-buttons slot="end">
-            <img src="assets/images/uneti-logo.jpg" alt="UNETI"
-                style="height: 40px; margin-right: 8px; border-radius: 50%;">
-        </ion-buttons>
-    </ion-toolbar>
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar color="primary" style="--min-height: 90px;">
+    
+    <ion-buttons slot="start" style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+      <ion-menu-button style="color: white;"></ion-menu-button>
+      
+      <div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background: white; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.3);">
+        <img src="assets/images/civ-logo.png" alt="CIV" 
+             style="height: 85%; width: auto; object-fit: contain;">
+      </div>
+      
+      <ion-title style="font-weight: 700; font-size: 1.3rem; color: white; padding: 0; margin-left: 5px;">
+        <ion-icon name="home" style="vertical-align: middle; margin-right: 5px;"></ion-icon>
+        Inicio
+      </ion-title>
+    </ion-buttons>
+
+    <ion-buttons slot="end" style="margin-right: 15px;">
+      <div style="width: 65px; height: 65px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: white; border: 2px solid rgba(255,255,255,0.3);">
+        <img src="assets/images/uneti-logo.jpg" alt="UNETI"
+             style="height: 100%; width: 100%; object-fit: cover; mix-blend-mode: multiply;">
+      </div>
+    </ion-buttons>
+
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <ion-header collapse="condense">
-        <ion-toolbar>
-            <ion-title size="large">Inicio</ion-title>
-        </ion-toolbar>
-    </ion-header>
-
-    <div id="container">
-        <div class="profile-avatar-wrapper"
-            style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1.5rem; border: 4px solid var(--ion-color-primary-tint); box-shadow: 0 8px 24px rgba(56, 128, 255, 0.3); overflow: hidden;">
-            <img src="assets/images/profile.jpg" alt="Jorge Luis Linares"
-                style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <strong>Ing. Jorge Luis Linares</strong>
-        <p>Ingeniero en Telecomunicaciones e Informática</p>
-        <p>Bienvenido a mi Portafolio Profesional</p>
+  <div id="container" style="text-align: center; margin-top: 2.5rem;">
+    
+    <div class="profile-avatar-wrapper"
+         style="width: 180px; height: 180px; border-radius: 50%; margin: 0 auto 1.5rem; border: 4px solid var(--ion-color-primary-tint); box-shadow: 0 8px 24px rgba(56, 128, 255, 0.3); overflow: hidden;">
+      <img src="assets/images/profile.jpg" alt="Jorge Luis Linares"
+           style="width: 100%; height: 100%; object-fit: cover;">
     </div>
+    
+    <h1 style="color: var(--ion-color-primary); font-weight: 800; margin-bottom: 5px;">Ing. Jorge Luis Linares</h1>
+    <p style="font-size: 1.2rem; color: #666; margin-top: 0;">Telecomunicaciones e Informática</p>
+    
+    <div style="font-weight: 500; font-size: 1.1rem; border-top: 1px solid #eee; padding-top: 15px; width: 80%; margin: 15px auto;">
+      <p>Bienvenido a mi Portafolio Profesional</p>
+    </div>
+
+  </div>
 </ion-content>
 
 <app-footer></app-footer>
