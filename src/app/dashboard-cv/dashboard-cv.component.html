@@ -1,0 +1,60 @@
+<div style="padding: 20px; font-family: sans-serif; background: #f4f5f8; min-height: 100vh;">
+  
+  <button routerLink="/admin/dashboard" style="background: #666; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-bottom: 20px;">
+    ← Volver al Dashboard
+  </button>
+
+  <div style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; max-width: 600px; background: white; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="color: #3880ff; text-align: center;">{{ editando ? 'Editando Registro' : 'Nueva Experiencia para PDF' }}</h2>
+    
+    <div style="margin-bottom: 15px;">
+      <label><b>Sección:</b></label><br>
+      <select [(ngModel)]="datoForm.seccion" style="width: 100%; padding: 8px;">
+        <option value="TEC_RADIOS">Cursos: Radios de Microondas</option>
+        <option value="GERENCIA">Gerencia y Supervisión</option>
+        <option value="REFERENCIA">Referencias</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label><b>Título:</b></label><br>
+      <input [(ngModel)]="datoForm.titulo" type="text" style="width: 100%; padding: 8px;" placeholder="Ej: Especialista en Radios">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label><b>Descripción:</b></label><br>
+      <textarea [(ngModel)]="datoForm.contenido_detalle" style="width: 100%; padding: 8px;" rows="3" placeholder="Detalle de lo aprendido..."></textarea>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label><b>Fecha o Teléfono:</b></label><br>
+      <input [(ngModel)]="datoForm.periodo_fecha" type="text" style="width: 100%; padding: 8px;" placeholder="Ej: 2024 / 0412-...">
+    </div>
+
+    <button (click)="guardar()" [style.background]="editando ? '#ffca28' : '#28a745'" 
+            style="width: 100%; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px;">
+      {{ editando ? 'ACTUALIZAR CAMBIOS' : 'GUARDAR EN BASE DE DATOS' }}
+    </button>
+
+    <button (click)="descargarPDF()" style="width: 100%; background: #17a2b8; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+      📄 DESCARGAR CV EN PDF
+    </button>
+
+    <hr>
+
+    <h3 style="color: #333;">Mis Registros Actuales:</h3>
+
+    <div *ngFor="let item of registros" style="border: 1px solid #eee; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: #fafafa;">
+      <div style="flex: 1; margin-right: 15px;">
+        <strong style="color: #3880ff;">{{ item.titulo }}</strong><br>
+        <small>{{ item.seccion }} | {{ item.periodo_fecha }}</small>
+        <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #444;">{{ item.contenido_detalle }}</p>
+      </div>
+
+      <div style="display: flex; gap: 5px;">
+        <button (click)="prepararEdicion(item)" style="background: #3880ff; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">Editar</button>
+        <button (click)="eliminar(item.id)" style="background: #eb445a; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">Borrar</button>
+      </div>
+    </div>
+  </div>
+</div>

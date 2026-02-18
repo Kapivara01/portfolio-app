@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+// Importamos el componente que creamos en VSC
+import { DashboardCvComponent } from './dashboard-cv/dashboard-cv.component';
 
 const routes: Routes = [
   {
@@ -30,6 +32,11 @@ const routes: Routes = [
   {
     path: 'admin/dashboard',
     loadChildren: () => import('./pages/admin-dashboard/admin-dashboard.module').then(m => m.AdminDashboardPageModule)
+  },
+  // --- NUEVA RUTA PARA TU HOJA DE VIDA ---
+  {
+    path: 'gestion-cv',
+    component: DashboardCvComponent
   }
 ];
 

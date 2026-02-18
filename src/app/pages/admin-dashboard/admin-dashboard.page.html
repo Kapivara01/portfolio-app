@@ -50,7 +50,6 @@
     <ion-card>
       <ion-card-header><ion-card-title>Mi Perfil Profesional</ion-card-title></ion-card-header>
       <ion-card-content>
-        
         <ion-item lines="none" class="ion-text-center">
           <ion-avatar style="width: 100px; height: 100px; margin: 0 auto;">
             <img [src]="perfil.foto_url || 'assets/icon/favicon.png'" />
@@ -60,22 +59,17 @@
           <ion-label>Cambiar Foto</ion-label>
           <input type="file" (change)="subirFotoPerfil($event)" accept="image/*">
         </ion-item>
-
         <ion-item><ion-label position="floating">Nombres y Apellidos</ion-label><ion-input [(ngModel)]="perfil.nombres_apellidos"></ion-input></ion-item>
         <ion-item><ion-label position="floating">Especialidad</ion-label><ion-input [(ngModel)]="perfil.subtitulos"></ion-input></ion-item>
-        
         <ion-item><ion-label position="floating">Teléfono</ion-label><ion-input [(ngModel)]="perfil.telefono" type="tel"></ion-input></ion-item>
         <ion-item><ion-label position="floating">Correo Electrónico</ion-label><ion-input [(ngModel)]="perfil.correo" type="email"></ion-input></ion-item>
         <ion-item><ion-label position="floating">Dirección</ion-label><ion-input [(ngModel)]="perfil.direccion"></ion-input></ion-item>
-
         <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria (CANTV)</ion-label><ion-textarea [(ngModel)]="perfil.trayectoria" rows="6"></ion-textarea></ion-item>
         <ion-item><ion-label position="floating">Formación</ion-label><ion-textarea [(ngModel)]="perfil.formacion" rows="4"></ion-textarea></ion-item>
-        
         <ion-item class="ion-margin-top">
           <ion-label position="floating">Cursos / Diplomados / Seminarios</ion-label>
           <ion-textarea [(ngModel)]="perfil.cursos" rows="4" placeholder="Enumera tus certificados aquí..."></ion-textarea>
         </ion-item>
-        
         <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">
           <ion-icon name="save-outline" slot="start"></ion-icon> Guardar Hoja de Vida
         </ion-button>
@@ -102,4 +96,13 @@
       </ion-item>
     </ion-list>
   </div>
+
+  <div class="ion-margin-top" style="border-top: 2px solid #f0f0f0; padding-top: 15px; padding-bottom: 20px;">
+    <p style="color: #666; font-size: 0.9em;"><b>Gestión Avanzada de Documentos:</b></p>
+    <ion-button expand="block" color="tertiary" routerLink="/gestion-cv">
+      <ion-icon name="ribbon-outline" slot="start"></ion-icon>
+      Gestionar Cursos y Generar PDF
+    </ion-button>
+  </div>
+
 </ion-content>

@@ -29,6 +29,8 @@
     "@ionic/angular": "^8.0.0",
     "@supabase/supabase-js": "^2.43.0",
     "ionicons": "^7.0.0",
+    "jspdf": "^4.1.0",
+    "jspdf-autotable": "^5.0.7",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.0"
