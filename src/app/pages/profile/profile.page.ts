@@ -8,16 +8,17 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./profile.page.scss'],
   standalone: false,
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit { // <-- Ya corregí el doble "export" aquí
   perfil: any = null;
   cargando: boolean = true;
 
-  // Estructura completa sincronizada con Supabase
+  // Estructura sincronizada con Supabase incluyendo el nuevo campo de cursos
   perfilForm: any = {
     nombres_apellidos: '',
     subtitulos: '',
     trayectoria: '',
     formacion: '',
+    cursos: '', // <--- NUEVO CAMPO PARA CURSOS Y DIPLOMADOS
     telefono: '',
     direccion: '',
     correo: '',
@@ -40,7 +41,9 @@ export class ProfilePage implements OnInit {
       const { data } = await this.supabaseService.getPerfil();
       if (data && data.length > 0) {
         this.perfil = data[0];
+        // Cargamos los datos existentes y aseguramos que 'cursos' no sea nulo
         this.perfilForm = { ...this.perfil };
+        if (!this.perfilForm.cursos) this.perfilForm.cursos = '';
       }
     } catch (e) {
       console.error("Error al cargar:", e);
@@ -69,6 +72,12 @@ export class ProfilePage implements OnInit {
       await this.cargarPerfil(); // Refrescar vista
     } catch (e) {
       console.error("Error al sincronizar:", e);
+      const errorToast = await this.toastCtrl.create({
+        message: 'Error al guardar: verifica la conexión o la base de datos',
+        duration: 3000,
+        color: 'danger'
+      });
+      await errorToast.present();
     }
   }
 }

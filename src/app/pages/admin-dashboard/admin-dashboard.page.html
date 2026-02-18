@@ -71,6 +71,11 @@
         <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria (CANTV)</ion-label><ion-textarea [(ngModel)]="perfil.trayectoria" rows="6"></ion-textarea></ion-item>
         <ion-item><ion-label position="floating">Formación</ion-label><ion-textarea [(ngModel)]="perfil.formacion" rows="4"></ion-textarea></ion-item>
         
+        <ion-item class="ion-margin-top">
+          <ion-label position="floating">Cursos / Diplomados / Seminarios</ion-label>
+          <ion-textarea [(ngModel)]="perfil.cursos" rows="4" placeholder="Enumera tus certificados aquí..."></ion-textarea>
+        </ion-item>
+        
         <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">
           <ion-icon name="save-outline" slot="start"></ion-icon> Guardar Hoja de Vida
         </ion-button>
