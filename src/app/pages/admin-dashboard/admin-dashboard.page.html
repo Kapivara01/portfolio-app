@@ -2,6 +2,9 @@
   <ion-toolbar color="primary">
     <ion-title>Admin Ing. Jorge Luis Linares</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="exportarPDF()" fill="clear">
+        <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+      </ion-button>
       <ion-button (click)="cerrarSesion()">
         <ion-icon slot="start" name="log-out-outline"></ion-icon> Salir
       </ion-button>
@@ -47,6 +50,11 @@
   </div>
 
   <div *ngIf="seccionActiva === 'perfil'">
+    <ion-button expand="block" color="danger" (click)="exportarPDF()" class="ion-margin-bottom shadow">
+      <ion-icon name="download-outline" slot="start"></ion-icon>
+      EXPORTAR HOJA DE VIDA (PDF)
+    </ion-button>
+
     <ion-card>
       <ion-card-header><ion-card-title>Mi Perfil Profesional</ion-card-title></ion-card-header>
       <ion-card-content>
@@ -113,4 +121,11 @@
       </ion-item>
     </ion-list>
   </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="danger" (click)="exportarPDF()">
+      <ion-icon name="document-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>
