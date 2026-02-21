@@ -12,12 +12,15 @@ export class ProfilePage implements OnInit {
   perfil: any = null;
   cargando: boolean = true;
 
-  // Estructura completa sincronizada con Supabase
+  // Estructura completa sincronizada con Supabase (Actualizada con 3 nuevos campos)
   perfilForm: any = {
     nombres_apellidos: '',
     subtitulos: '',
     trayectoria: '',
+    experiencia_laboral: '', // <-- Agregado
     formacion: '',
+    cursos: '',              // <-- Agregado
+    referencias_personales: '', // <-- Agregado
     telefono: '',
     direccion: '',
     correo: '',
@@ -40,6 +43,8 @@ export class ProfilePage implements OnInit {
       const { data } = await this.supabaseService.getPerfil();
       if (data && data.length > 0) {
         this.perfil = data[0];
+        // Al usar el operador spread (...), Angular tomará automáticamente
+        // los valores de los nuevos campos desde la base de datos.
         this.perfilForm = { ...this.perfil };
       }
     } catch (e) {
@@ -52,7 +57,7 @@ export class ProfilePage implements OnInit {
   async guardarCambios() {
     try {
       if (this.perfil && this.perfil.id) {
-        // Actualizar registro existente
+        // Actualizar registro existente incluyendo los nuevos campos
         await this.supabaseService.updatePerfil(this.perfil.id, this.perfilForm);
       } else {
         // Crear nuevo registro si no existe
@@ -66,9 +71,15 @@ export class ProfilePage implements OnInit {
         position: 'bottom'
       });
       await toast.present();
-      await this.cargarPerfil(); // Refrescar vista
+      await this.cargarPerfil(); // Refrescar vista para asegurar sincronización
     } catch (e) {
       console.error("Error al sincronizar:", e);
+      const toast = await this.toastCtrl.create({
+        message: 'Error al guardar los cambios',
+        duration: 3000,
+        color: 'danger'
+      });
+      await toast.present();
     }
   }
 }

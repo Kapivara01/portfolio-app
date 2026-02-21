@@ -68,8 +68,24 @@
         <ion-item><ion-label position="floating">Correo Electrónico</ion-label><ion-input [(ngModel)]="perfil.correo" type="email"></ion-input></ion-item>
         <ion-item><ion-label position="floating">Dirección</ion-label><ion-input [(ngModel)]="perfil.direccion"></ion-input></ion-item>
 
-        <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria (CANTV)</ion-label><ion-textarea [(ngModel)]="perfil.trayectoria" rows="6"></ion-textarea></ion-item>
-        <ion-item><ion-label position="floating">Formación</ion-label><ion-textarea [(ngModel)]="perfil.formacion" rows="4"></ion-textarea></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria (Resumen)</ion-label><ion-textarea [(ngModel)]="perfil.trayectoria" rows="3"></ion-textarea></ion-item>
+        
+        <ion-item class="ion-margin-top" color="light">
+          <ion-label position="floating" style="font-weight: bold; color: #002d5b;">Experiencia Laboral Detallada (Logros)</ion-label>
+          <ion-textarea [(ngModel)]="perfil.experiencia_laboral" rows="6" placeholder="Especifique cargos, empresas y funciones detalladas..."></ion-textarea>
+        </ion-item>
+
+        <ion-item class="ion-margin-top"><ion-label position="floating">Formación Académica</ion-label><ion-textarea [(ngModel)]="perfil.formacion" rows="4"></ion-textarea></ion-item>
+
+        <ion-item class="ion-margin-top" color="light">
+          <ion-label position="floating" style="font-weight: bold; color: #002d5b;">Cursos y Certificaciones</ion-label>
+          <ion-textarea [(ngModel)]="perfil.cursos" rows="4"></ion-textarea>
+        </ion-item>
+
+        <ion-item class="ion-margin-top" color="light">
+          <ion-label position="floating" style="font-weight: bold; color: #002d5b;">Referencias Personales</ion-label>
+          <ion-textarea [(ngModel)]="perfil.referencias_personales" rows="4" placeholder="Nombre - Teléfono - Empresa"></ion-textarea>
+        </ion-item>
         
         <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">
           <ion-icon name="save-outline" slot="start"></ion-icon> Guardar Hoja de Vida

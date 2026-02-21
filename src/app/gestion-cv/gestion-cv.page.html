@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Gestión de Hoja de Vida</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="container">
+    <h4 class="mb-3">Modificar Información del Reporte</h4>
+    
+    <div class="mb-3">
+      <label class="form-label">Nombre Completo</label>
+      <input type="text" class="form-control" [(ngModel)]="datosCV.titulo">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Especialidad</label>
+      <input type="text" class="form-control" [(ngModel)]="datosCV.subtitulo">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Extracto / Perfil</label>
+      <textarea class="form-control" rows="3" [(ngModel)]="datosCV.contenido_detalle"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Experiencia Profesional</label>
+      <textarea class="form-control" rows="5" [(ngModel)]="datosCV.experiencia_profecional"></textarea>
+    </div>
+
+    <div class="d-grid gap-2">
+      <button class="btn btn-success" (click)="guardar()">Guardar Cambios</button>
+      <button class="btn btn-primary" (click)="exportar()">Descargar PDF Profesional</button>
+    </div>
+  </div>
+</ion-content>
+<ion-header>
+<ion-toolbar color="primary">
+<ion-title>Gestión de Reporte CV</ion-title>
+</ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+<div class="container">
+<h3 class="ion-margin-bottom">Editar Información de Hoja de Vida</h3>
+
+</div>
+</ion-content>

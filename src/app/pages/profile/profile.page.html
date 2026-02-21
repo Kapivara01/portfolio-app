@@ -39,18 +39,28 @@
       </ion-item>
 
       <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">EXTRACTO PROFESIONAL</ion-label>
-        <ion-textarea [(ngModel)]="perfilForm.subtitulos" placeholder="Breve resumen de tu perfil profesional"></ion-textarea>
+        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">TRAYECTORIA LABORAL (RESUMEN)</ion-label>
+        <ion-textarea [(ngModel)]="perfilForm.trayectoria" rows="3"></ion-textarea>
       </ion-item>
 
       <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">TRAYECTORIA LABORAL</ion-label>
-        <ion-textarea [(ngModel)]="perfilForm.trayectoria" rows="3"></ion-textarea>
+        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">EXPERIENCIA PROFESIONAL (DETALLES)</ion-label>
+        <ion-textarea [(ngModel)]="perfilForm.experiencia_laboral" rows="5" placeholder="Detalla aquí tus cargos y logros principales por empresa"></ion-textarea>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">FORMACIÓN ACADÉMICA</ion-label>
         <ion-textarea [(ngModel)]="perfilForm.formacion" rows="3"></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">CURSOS Y CERTIFICACIONES</ion-label>
+        <ion-textarea [(ngModel)]="perfilForm.cursos" rows="3" placeholder="Ej: Certificación CCNA, Diplomado en Gestión..."></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">REFERENCIAS PERSONALES</ion-label>
+        <ion-textarea [(ngModel)]="perfilForm.referencias_personales" rows="3" placeholder="Nombre - Teléfono - Empresa/Vínculo"></ion-textarea>
       </ion-item>
 
       <ion-item>
@@ -79,4 +89,4 @@
       Sincronizar Datos Profesionales
     </ion-button>
   </div>
-</ion-content>>
+</ion-content>

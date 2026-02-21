@@ -15,13 +15,19 @@ export class AdminDashboardPage implements OnInit {
   editando: boolean = false;
   archivoSeleccionado: File | null = null;
 
-  // Datos del perfil (CRUD Hoja de Vida)
+  // Datos del perfil (CRUD Hoja de Vida) - ACTUALIZADO CON CAMPOS NUEVOS
   perfil: any = {
     id: null,
     nombres_apellidos: '',
     subtitulos: '',
     trayectoria: '',
+    experiencia_laboral: '',    // <-- Agregado
     formacion: '',
+    cursos: '',                 // <-- Agregado
+    referencias_personales: '', // <-- Agregado
+    telefono: '',               // Agregado para consistencia
+    correo: '',                 // Agregado para consistencia
+    direccion: '',              // Agregado para consistencia
     foto_url: ''
   };
 
@@ -55,18 +61,26 @@ export class AdminDashboardPage implements OnInit {
   async cargarDatosPerfil() {
     const { data } = await this.supabaseService.getPerfil();
     if (data && data.length > 0) {
-      this.perfil = data[0]; // Carga el primer registro para editar
+      // Al usar Object.assign nos aseguramos de no perder los campos nuevos 
+      // si la base de datos trae un registro antiguo que no los tenía.
+      this.perfil = { ...this.perfil, ...data[0] }; 
     }
   }
 
   async guardarPerfil() {
-    if (!this.perfil.id) {
-      const { error } = await this.supabaseService.addPerfil(this.perfil);
-      this.manejarRespuesta(error, 'Perfil creado correctamente');
-    } else {
-      const { id, ...datosSinId } = this.perfil;
-      const { error } = await this.supabaseService.updatePerfil(id, datosSinId);
-      this.manejarRespuesta(error, 'Perfil actualizado');
+    try {
+      if (!this.perfil.id) {
+        const { error } = await this.supabaseService.addPerfil(this.perfil);
+        this.manejarRespuesta(error, 'Perfil creado correctamente');
+      } else {
+        const { id, ...datosSinId } = this.perfil;
+        const { error } = await this.supabaseService.updatePerfil(id, datosSinId);
+        this.manejarRespuesta(error, 'Perfil actualizado correctamente');
+      }
+      // Recargamos para asegurar que tenemos los datos frescos de la BD
+      await this.cargarDatosPerfil(); 
+    } catch (e) {
+      this.mostrarToast('Error inesperado al guardar');
     }
   }
 
@@ -84,7 +98,7 @@ export class AdminDashboardPage implements OnInit {
   }
 
   /* ==========================================================================
-     2. SECCIÓN PORTAFOLIO
+     2. SECCIÓN PORTAFOLIO (Sin cambios, manteniendo estabilidad)
      ========================================================================== */
   async cargarProyectos() {
     const { data } = await this.supabaseService.getProyectos();
@@ -120,7 +134,7 @@ export class AdminDashboardPage implements OnInit {
   }
 
   /* ==========================================================================
-     3. SECCIÓN ARCHIVOS
+     3. SECCIÓN ARCHIVOS (Sin cambios)
      ========================================================================== */
   async cargarArchivos() {
     const { data } = await this.supabaseService.listLinks('imagenes', 'uploads');
