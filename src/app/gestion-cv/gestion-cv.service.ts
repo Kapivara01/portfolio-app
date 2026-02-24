@@ -1,26 +1,26 @@
-import { Injectable } from '@angular/core';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+// Copia y pega esto dentro de gestion-cv.page.ts
+import { Component, OnInit } from '@angular/core';
+import { SupabaseService } from 'src/app/services/supabase.service'; // Asegúrate que la ruta sea correcta
 
-@Injectable({ providedIn: 'root' })
-export class GestionCvService {
+@Component({
+  selector: 'app-gestion-cv',
+  templateUrl: './gestion-cv.page.html',
+  styleUrls: ['./gestion-cv.page.scss'],
+})
+export class GestionCvPage implements OnInit {
 
-private async getBase64(url: string): Promise<string> {
-try {
-const response = await fetch(url);
-const blob = await response.blob();
-return new Promise((resolve) => {
-const reader = new FileReader();
-reader.onloadend = () => resolve(reader.result as string);
-reader.readAsDataURL(blob);
-});
-} catch { return ''; }
-}
+  constructor(private supabaseSvc: SupabaseService) { }
 
-async generarPdfProfesional(datos: any) {
-const foto = await this.getBase64('assets/images/profile.jpg');
-const logoUneti = await this.getBase64('assets/images/uneti-logo.jpg');
+  ngOnInit() {
+    this.cargarDatosActuales();
+  }
 
-}
+  // Esta función llama al "Cerebro" (supabase.service.ts) para traer lo que ya guardaste
+  async cargarDatosActuales() {
+    const { data, error } = await this.supabaseSvc.getHojaDeVida();
+    if (data) {
+      console.log("Datos de la tabla hoja_de_vida_pro cargados", data);
+      // Aquí el formulario se llenará automáticamente con lo que haya en la base de datos
+    }
+  }
 }

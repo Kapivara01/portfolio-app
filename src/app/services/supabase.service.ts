@@ -13,7 +13,7 @@ export class SupabaseService {
     this.supabase = createClient(environment.supabase.url, environment.supabase.key);
   }
 
-  /* --- CRUD PERFIL PROFESIONAL (Sincronizado con todas las columnas) --- */
+  /* --- CRUD PERFIL PROFESIONAL (Sincronizado) --- */
   async getPerfil() {
     return await this.supabase
       .from('perfil_profesional')
@@ -36,7 +36,7 @@ export class SupabaseService {
       .eq('id', id);
   }
 
-  /* --- CRUD PORTAFOLIO / PROYECTOS (No borrar para no dañar Dashboard) --- */
+  /* --- CRUD PORTAFOLIO / PROYECTOS (Dashboard Estable) --- */
   async getProyectos() {
     return await this.supabase.from('portfolio_items').select('*').order('id', { ascending: false });
   }
@@ -55,7 +55,22 @@ export class SupabaseService {
     return await this.supabase.from('portfolio_items').delete().eq('id', id);
   }
 
-  /* --- GESTIÓN DE ARCHIVOS Y STORAGE (Crucial para el Dashboard) --- */
+  /* --- NUEVO: GESTIÓN DE REPORTE HOJA DE VIDA --- */
+  async getHojaDeVida() {
+    return await this.supabase
+      .from('hoja_de_vida_pro')
+      .select('*')
+      .eq('user_id', this.MI_USER_ID)
+      .maybeSingle(); 
+  }
+
+  async updateHojaDeVida(datos: any) {
+    return await this.supabase
+      .from('hoja_de_vida_pro')
+      .upsert({ ...datos, user_id: this.MI_USER_ID });
+  }
+
+  /* --- STORAGE Y OTROS --- */
   async listLinks(bucket: string, folder: string) {
     return await this.supabase.storage.from(bucket).list(folder);
   }
@@ -72,7 +87,6 @@ export class SupabaseService {
     return this.supabase.storage.from(bucket).getPublicUrl(fileName);
   }
 
-  /* --- AUTENTICACIÓN --- */
   async signOut() {
     return await this.supabase.auth.signOut();
   }

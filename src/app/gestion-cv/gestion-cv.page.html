@@ -1,48 +1,30 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Gestión de Hoja de Vida</ion-title>
+    <ion-title>📝 Gestión de Hoja de Vida (PDF)</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="container">
-    <h4 class="mb-3">Modificar Información del Reporte</h4>
-    
-    <div class="mb-3">
-      <label class="form-label">Nombre Completo</label>
-      <input type="text" class="form-control" [(ngModel)]="datosCV.titulo">
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Especialidad</label>
-      <input type="text" class="form-control" [(ngModel)]="datosCV.subtitulo">
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Extracto / Perfil</label>
-      <textarea class="form-control" rows="3" [(ngModel)]="datosCV.contenido_detalle"></textarea>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Experiencia Profesional</label>
-      <textarea class="form-control" rows="5" [(ngModel)]="datosCV.experiencia_profecional"></textarea>
-    </div>
-
-    <div class="d-grid gap-2">
-      <button class="btn btn-success" (click)="guardar()">Guardar Cambios</button>
-      <button class="btn btn-primary" (click)="exportar()">Descargar PDF Profesional</button>
-    </div>
+  <div style="background: #f4f4f4; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #3880ff;">
+    <h2 style="margin-top: 0;">Configuración del Reporte</h2>
+    <p>Los datos que ingreses aquí alimentarán exclusivamente la tabla <strong>hoja_de_vida_pro</strong> para generar tu PDF.</p>
   </div>
-</ion-content>
-<ion-header>
-<ion-toolbar color="primary">
-<ion-title>Gestión de Reporte CV</ion-title>
-</ion-toolbar>
-</ion-header>
 
-<ion-content class="ion-padding">
-<div class="container">
-<h3 class="ion-margin-bottom">Editar Información de Hoja de Vida</h3>
+  <ion-item>
+    <ion-label position="stacked">Resumen Profesional para el PDF</ion-label>
+    <ion-textarea placeholder="Escribe aquí el extracto que aparecerá en tu reporte..." rows="6"></ion-textarea>
+  </ion-item>
 
-</div>
+  <ion-item>
+    <ion-label position="stacked">Experiencia Clave</ion-label>
+    <ion-textarea placeholder="Detalla tu experiencia principal..."></ion-textarea>
+  </ion-item>
+
+  <ion-button expand="block" color="success" style="margin-top: 20px;">
+    💾 Guardar Datos y Actualizar Reporte
+  </ion-button>
+
+  <ion-button expand="block" color="danger" fill="outline">
+    🖨️ Generar Vista Previa PDF
+  </ion-button>
 </ion-content>

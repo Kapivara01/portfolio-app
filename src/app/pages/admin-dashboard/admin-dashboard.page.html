@@ -1,46 +1,50 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-title>Admin Ing. Jorge Luis Linares</ion-title>
+  <ion-toolbar color="primary" style="--background: #002d5b; border-bottom: 4px solid #ffc107;">
+    <ion-title style="font-weight: bold; text-transform: uppercase;">ADMIN - ING. JORGE LUIS LINARES</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="exportarPDF()" fill="clear">
-        <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
-      </ion-button>
-      <ion-button (click)="cerrarSesion()">
-        <ion-icon slot="start" name="log-out-outline"></ion-icon> Salir
-      </ion-button>
+      <ion-button (click)="cerrarSesion()" fill="solid" color="danger">SALIR</ion-button>
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-toolbar color="primary">
-    <ion-segment [(ngModel)]="seccionActiva" mode="md">
+  <ion-toolbar color="primary" style="--background: #002d5b;">
+    <ion-segment [(ngModel)]="seccionActiva" mode="md" scrollable="true">
+      <ion-segment-button value="perfil"><ion-label>PERFIL WEB</ion-label></ion-segment-button>
       <ion-segment-button value="portafolio"><ion-label>PORTAFOLIO</ion-label></ion-segment-button>
-      <ion-segment-button value="perfil"><ion-label>PERFIL / CV</ion-label></ion-segment-button>
+      <ion-segment-button value="reporte"><ion-label>REPORTE PDF</ion-label></ion-segment-button>
       <ion-segment-button value="archivos"><ion-label>ARCHIVOS</ion-label></ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  
+  <div *ngIf="seccionActiva === 'perfil'">
+    <ion-card>
+      <ion-card-content>
+        <ion-item><ion-label position="floating">LinkedIn</ion-label><ion-input [(ngModel)]="perfil.linkedin"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Nombres</ion-label><ion-input [(ngModel)]="perfil.nombres_apellidos"></ion-input></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria</ion-label><ion-textarea rows="3" [(ngModel)]="perfil.trayectoria"></ion-textarea></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Formación</ion-label><ion-textarea rows="3" [(ngModel)]="perfil.formacion"></ion-textarea></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Experiencia Laboral</ion-label><ion-textarea rows="3" [(ngModel)]="perfil.experiencia_laboral"></ion-textarea></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Cursos</ion-label><ion-textarea rows="2" [(ngModel)]="perfil.cursos"></ion-textarea></ion-item>
+        <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">ACTUALIZAR PERFIL</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
   <div *ngIf="seccionActiva === 'portafolio'">
     <ion-card>
       <ion-card-content>
         <ion-item><ion-label position="floating">Título</ion-label><ion-input [(ngModel)]="nuevoProyecto.title"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Categoría</ion-label>
-          <ion-select [(ngModel)]="nuevoProyecto.category" interface="popover">
-            <ion-select-option value="TELECOMUNICACIONES">TELECOMUNICACIONES</ion-select-option>
-            <ion-select-option value="INFORMÁTICA">INFORMÁTICA</ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-item><ion-label position="floating">URL Imagen</ion-label><ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input></ion-item>
-        <ion-button expand="block" (click)="guardarProyecto()" class="ion-margin-top">{{ editando ? 'Actualizar' : 'Publicar' }}</ion-button>
-        <ion-button *ngIf="editando" expand="block" color="light" (click)="limpiarFormulario()">Cancelar</ion-button>
+        <ion-item><ion-label position="floating">Categoría</ion-label><ion-input [(ngModel)]="nuevoProyecto.category"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Fase / Sprint</ion-label><ion-input [(ngModel)]="nuevoProyecto.phase"></ion-input></ion-item>
+        <ion-button expand="block" [color]="editando ? 'warning' : 'success'" (click)="guardarProyecto()" class="ion-margin-top">
+          {{ editando ? 'GUARDAR CAMBIOS' : 'AGREGAR PROYECTO' }}
+        </ion-button>
       </ion-card-content>
     </ion-card>
-
     <ion-list>
       <ion-item *ngFor="let p of proyectos">
-        <ion-label><h2>{{ p.title }}</h2><p>{{ p.category }}</p></ion-label>
+        <ion-label><h2>{{ p.title }}</h2><p>{{ p.category }} - {{ p.phase }}</p></ion-label>
         <ion-buttons slot="end">
           <ion-button (click)="prepararEdicion(p)"><ion-icon name="create-outline"></ion-icon></ion-button>
           <ion-button color="danger" (click)="eliminarProyecto(p.id)"><ion-icon name="trash-outline"></ion-icon></ion-button>
@@ -49,83 +53,27 @@
     </ion-list>
   </div>
 
-  <div *ngIf="seccionActiva === 'perfil'">
-    <ion-button expand="block" color="danger" (click)="exportarPDF()" class="ion-margin-bottom shadow">
-      <ion-icon name="download-outline" slot="start"></ion-icon>
-      EXPORTAR HOJA DE VIDA (PDF)
-    </ion-button>
-
+  <div *ngIf="seccionActiva === 'reporte'">
     <ion-card>
-      <ion-card-header><ion-card-title>Mi Perfil Profesional</ion-card-title></ion-card-header>
       <ion-card-content>
-        
-        <ion-item lines="none" class="ion-text-center">
-          <ion-avatar style="width: 100px; height: 100px; margin: 0 auto;">
-            <img [src]="perfil.foto_url || 'assets/icon/favicon.png'" />
-          </ion-avatar>
-        </ion-item>
-        <ion-item>
-          <ion-label>Cambiar Foto</ion-label>
-          <input type="file" (change)="subirFotoPerfil($event)" accept="image/*">
-        </ion-item>
-
-        <ion-item><ion-label position="floating">Nombres y Apellidos</ion-label><ion-input [(ngModel)]="perfil.nombres_apellidos"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Especialidad</ion-label><ion-input [(ngModel)]="perfil.subtitulos"></ion-input></ion-item>
-        
-        <ion-item><ion-label position="floating">Teléfono</ion-label><ion-input [(ngModel)]="perfil.telefono" type="tel"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Correo Electrónico</ion-label><ion-input [(ngModel)]="perfil.correo" type="email"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Dirección</ion-label><ion-input [(ngModel)]="perfil.direccion"></ion-input></ion-item>
-
-        <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria (Resumen)</ion-label><ion-textarea [(ngModel)]="perfil.trayectoria" rows="3"></ion-textarea></ion-item>
-        
-        <ion-item class="ion-margin-top" color="light">
-          <ion-label position="floating" style="font-weight: bold; color: #002d5b;">Experiencia Laboral Detallada (Logros)</ion-label>
-          <ion-textarea [(ngModel)]="perfil.experiencia_laboral" rows="6" placeholder="Especifique cargos, empresas y funciones detalladas..."></ion-textarea>
-        </ion-item>
-
-        <ion-item class="ion-margin-top"><ion-label position="floating">Formación Académica</ion-label><ion-textarea [(ngModel)]="perfil.formacion" rows="4"></ion-textarea></ion-item>
-
-        <ion-item class="ion-margin-top" color="light">
-          <ion-label position="floating" style="font-weight: bold; color: #002d5b;">Cursos y Certificaciones</ion-label>
-          <ion-textarea [(ngModel)]="perfil.cursos" rows="4"></ion-textarea>
-        </ion-item>
-
-        <ion-item class="ion-margin-top" color="light">
-          <ion-label position="floating" style="font-weight: bold; color: #002d5b;">Referencias Personales</ion-label>
-          <ion-textarea [(ngModel)]="perfil.referencias_personales" rows="4" placeholder="Nombre - Teléfono - Empresa"></ion-textarea>
-        </ion-item>
-        
-        <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">
-          <ion-icon name="save-outline" slot="start"></ion-icon> Guardar Hoja de Vida
-        </ion-button>
+        <ion-item><ion-label position="floating">Título PDF</ion-label><ion-input [(ngModel)]="reporte.titulo"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Contenido Detalle</ion-label><ion-textarea rows="4" [(ngModel)]="reporte.contenido_detalle"></ion-textarea></ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6"><ion-button expand="block" color="warning" (click)="guardarReporte()">SINCRONIZAR</ion-button></ion-col>
+            <ion-col size="6"><ion-button expand="block" color="tertiary" (click)="imprimirReporte()">IMPRIMIR PDF</ion-button></ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-card-content>
     </ion-card>
   </div>
 
   <div *ngIf="seccionActiva === 'archivos'">
-    <ion-card>
-      <ion-card-content>
-        <div style="border: 1px dashed #ccc; padding: 10px; text-align: center;">
-          <input type="file" (change)="onFileSelected($event)">
-        </div>
-        <ion-button expand="block" (click)="subirArchivo()" class="ion-margin-top">Cargar Archivo</ion-button>
-      </ion-card-content>
-    </ion-card>
     <ion-list>
-      <ion-item *ngFor="let archivo of listaArchivosReales">
-        <ion-label>{{ archivo.name }}</ion-label>
-        <ion-buttons slot="end">
-          <ion-button (click)="compartirArchivo(archivo.name)"><ion-icon name="share-social-outline"></ion-icon></ion-button>
-          <ion-button color="danger" (click)="borrarArchivoDashboard(archivo.name)"><ion-icon name="trash-outline"></ion-icon></ion-button>
-        </ion-buttons>
+      <ion-item *ngFor="let f of listaArchivosReales">
+        <ion-label>{{ f.name }}</ion-label>
+        <ion-button slot="end" color="danger" (click)="borrarArchivoDashboard(f.name)"><ion-icon name="trash-outline"></ion-icon></ion-button>
       </ion-item>
     </ion-list>
   </div>
-
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="danger" (click)="exportarPDF()">
-      <ion-icon name="document-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
 </ion-content>
