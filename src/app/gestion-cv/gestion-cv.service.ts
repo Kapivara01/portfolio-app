@@ -1,26 +1,33 @@
-// Copia y pega esto dentro de gestion-cv.page.ts
-import { Component, OnInit } from '@angular/core';
-import { SupabaseService } from 'src/app/services/supabase.service'; // Asegúrate que la ruta sea correcta
+import { Injectable } from '@angular/core';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { environment } from 'src/environments/environment';
 
-@Component({
-  selector: 'app-gestion-cv',
-  templateUrl: './gestion-cv.page.html',
-  styleUrls: ['./gestion-cv.page.scss'],
+@Injectable({
+  providedIn: 'root'
 })
-export class GestionCvPage implements OnInit {
+export class GestionCvService {
+  private supabase: SupabaseClient;
 
-  constructor(private supabaseSvc: SupabaseService) { }
-
-  ngOnInit() {
-    this.cargarDatosActuales();
+  constructor() {
+    // CORRECCIÓN: Accedemos a .supabase.url y .supabase.key 
+    // tal como aparecen en tu error de terminal.
+    this.supabase = createClient(
+      environment.supabase.url, 
+      environment.supabase.key
+    );
   }
 
-  // Esta función llama al "Cerebro" (supabase.service.ts) para traer lo que ya guardaste
-  async cargarDatosActuales() {
-    const { data, error } = await this.supabaseSvc.getHojaDeVida();
-    if (data) {
-      console.log("Datos de la tabla hoja_de_vida_pro cargados", data);
-      // Aquí el formulario se llenará automáticamente con lo que haya en la base de datos
-    }
+  async getPerfilPrincipal(userId: string) {
+    return await this.supabase
+      .from('perfil_profesional')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+  }
+
+  async actualizarPerfil(perfil: any) {
+    return await this.supabase
+      .from('perfil_profesional')
+      .upsert(perfil);
   }
 }

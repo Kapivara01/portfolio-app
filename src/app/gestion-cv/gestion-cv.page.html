@@ -1,30 +1,32 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>📝 Gestión de Hoja de Vida (PDF)</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-card style="padding: 15px;">
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Título PDF (Nombre y Apellido)</ion-label>
+      <ion-input [(ngModel)]="perfilData.nombres_apellidos"></ion-input>
+    </ion-item>
 
-<ion-content class="ion-padding">
-  <div style="background: #f4f4f4; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #3880ff;">
-    <h2 style="margin-top: 0;">Configuración del Reporte</h2>
-    <p>Los datos que ingreses aquí alimentarán exclusivamente la tabla <strong>hoja_de_vida_pro</strong> para generar tu PDF.</p>
+    <ion-item>
+      <ion-label position="floating">Mi Trayectoria (Contenido Detalle)</ion-label>
+      <ion-textarea [(ngModel)]="perfilData.trayectoria" rows="4"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Formación Académica</ion-label>
+      <ion-textarea [(ngModel)]="perfilData.formacion" rows="2"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Experiencia Laboral</ion-label>
+      <ion-textarea [(ngModel)]="perfilData.experiencia_laboral" rows="2"></ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <div style="display: flex; gap: 10px; margin-top: 20px;">
+    <ion-button (click)="sincronizar()" color="warning" style="flex: 1;">
+      SINCRONIZAR
+    </ion-button>
+    <ion-button (click)="imprimirPDF()" color="tertiary" style="flex: 1;">
+      IMPRIMIR PDF
+    </ion-button>
   </div>
-
-  <ion-item>
-    <ion-label position="stacked">Resumen Profesional para el PDF</ion-label>
-    <ion-textarea placeholder="Escribe aquí el extracto que aparecerá en tu reporte..." rows="6"></ion-textarea>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="stacked">Experiencia Clave</ion-label>
-    <ion-textarea placeholder="Detalla tu experiencia principal..."></ion-textarea>
-  </ion-item>
-
-  <ion-button expand="block" color="success" style="margin-top: 20px;">
-    💾 Guardar Datos y Actualizar Reporte
-  </ion-button>
-
-  <ion-button expand="block" color="danger" fill="outline">
-    🖨️ Generar Vista Previa PDF
-  </ion-button>
-</ion-content>
+</ion-card>

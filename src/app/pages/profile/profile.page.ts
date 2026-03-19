@@ -1,85 +1,95 @@
 import { Component, OnInit } from '@angular/core';
-import { SupabaseService } from 'src/app/services/supabase.service';
-import { ToastController } from '@ionic/angular';
+import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
-  standalone: false,
 })
 export class ProfilePage implements OnInit {
+  
+  // Variables de Perfil (Sincronización Tabla perfil_profesional)
   perfil: any = null;
-  cargando: boolean = true;
+  loading: boolean = true;
 
-  // Estructura completa sincronizada con Supabase (Actualizada con 3 nuevos campos)
-  perfilForm: any = {
-    nombres_apellidos: '',
-    subtitulos: '',
-    trayectoria: '',
-    experiencia_laboral: '', // <-- Agregado
-    formacion: '',
-    cursos: '',              // <-- Agregado
-    referencias_personales: '', // <-- Agregado
-    telefono: '',
-    direccion: '',
-    correo: '',
-    linkedin: '',
-    foto_url: ''
-  };
+  // Variables de Proyectos (Sincronización Tabla portfolio_items)
+  registros: any[] = [];
+  proyectosCargando: boolean = true;
 
-  constructor(
-    private supabaseService: SupabaseService,
-    private toastCtrl: ToastController
-  ) {}
+  constructor(private supabaseService: SupabaseService) { }
 
   async ngOnInit() {
-    await this.cargarPerfil();
+    console.log('Iniciando Sincronización Total: Perfil + Proyectos');
+    // Ejecutamos ambas cargas en paralelo para mayor velocidad
+    await Promise.all([
+      this.cargarPerfilDesdeBD(),
+      this.cargarProyectosDesdeBD()
+    ]);
   }
 
-  async cargarPerfil() {
-    this.cargando = true;
+  // --- CARGA DE PERFIL PROFESIONAL ---
+  async cargarPerfilDesdeBD() {
+    this.loading = true;
     try {
-      const { data } = await this.supabaseService.getPerfil();
-      if (data && data.length > 0) {
-        this.perfil = data[0];
-        // Al usar el operador spread (...), Angular tomará automáticamente
-        // los valores de los nuevos campos desde la base de datos.
-        this.perfilForm = { ...this.perfil };
-      }
-    } catch (e) {
-      console.error("Error al cargar:", e);
-    } finally {
-      this.cargando = false;
-    }
-  }
-
-  async guardarCambios() {
-    try {
-      if (this.perfil && this.perfil.id) {
-        // Actualizar registro existente incluyendo los nuevos campos
-        await this.supabaseService.updatePerfil(this.perfil.id, this.perfilForm);
-      } else {
-        // Crear nuevo registro si no existe
-        await this.supabaseService.addPerfil(this.perfilForm);
-      }
+      // Usamos tu función getPerfil() del servicio
+      const { data, error } = await this.supabaseService.getPerfil();
       
-      const toast = await this.toastCtrl.create({
-        message: 'Hoja de Vida actualizada con éxito',
-        duration: 2000,
-        color: 'success',
-        position: 'bottom'
-      });
-      await toast.present();
-      await this.cargarPerfil(); // Refrescar vista para asegurar sincronización
-    } catch (e) {
-      console.error("Error al sincronizar:", e);
-      const toast = await this.toastCtrl.create({
-        message: 'Error al guardar los cambios',
-        duration: 3000,
-        color: 'danger'
-      });
-      await toast.present();
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        this.perfil = data[0]; // Extraemos el primer registro del array
+        console.log('Perfil sincronizado con éxito:', this.perfil.nombres_apellidos);
+      }
+    } catch (err) {
+      console.error('Error al sincronizar Perfil:', err);
+    } finally {
+      this.loading = false;
     }
+  }
+
+  // --- CARGA DE PROYECTOS (VISTA ESPEJO DASHBOARD) ---
+  async cargarProyectosDesdeBD() {
+    this.proyectosCargando = true;
+    try {
+      const { data, error } = await this.supabaseService.getProyectos();
+      
+      if (error) throw error;
+
+      if (data) {
+        // Mapeamos los datos para que coincidan con la estructura de tu HTML
+        this.registros = data.map(item => ({
+          titulo: item.titulo || 'Proyecto sin título',
+          descripcion: item.descripcion || 'Sin descripción disponible',
+          categoria: item.categoria || 'General',
+          estado: item.estado || 'Activo'
+        }));
+        console.log('Proyectos cargados para Vista Fiel:', this.registros.length);
+      }
+    } catch (err) {
+      console.error('Error al cargar proyectos:', err);
+    } finally {
+      this.proyectosCargando = false;
+    }
+  }
+
+  // --- ACCIONES DE USUARIO ---
+  solicitarCV() {
+    if (!this.perfil) {
+      console.warn('Perfil no cargado, usando datos por defecto.');
+      window.location.href = `mailto:jlinares7616@gmail.com?subject=Solicitud de Hoja de Vida`;
+      return;
+    }
+
+    const email = this.perfil.correo || 'jlinares7616@gmail.com';
+    const nombre = this.perfil.nombres_apellidos || 'Ing. Jorge Luis Linares';
+    const subject = encodeURIComponent(`Solicitud de Hoja de Vida - ${nombre}`);
+    const body = encodeURIComponent(`Estimado ${nombre},\n\nHe visto su portafolio profesional y me gustaría solicitar su Hoja de Vida actualizada.\n\nQuedo atento a su respuesta.`);
+
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  }
+
+  // Función para formatear fechas si las llegas a usar en el HTML
+  formatFecha(fecha: string) {
+    return new Date(fecha).toLocaleDateString('es-VE');
   }
 }

@@ -30,7 +30,15 @@ const routes: Routes = [
   {
     path: 'admin/dashboard',
     loadChildren: () => import('./pages/admin-dashboard/admin-dashboard.module').then(m => m.AdminDashboardPageModule)
+  },
+  {
+    path: 'gestion-cv',
+    loadChildren: () => import('./gestion-cv/gestion-cv.module').then(m => m.GestionCvPageModule)
+  },  {
+    path: 'gestion-cv',
+    loadChildren: () => import('./gestion-cv/gestion-cv.module').then( m => m.GestionCvPageModule)
   }
+
 ];
 
 @NgModule({

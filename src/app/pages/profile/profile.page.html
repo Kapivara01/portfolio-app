@@ -1,92 +1,85 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Mi Perfil Profesional</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Perfil Profesional</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div *ngIf="cargando" class="ion-text-center">
-    <ion-spinner name="crescent"></ion-spinner>
+  <div *ngIf="loading" class="ion-text-center ion-padding">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Sincronizando Vista Fiel...</p>
   </div>
 
-  <div *ngIf="!cargando" class="hoja-vida-container">
-    <h2 class="ion-text-center" style="color: #002d5b; font-weight: bold; margin-bottom: 25px;">
-      HOJA DE VIDA
-    </h2>
-    
-    <ion-list lines="full">
-      <ion-item lines="none" style="margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 20px; width: 100%;">
-          <ion-avatar style="width: 90px; height: 90px; border: 3px solid #002d5b; flex-shrink: 0;">
-            <img [src]="perfilForm.foto_url || 'assets/icon/favicon.png'" 
-                 (error)="perfilForm.foto_url = 'assets/icon/favicon.png'">
-          </ion-avatar>
-          <div style="flex-grow: 1;">
-            <h3 style="margin: 0; color: #002d5b; font-weight: bold;">FOTO ACTUAL</h3>
-            <p style="margin: 0; font-size: 0.8rem; color: #666;">Imagen del perfil profesional</p>
-          </div>
-        </div>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">NOMBRES Y APELLIDOS</ion-label>
-        <ion-input [(ngModel)]="perfilForm.nombres_apellidos"></ion-input>
-      </ion-item>
+  <div *ngIf="!loading && perfil">
+    <div class="ion-text-center">
+      <ion-avatar style="width: 130px; height: 130px; margin: 20px auto; border: 4px solid #3880ff;">
+        <img [src]="perfil.foto_url || 'assets/icon/favicon.png'" [alt]="perfil.nombres_apellidos" />
+      </ion-avatar>
       
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">ESPECIALIDAD / TÍTULO</ion-label>
-        <ion-input [(ngModel)]="perfilForm.subtitulos" placeholder="Ej: Ing. Telecomunicaciones"></ion-input>
-      </ion-item>
+      <h2 style="font-weight: bold; color: #3880ff; margin-bottom: 0;">{{ perfil.nombres_apellidos }}</h2>
+      
+      <p style="font-style: italic; color: #666; font-size: 1.1em; margin-top: 5px;">
+        {{ perfil.subtitulos }}
+      </p>
+      
+      <ion-button (click)="solicitarCV()" color="success" shape="round" class="ion-margin-top">
+        <ion-icon name="document-text-outline" slot="start"></ion-icon>
+        Solicitar Hoja de Vida
+      </ion-button>
+    </div>
 
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">TRAYECTORIA LABORAL (RESUMEN)</ion-label>
-        <ion-textarea [(ngModel)]="perfilForm.trayectoria" rows="3"></ion-textarea>
-      </ion-item>
+    <div class="ion-padding-top">
+      <ion-list-header class="ion-no-padding">
+        <ion-label style="font-weight: bold; font-size: 1.2em; color: #222;">
+          Registros del Sistema - Vista Fiel
+        </ion-label>
+      </ion-list-header>
 
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">EXPERIENCIA PROFESIONAL (DETALLES)</ion-label>
-        <ion-textarea [(ngModel)]="perfilForm.experiencia_laboral" rows="5" placeholder="Detalla aquí tus cargos y logros principales por empresa"></ion-textarea>
-      </ion-item>
+      <ion-card mode="ios" class="ion-no-margin ion-margin-bottom shadow-card">
+        <ion-card-content>
+          
+          <div class="profile-data-container">
+            
+            <div class="data-group" *ngIf="perfil.trayectoria">
+              <h3 class="data-title">Trayectoria</h3>
+              <div class="data-list-text">{{ perfil.trayectoria }}</div>
+            </div>
 
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">FORMACIÓN ACADÉMICA</ion-label>
-        <ion-textarea [(ngModel)]="perfilForm.formacion" rows="3"></ion-textarea>
-      </ion-item>
+            <div class="data-group" *ngIf="perfil.formacion">
+              <h3 class="data-title">Formación Académica</h3>
+              <div class="data-list-text">{{ perfil.formacion }}</div>
+            </div>
 
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">CURSOS Y CERTIFICACIONES</ion-label>
-        <ion-textarea [(ngModel)]="perfilForm.cursos" rows="3" placeholder="Ej: Certificación CCNA, Diplomado en Gestión..."></ion-textarea>
-      </ion-item>
+            <div class="data-group" *ngIf="perfil.experiencia_laboral">
+              <h3 class="data-title">Experiencia Laboral</h3>
+              <div class="data-list-text">{{ perfil.experiencia_laboral }}</div>
+            </div>
 
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">REFERENCIAS PERSONALES</ion-label>
-        <ion-textarea [(ngModel)]="perfilForm.referencias_personales" rows="3" placeholder="Nombre - Teléfono - Empresa/Vínculo"></ion-textarea>
-      </ion-item>
+            <div class="data-group" *ngIf="perfil.cursos">
+              <h3 class="data-title">Cursos y Certificaciones</h3>
+              <div class="data-list-text">{{ perfil.cursos }}</div>
+            </div>
 
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">TELÉFONO DE CONTACTO</ion-label>
-        <ion-input [(ngModel)]="perfilForm.telefono" type="tel"></ion-input>
-      </ion-item>
+            <div class="data-group" *ngIf="perfil.referencias_personales">
+              <h3 class="data-title">Referencias Personales</h3>
+              <div class="data-list-text">{{ perfil.referencias_personales }}</div>
+            </div>
 
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">UBICACIÓN / DIRECCIÓN</ion-label>
-        <ion-input [(ngModel)]="perfilForm.direccion"></ion-input>
-      </ion-item>
+            <div class="data-group contact-info">
+              <h3 class="data-title" style="color: #666;">Contacto y Ubicación</h3>
+              <p><ion-icon name="location-outline" color="primary"></ion-icon> <strong>Dirección:</strong> {{ perfil.direccion }}</p>
+              <p><ion-icon name="call-outline" color="primary"></ion-icon> <strong>Teléfono:</strong> {{ perfil.telefono }}</p>
+              <p><ion-icon name="mail-outline" color="primary"></ion-icon> <strong>Correo:</strong> {{ perfil.correo }}</p>
+            </div>
 
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">CORREO ELECTRÓNICO</ion-label>
-        <ion-input [(ngModel)]="perfilForm.correo" type="email"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked" style="color: #002d5b; font-weight: bold; font-size: 1.1rem;">LINKEDIN (ENLACE)</ion-label>
-        <ion-input [(ngModel)]="perfilForm.linkedin"></ion-input>
-      </ion-item>
-    </ion-list>
-
-    <ion-button expand="block" (click)="guardarCambios()" style="margin-top: 25px; font-weight: bold; --background: #002d5b;">
-      <ion-icon name="sync-circle-outline" slot="start"></ion-icon>
-      Sincronizar Datos Profesionales
-    </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 </ion-content>
+
+<app-footer></app-footer>

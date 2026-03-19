@@ -7,13 +7,13 @@ import { ProfilePage } from './profile.page';
 import { FooterComponent } from '../../components/footer/footer.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        IonicModule,
-        ProfilePageRoutingModule,
-        FooterComponent
-    ],
-    declarations: [ProfilePage]
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    ProfilePageRoutingModule,
+    FooterComponent
+  ],
+  declarations: [ProfilePage]
 })
 export class ProfilePageModule { }
