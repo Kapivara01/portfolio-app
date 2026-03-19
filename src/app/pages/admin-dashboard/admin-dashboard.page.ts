@@ -34,6 +34,7 @@ export class AdminDashboardPage implements OnInit {
   async ngOnInit() { await this.cargarTodo(); }
 
   async cargarTodo() {
+    // 1. Cargar Perfil
     const { data: pData } = await this.supabaseService.getPerfil();
     if (pData && pData.length > 0) {
       this.perfil = { ...this.perfil, ...pData[0] };
@@ -41,21 +42,101 @@ export class AdminDashboardPage implements OnInit {
       this.reporte.contenido_detalle = this.perfil.trayectoria;
       this.reporte.experiencia_profesional = this.perfil.experiencia_laboral;
     }
+
+    // 2. Cargar Proyectos
     const { data: prData } = await this.supabaseService.getProyectos();
     this.proyectos = prData || [];
+
+    // 3. Cargar Archivos con Limpieza de Nombre
     const { data: fData } = await this.supabaseService.listLinks('imagenes', 'uploads');
-    if (fData) this.listaArchivosReales = fData.filter((f: any) => f.name !== '.emptyFolderPlaceholder');
+    if (fData) {
+      this.listaArchivosReales = fData
+        .filter((f: any) => f.name !== '.emptyFolderPlaceholder')
+        .map((f: any) => {
+          const { data } = this.supabaseService.getPublicUrl('imagenes', `uploads/${f.name}`);
+          
+          // Lógica: Quitar el timestamp inicial (ej: 177136..._nombre.jpg -> nombre.jpg)
+          const partes = f.name.split('_');
+          const nombreLimpio = partes.length > 1 ? partes.slice(1).join('_') : f.name;
+
+          return { 
+            ...f, 
+            url: data.publicUrl,
+            nombreMostrar: nombreLimpio 
+          };
+        });
+    }
   }
 
-  // --- CRUD PERFIL ---
+  // --- GESTIÓN DE ARCHIVOS ---
+  async subirArchivoDashboard(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const loader = await this.toastCtrl.create({ message: 'Subiendo archivo...', duration: 1000 });
+    await loader.present();
+
+    // Guardamos con timestamp para evitar duplicados en el storage
+    const filePath = `uploads/${Date.now()}_${file.name}`;
+    const { error } = await this.supabaseService.uploadFile('imagenes', filePath, file);
+
+    if (error) {
+      this.mostrarToast('❌ Error al subir: ' + error.message);
+    } else {
+      this.mostrarToast('✅ Archivo subido con éxito.');
+      await this.cargarTodo();
+    }
+  }
+
+  async borrarArchivoDashboard(nombreReal: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Eliminar Archivo',
+      message: `¿Deseas borrar definitivamente este archivo?`,
+      buttons: [
+        { text: 'Cancelar' },
+        { text: 'Borrar', handler: async () => {
+            await this.supabaseService.deleteFile('imagenes', [`uploads/${nombreReal}`]);
+            this.mostrarToast('Archivo eliminado.');
+            await this.cargarTodo();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  compartirArchivo(archivo: any) {
+    const shareData = {
+      title: 'Archivo de ' + this.perfil.nombres_apellidos,
+      text: `Te comparto: ${archivo.nombreMostrar}`,
+      url: archivo.url
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => this.fallbackCompartir(archivo.url));
+    } else {
+      this.fallbackCompartir(archivo.url);
+    }
+  }
+
+  private fallbackCompartir(url: string) {
+    window.open(`mailto:?subject=Archivo Compartido&body=Puedes verlo aquí: ${url}`, '_self');
+  }
+
+  incorporarAFuncionalidad(archivo: any) {
+    this.nuevoProyecto.image_url = archivo.url;
+    this.seccionActiva = 'portafolio';
+    this.mostrarToast('URL vinculada al formulario de Proyecto.');
+  }
+
+  // --- CRUD PERFIL Y PROYECTOS (Resto del código original) ---
   async guardarPerfil() {
     const { id, ...datos } = this.perfil;
     await this.supabaseService.updatePerfil(id, datos);
-    this.mostrarToast('✅ Perfil actualizado correctamente.');
+    this.mostrarToast('✅ Perfil actualizado.');
     await this.cargarTodo();
   }
 
-  // --- CRUD PROYECTOS ---
   async guardarProyecto() {
     if (this.editando) {
       await this.supabaseService.updateProyecto(this.nuevoProyecto.id, this.nuevoProyecto);
@@ -78,19 +159,13 @@ export class AdminDashboardPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: 'Confirmar',
       message: '¿Estás seguro de eliminar este proyecto?',
-      buttons: [
-        { text: 'Cancelar' },
-        { text: 'Eliminar', handler: async () => {
-            await this.supabaseService.deleteProyecto(id);
-            await this.cargarTodo();
-          }
-        }
-      ]
+      buttons: [ { text: 'Cancelar' }, { text: 'Eliminar', handler: async () => { 
+        await this.supabaseService.deleteProyecto(id); await this.cargarTodo(); 
+      } } ]
     });
     await alert.present();
   }
 
-  // --- CRUD REPORTES/PDF ---
   async guardarReporte() {
     const datosMapeados = {
       nombres_apellidos: this.reporte.titulo,
@@ -98,16 +173,10 @@ export class AdminDashboardPage implements OnInit {
       experiencia_laboral: this.reporte.experiencia_profesional
     };
     await this.supabaseService.updatePerfil(this.perfil.id, datosMapeados);
-    this.mostrarToast('✅ Reporte sincronizado con el perfil.');
+    this.mostrarToast('✅ Reporte sincronizado.');
     await this.cargarTodo();
   }
 
-  async borrarArchivoDashboard(nombre: string) {
-    await this.supabaseService.deleteFile('imagenes', [`uploads/${nombre}`]);
-    await this.cargarTodo();
-  }
-
-  // --- LÓGICA DEL PDF (CORREGIDA) ---
   private getImageDataUrl(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -134,30 +203,20 @@ export class AdminDashboardPage implements OnInit {
       try {
         const base64Img = await this.getImageDataUrl(this.perfil.foto_url);
         doc.addImage(base64Img, 'JPEG', marginX, y, 25, 30);
-      } catch (e) {
-        doc.rect(marginX, y, 25, 30, 'S');
-      }
+      } catch (e) { doc.rect(marginX, y, 25, 30, 'S'); }
     }
 
     const headerX = 45;
     doc.setFontSize(18);
     doc.setTextColor(0, 51, 153);
     doc.text((this.perfil.nombres_apellidos || 'ING. JORGE LINARES').toUpperCase(), headerX, y + 8);
-    
     doc.setFontSize(10);
-    doc.setTextColor(80, 80, 80);
     doc.text(this.perfil.subtitulos || 'INGENIERO', headerX, y + 14);
     
-    doc.setFontSize(8.5);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Telf: ${this.perfil.telefono || ''} | Email: ${this.perfil.correo || ''}`, headerX, y + 20);
-    const linesDir = doc.splitTextToSize(`Dirección: ${this.perfil.direccion || ''}`, 145);
-    doc.text(linesDir, headerX, y + 25);
-
     y = 52;
     doc.setDrawColor(0, 51, 153);
     doc.line(marginX, y, 195, y);
-    y += 8;
+    y += 10;
 
     const secciones = [
       { t: 'RESUMEN PROFESIONAL', c: this.perfil.trayectoria },
@@ -168,15 +227,11 @@ export class AdminDashboardPage implements OnInit {
 
     secciones.forEach(s => {
       if (s.c) {
-        if (y > 275) { doc.addPage(); y = 15; }
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0, 51, 153);
+        if (y > 270) { doc.addPage(); y = 15; }
+        doc.setFontSize(12); doc.setFont("helvetica", "bold");
         doc.text(s.t, marginX, y);
         y += 5;
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        doc.setTextColor(0, 0, 0);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(9);
         const lines = doc.splitTextToSize(s.c.trim(), contentWidth);
         doc.text(lines, marginX, y);
         y += (lines.length * 4.5) + 6; 
@@ -186,16 +241,12 @@ export class AdminDashboardPage implements OnInit {
     doc.save(`CV_Jorge_Linares.pdf`);
   }
 
-  // --- UTILIDADES ---
   limpiarForm() { 
     this.nuevoProyecto = { id: null, title: '', category: '', image_url: '', phase: '', description: '' }; 
     this.editando = false; 
   }
 
-  async cerrarSesion() { 
-    await this.supabaseService.signOut(); 
-    this.navCtrl.navigateRoot('/home'); 
-  }
+  async cerrarSesion() { await this.supabaseService.signOut(); this.navCtrl.navigateRoot('/home'); }
 
   async mostrarToast(msj: string) { 
     const t = await this.toastCtrl.create({ message: msj, duration: 2000 }); 
