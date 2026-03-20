@@ -19,19 +19,46 @@
 <ion-content class="ion-padding">
   <div *ngIf="seccionActiva === 'perfil'">
     <ion-card>
+      <ion-card-header>
+        <ion-card-title>Datos Personales y de Contacto</ion-card-title>
+      </ion-card-header>
       <ion-card-content>
         <ion-item><ion-label position="floating">Nombres y Apellidos</ion-label><ion-input [(ngModel)]="perfil.nombres_apellidos"></ion-input></ion-item>
         <ion-item class="ion-margin-top"><ion-label position="floating">Subtítulo / Cargo</ion-label><ion-input [(ngModel)]="perfil.subtitulos"></ion-input></ion-item>
         <ion-item class="ion-margin-top"><ion-label position="floating">URL Foto de Perfil</ion-label><ion-input [(ngModel)]="perfil.foto_url"></ion-input></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria</ion-label><ion-textarea rows="3" [(ngModel)]="perfil.trayectoria"></ion-textarea></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">Formación</ion-label><ion-textarea rows="3" [(ngModel)]="perfil.formacion"></ion-textarea></ion-item>
+        
+        <ion-grid fixed>
+          <ion-row>
+            <ion-col size="12" size-md="6">
+              <ion-item><ion-label position="floating">📞 Teléfono</ion-label><ion-input [(ngModel)]="perfil.telefono"></ion-input></ion-item>
+            </ion-col>
+            <ion-col size="12" size-md="6">
+              <ion-item><ion-label position="floating">✉️ Correo</ion-label><ion-input [(ngModel)]="perfil.correo"></ion-input></ion-item>
+            </ion-col>
+            <ion-col size="12" size-md="6">
+              <ion-item><ion-label position="floating">🔗 LinkedIn (Nombre de usuario)</ion-label><ion-input [(ngModel)]="perfil.linkedin"></ion-input></ion-item>
+            </ion-col>
+            <ion-col size="12" size-md="6">
+              <ion-item><ion-label position="floating">💻 GitHub (URL o usuario)</ion-label><ion-input [(ngModel)]="perfil.github"></ion-input></ion-item>
+            </ion-col>
+            <ion-col size="12" size-md="6">
+              <ion-item><ion-label position="floating">📍 Dirección / Ubicación</ion-label><ion-input [(ngModel)]="perfil.direccion"></ion-input></ion-item>
+            </ion-col>
+            <ion-col size="12" size-md="6">
+              <ion-item><ion-label position="floating">⏱️ Disponibilidad (Ej: Inmediata)</ion-label><ion-input [(ngModel)]="perfil.disponibilidad"></ion-input></ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria (Resumen)</ion-label><ion-textarea rows="3" [(ngModel)]="perfil.trayectoria"></ion-textarea></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Formación Académica</ion-label><ion-textarea rows="3" [(ngModel)]="perfil.formacion"></ion-textarea></ion-item>
         <ion-item class="ion-margin-top"><ion-label position="floating">Experiencia Laboral</ion-label><ion-textarea rows="3" [(ngModel)]="perfil.experiencia_laboral"></ion-textarea></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">Cursos</ion-label><ion-textarea rows="2" [(ngModel)]="perfil.cursos"></ion-textarea></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">LinkedIn</ion-label><ion-input [(ngModel)]="perfil.linkedin"></ion-input></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">Dirección</ion-label><ion-input [(ngModel)]="perfil.direccion"></ion-input></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">Teléfono</ion-label><ion-input [(ngModel)]="perfil.telefono"></ion-input></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">Correo</ion-label><ion-input [(ngModel)]="perfil.correo"></ion-input></ion-item>
-        <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">ACTUALIZAR PERFIL</ion-button>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Cursos y Certificaciones</ion-label><ion-textarea rows="2" [(ngModel)]="perfil.cursos"></ion-textarea></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Referencias Personales</ion-label><ion-textarea rows="2" [(ngModel)]="perfil.referencias_personales"></ion-textarea></ion-item>
+        
+        <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">
+          <ion-icon name="save-outline" slot="start"></ion-icon> ACTUALIZAR PERFIL COMPLETO
+        </ion-button>
       </ion-card-content>
     </ion-card>
   </div>
@@ -39,33 +66,49 @@
   <div *ngIf="seccionActiva === 'portafolio'">
     <ion-card>
       <ion-card-content>
-        <ion-item><ion-label position="floating">Título</ion-label><ion-input [(ngModel)]="nuevoProyecto.title"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Título del Proyecto</ion-label><ion-input [(ngModel)]="nuevoProyecto.title"></ion-input></ion-item>
         <ion-item><ion-label position="floating">Categoría</ion-label><ion-input [(ngModel)]="nuevoProyecto.category"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Fase / Sprint</ion-label><ion-input [(ngModel)]="nuevoProyecto.phase"></ion-input></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">URL Imagen</ion-label><ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input></ion-item>
-        <ion-button expand="block" [color]="editando ? 'warning' : 'success'" (click)="guardarProyecto()" class="ion-margin-top">{{ editando ? 'GUARDAR CAMBIOS' : 'AGREGAR PROYECTO' }}</ion-button>
+        <ion-item><ion-label position="floating">Fase Actual / Sprint</ion-label><ion-input [(ngModel)]="nuevoProyecto.phase"></ion-input></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">URL Imagen (Vincular desde Archivos)</ion-label><ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input></ion-item>
+        <ion-button expand="block" [color]="editando ? 'warning' : 'success'" (click)="guardarProyecto()" class="ion-margin-top">
+          <ion-icon [name]="editando ? 'sync-outline' : 'add-circle-outline'" slot="start"></ion-icon>
+          {{ editando ? 'GUARDAR CAMBIOS' : 'AGREGAR PROYECTO' }}
+        </ion-button>
       </ion-card-content>
     </ion-card>
-    <ion-list>
-      <ion-item *ngFor="let p of proyectos">
-        <ion-label><h2>{{ p.title }}</h2><p>{{ p.category }} - {{ p.phase }}</p></ion-label>
-        <ion-buttons slot="end">
-          <ion-button (click)="prepararEdicion(p)"><ion-icon name="create-outline"></ion-icon></ion-button>
-          <ion-button color="danger" (click)="eliminarProyecto(p.id)"><ion-icon name="trash-outline"></ion-icon></ion-button>
-        </ion-buttons>
-      </ion-item>
+
+    <ion-list lines="inset">
+      <ion-item-sliding *ngFor="let p of proyectos">
+        <ion-item>
+          <ion-thumbnail slot="start" *ngIf="p.image_url">
+            <img [src]="p.image_url" />
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{ p.title }}</h2>
+            <p>{{ p.category }} — <ion-badge color="tertiary">{{ p.phase }}</ion-badge></p>
+          </ion-label>
+          <ion-buttons slot="end">
+            <ion-button (click)="prepararEdicion(p)"><ion-icon name="create-outline" color="primary"></ion-icon></ion-button>
+            <ion-button (click)="eliminarProyecto(p.id)"><ion-icon name="trash-outline" color="danger"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-item-sliding>
     </ion-list>
   </div>
 
   <div *ngIf="seccionActiva === 'reporte'">
     <ion-card>
+      <ion-card-header>
+        <ion-card-title>Generador de Hoja de Vida</ion-card-title>
+        <ion-card-subtitle>Sincroniza los datos antes de imprimir para asegurar la última versión.</ion-card-subtitle>
+      </ion-card-header>
       <ion-card-content>
-        <ion-item><ion-label position="floating">Título PDF</ion-label><ion-input [(ngModel)]="reporte.titulo"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Contenido</ion-label><ion-textarea rows="4" [(ngModel)]="reporte.contenido_detalle"></ion-textarea></ion-item>
+        <ion-item><ion-label position="floating">Nombre en el Reporte</ion-label><ion-input [(ngModel)]="reporte.titulo"></ion-input></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Resumen Profesional (Cuerpo del PDF)</ion-label><ion-textarea rows="6" [(ngModel)]="reporte.contenido_detalle"></ion-textarea></ion-item>
         <ion-grid>
           <ion-row>
-            <ion-col size="6"><ion-button expand="block" color="warning" (click)="guardarReporte()">SINCRONIZAR</ion-button></ion-col>
-            <ion-col size="6"><ion-button expand="block" color="tertiary" (click)="imprimirReporte()">IMPRIMIR PDF</ion-button></ion-col>
+            <ion-col size="6"><ion-button expand="block" color="warning" (click)="guardarReporte()"><ion-icon name="sync-outline" slot="start"></ion-icon> SINCRONIZAR</ion-button></ion-col>
+            <ion-col size="6"><ion-button expand="block" color="tertiary" (click)="imprimirReporte()"><ion-icon name="print-outline" slot="start"></ion-icon> IMPRIMIR PDF</ion-button></ion-col>
           </ion-row>
         </ion-grid>
       </ion-card-content>
@@ -77,23 +120,24 @@
       <ion-card-content>
         <input type="file" #fileChooser (change)="subirArchivoDashboard($event)" hidden>
         <ion-button expand="block" color="primary" (click)="fileChooser.click()">
-          <ion-icon name="cloud-upload-outline" slot="start"></ion-icon> EXPLORAR PC Y SUBIR
+          <ion-icon name="cloud-upload-outline" slot="start"></ion-icon> SUBIR NUEVO RECURSO
         </ion-button>
       </ion-card-content>
     </ion-card>
 
     <ion-list lines="full">
-      <ion-list-header><ion-label>Archivos en la Nube</ion-label></ion-list-header>
+      <ion-list-header><ion-label>Gestión de Multimedia en Supabase</ion-label></ion-list-header>
       <ion-item *ngFor="let f of listaArchivosReales">
-        <ion-icon name="document-attach-outline" slot="start" color="medium"></ion-icon>
+        <ion-icon name="image-outline" slot="start" color="primary" *ngIf="f.name.match('(jpg|jpeg|png|webp)$')"></ion-icon>
+        <ion-icon name="document-outline" slot="start" color="medium" *ngIf="!f.name.match('(jpg|jpeg|png|webp)$')"></ion-icon>
         <ion-label>
           <h2 style="font-size: 0.9rem; font-weight: 500;">{{ f.nombreMostrar }}</h2>
-          <p>Almacenado en Supabase</p>
+          <p>URL Lista para vincular</p>
         </ion-label>
         <ion-buttons slot="end">
-          <ion-button (click)="incorporarAFuncionalidad(f)"><ion-icon name="link-outline" color="success"></ion-icon></ion-button>
-          <ion-button (click)="compartirArchivo(f)"><ion-icon name="share-social-outline" color="primary"></ion-icon></ion-button>
-          <ion-button color="danger" (click)="borrarArchivoDashboard(f.name)"><ion-icon name="trash-outline"></ion-icon></ion-button>
+          <ion-button (click)="incorporarAFuncionalidad(f)" title="Vincular a Proyecto"><ion-icon name="link-outline" color="success"></ion-icon></ion-button>
+          <ion-button (click)="compartirArchivo(f)" title="Compartir"><ion-icon name="share-social-outline" color="primary"></ion-icon></ion-button>
+          <ion-button color="danger" (click)="borrarArchivoDashboard(f.name)" title="Eliminar"><ion-icon name="trash-outline"></ion-icon></ion-button>
         </ion-buttons>
       </ion-item>
     </ion-list>
