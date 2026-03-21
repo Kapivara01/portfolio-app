@@ -5,6 +5,7 @@ import { SupabaseService } from '../../services/supabase.service';
   selector: 'app-portafolio',
   templateUrl: './portfolio.page.html',
   styleUrls: ['./portfolio.page.scss'],
+  standalone: false // Asegúrate de tener esto si no usas componentes standalone
 })
 export class PortafolioPage implements OnInit {
   proyectos: any[] = [];
@@ -20,17 +21,25 @@ export class PortafolioPage implements OnInit {
     await this.cargarDatos();
   }
 
+  // CRUCIAL: Este evento de Ionic recarga los datos cada vez que entras a la pestaña
   async ionViewWillEnter() {
     await this.cargarDatos();
   }
 
   async cargarDatos() {
-    const { data, error } = await this.supabaseService.getProyectos();
-    if (!error) {
-      this.proyectos = data || [];
-      this.aplicarFiltro();
+    try {
+      const { data, error } = await this.supabaseService.getProyectos();
+      if (!error) {
+        this.proyectos = data || [];
+        this.aplicarFiltro();
+      } else {
+        console.error('Error de Supabase:', error.message);
+      }
+    } catch (err) {
+      console.error('Error inesperado:', err);
+    } finally {
+      this.cdr.detectChanges();
     }
-    this.cdr.detectChanges();
   }
 
   segmentChanged(event: any) {
@@ -42,15 +51,12 @@ export class PortafolioPage implements OnInit {
     if (this.filtroCategoria === 'Todos') {
       this.proyectosFiltrados = this.proyectos;
     } else {
-      // Normalizamos: quitamos puntos, tildes y pasamos a mayúsculas
-      const buscado = this.filtroCategoria.toUpperCase().replace('.', '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-      
+      // Filtramos comparando directamente con 'Informatica' o 'Telecomunicaciones'
+      // que son los valores que configuramos en el ion-select del Dashboard
       this.proyectosFiltrados = this.proyectos.filter(p => {
-        const cat = (p.category || p.categoria || "").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const desc = (p.description || "").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        
-        // Si el valor del botón está contenido en la categoría o descripción, lo muestra
-        return cat.includes(buscado) || desc.includes(buscado);
+        // Buscamos en 'category' (que es el campo que usa tu Dashboard)
+        const categoriaProyecto = p.category || '';
+        return categoriaProyecto === this.filtroCategoria;
       });
     }
     this.cdr.detectChanges();

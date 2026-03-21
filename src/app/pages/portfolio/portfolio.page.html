@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-title>Mi Portafolio</ion-title>
+  <ion-toolbar color="primary" style="--background: #002d5b; border-bottom: 4px solid #ffc107;">
+    <ion-title style="font-weight: bold;">MI PORTAFOLIO</ion-title>
   </ion-toolbar>
 
   <ion-toolbar color="light">
@@ -9,42 +9,49 @@
         <ion-label>TODOS</ion-label>
       </ion-segment-button>
       
-      <ion-segment-button value="TELECOM">
+      <ion-segment-button value="Telecomunicaciones">
         <ion-label>TELECOM.</ion-label>
       </ion-segment-button>
 
-      <ion-segment-button value="INFORMATICA">
+      <ion-segment-button value="Informatica">
         <ion-label>INFORMÁTICA</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-md="6" *ngFor="let proyecto of proyectosFiltrados">
-        <ion-card mode="ios">
-          <img [src]="proyecto.image_url || 'https://via.placeholder.com/400x200'" 
+        <ion-card mode="ios" style="margin: 10px 0; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          
+          <img [src]="proyecto.image_url || 'https://via.placeholder.com/400x200?text=Sin+Imagen'" 
                style="width: 100%; height: 200px; object-fit: cover;" />
+          
           <ion-card-header>
-            <ion-note color="primary" style="text-transform: uppercase; font-weight: bold;">
-              {{ proyecto.category || proyecto.categoria }}
-            </ion-note>
-            <ion-card-title>{{ proyecto.title }}</ion-card-title>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <ion-note color="primary" style="text-transform: uppercase; font-weight: 800; font-size: 0.75rem;">
+                {{ proyecto.category || proyecto.categoria }}
+              </ion-note>
+              <ion-badge color="tertiary" *ngIf="proyecto.phase">{{ proyecto.phase }}</ion-badge>
+            </div>
+            <ion-card-title style="font-size: 1.3rem; font-weight: bold; color: #002d5b;">
+              {{ proyecto.title }}
+            </ion-card-title>
           </ion-card-header>
-          <ion-card-content>
-            {{ proyecto.description }}
+          
+          <ion-card-content style="color: #444;">
+            {{ proyecto.description || 'Sin descripción detallada disponible.' }}
           </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
 
-    <div *ngIf="proyectosFiltrados.length === 0" class="ion-text-center ion-padding" style="margin-top: 40px;">
-      <ion-icon name="search-outline" style="font-size: 64px; color: #ccc;"></ion-icon>
-      <p style="color: #888;">No se encontraron proyectos para: <br>
-        <b style="color: var(--ion-color-primary);">{{ filtroCategoria }}</b>
-      </p>
+    <div *ngIf="proyectosFiltrados.length === 0" class="ion-text-center ion-padding" style="margin-top: 60px;">
+      <ion-icon name="folder-open-outline" style="font-size: 80px; color: #ddd;"></ion-icon>
+      <h3 style="color: #666; font-weight: 400;">No hay proyectos registrados</h3>
+      <p style="color: #999;">Categoría: <b style="color: var(--ion-color-primary);">{{ filtroCategoria }}</b></p>
     </div>
   </ion-grid>
 </ion-content>

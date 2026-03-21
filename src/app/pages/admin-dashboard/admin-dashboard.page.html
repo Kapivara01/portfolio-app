@@ -64,27 +64,53 @@
   </div>
 
   <div *ngIf="seccionActiva === 'portafolio'">
-    <ion-card>
+    <ion-card mode="ios">
       <ion-card-content>
-        <ion-item><ion-label position="floating">Título del Proyecto</ion-label><ion-input [(ngModel)]="nuevoProyecto.title"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Categoría</ion-label><ion-input [(ngModel)]="nuevoProyecto.category"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Fase Actual / Sprint</ion-label><ion-input [(ngModel)]="nuevoProyecto.phase"></ion-input></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">URL Imagen (Vincular desde Archivos)</ion-label><ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input></ion-item>
+        <ion-item lines="full">
+          <ion-label position="floating">Título del Proyecto</ion-label>
+          <ion-input [(ngModel)]="nuevoProyecto.title"></ion-input>
+        </ion-item>
+
+        <ion-item lines="full" class="ion-margin-top">
+          <ion-label position="floating">Categoría (Trayecto)</ion-label>
+          <ion-select [(ngModel)]="nuevoProyecto.category" placeholder="Seleccione Especialidad" mode="ios" okText="Aceptar" cancelText="Cancelar">
+            <ion-select-option value="Informatica">Informática</ion-select-option>
+            <ion-select-option value="Telecomunicaciones">Telecomunicaciones</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item lines="full" class="ion-margin-top">
+          <ion-label position="floating">Fase Actual / Sprint</ion-label>
+          <ion-input [(ngModel)]="nuevoProyecto.phase"></ion-input>
+        </ion-item>
+
+        <ion-item lines="full" class="ion-margin-top">
+          <ion-label position="floating">URL Imagen (Vincular desde Archivos)</ion-label>
+          <ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input>
+        </ion-item>
+
         <ion-button expand="block" [color]="editando ? 'warning' : 'success'" (click)="guardarProyecto()" class="ion-margin-top">
           <ion-icon [name]="editando ? 'sync-outline' : 'add-circle-outline'" slot="start"></ion-icon>
-          {{ editando ? 'GUARDAR CAMBIOS' : 'AGREGAR PROYECTO' }}
+          {{ editando ? 'GUARDAR CAMBIOS EN PROYECTO' : 'AGREGAR NUEVO PROYECTO' }}
+        </ion-button>
+        
+        <ion-button *ngIf="editando" expand="block" color="medium" fill="outline" (click)="limpiarForm()" class="ion-margin-top">
+          CANCELAR EDICIÓN
         </ion-button>
       </ion-card-content>
     </ion-card>
 
     <ion-list lines="inset">
+      <ion-list-header>
+        <ion-label>Proyectos en Base de Datos</ion-label>
+      </ion-list-header>
       <ion-item-sliding *ngFor="let p of proyectos">
         <ion-item>
           <ion-thumbnail slot="start" *ngIf="p.image_url">
             <img [src]="p.image_url" />
           </ion-thumbnail>
           <ion-label>
-            <h2>{{ p.title }}</h2>
+            <h2 style="font-weight: bold;">{{ p.title }}</h2>
             <p>{{ p.category }} — <ion-badge color="tertiary">{{ p.phase }}</ion-badge></p>
           </ion-label>
           <ion-buttons slot="end">
@@ -117,31 +143,5 @@
 
   <div *ngIf="seccionActiva === 'archivos'">
     <ion-card>
-      <ion-card-content>
-        <input type="file" #fileChooser (change)="subirArchivoDashboard($event)" hidden>
-        <ion-button expand="block" color="primary" (click)="fileChooser.click()">
-          <ion-icon name="cloud-upload-outline" slot="start"></ion-icon> SUBIR NUEVO RECURSO
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-list lines="full">
-      <ion-list-header><ion-label>Gestión de Multimedia en Supabase</ion-label></ion-list-header>
-      <ion-item *ngFor="let f of listaArchivosReales">
-        <ion-icon name="image-outline" slot="start" color="primary" *ngIf="f.name.match('(jpg|jpeg|png|webp)$')"></ion-icon>
-        <ion-icon name="document-outline" slot="start" color="medium" *ngIf="!f.name.match('(jpg|jpeg|png|webp)$')"></ion-icon>
-        <ion-label>
-          <h2 style="font-size: 0.9rem; font-weight: 500;">{{ f.nombreMostrar }}</h2>
-          <p>URL Lista para vincular</p>
-        </ion-label>
-        <ion-buttons slot="end">
-          <ion-button (click)="incorporarAFuncionalidad(f)" title="Vincular a Proyecto"><ion-icon name="link-outline" color="success"></ion-icon></ion-button>
-          <ion-button (click)="compartirArchivo(f)" title="Compartir"><ion-icon name="share-social-outline" color="primary"></ion-icon></ion-button>
-          <ion-button color="danger" (click)="borrarArchivoDashboard(f.name)" title="Eliminar"><ion-icon name="trash-outline"></ion-icon></ion-button>
-        </ion-buttons>
-      </ion-item>
-    </ion-list>
-  </div>
-</ion-content>
 
 
