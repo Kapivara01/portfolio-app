@@ -5,7 +5,7 @@
         <ion-list id="inbox-list">
           <ion-list-header>Portfolio</ion-list-header>
           <ion-note>Bienvenido</ion-note>
-
+          
           @for (p of appPages; track p; let i = $index) {
             <ion-menu-toggle auto-hide="false">
               <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
@@ -15,11 +15,9 @@
             </ion-menu-toggle>
           }
         </ion-list>
-
-        <div style="margin: 20px 16px 10px 16px; padding: 15px; border-radius: 10px; background-color: rgba(56, 128, 255, 0.05); border: 1px solid rgba(56, 128, 255, 0.2);">
-          <ion-note style="font-weight: 800; color: #3880ff; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 10px;">
-            CONTACTO
-          </ion-note>
+        
+        <div style="margin: 20px 16px; padding: 15px; border-radius: 10px; background-color: rgba(56, 128, 255, 0.05); border: 1px solid rgba(56, 128, 255, 0.2);">
+          <ion-note style="font-weight: 800; color: #3880ff; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 10px;">CONTACTO</ion-note>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 10px;">
               <ion-icon name="call-outline" style="color: #3880ff; font-size: 18px;"></ion-icon>
@@ -29,37 +27,33 @@
               <ion-icon name="mail-outline" style="color: #3880ff; font-size: 18px;"></ion-icon>
               <span style="font-weight: 700; color: #222; font-size: 0.9rem;">jluis7616&#64;gmail.com</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <ion-icon name="location-outline" style="color: #3880ff; font-size: 18px;"></ion-icon>
-              <span style="font-weight: 700; color: #222; font-size: 0.9rem;">Venezuela</span>
-            </div>
           </div>
         </div>
-
-        <div style="margin: 0 16px; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 8px; border: 1px solid rgba(56, 128, 255, 0.2);">
-          <span style="font-weight: 700; color: #444; font-size: 0.85rem;">Agendar/Consultar</span>
-          
-          <ion-button id="open-calendar" fill="clear" style="--color: #3880ff; margin: 0;">
-            <ion-icon slot="icon-only" name="calendar-number-outline" style="font-size: 24px;"></ion-icon>
-          </ion-button>
-
-          <ion-popover trigger="open-calendar" dismissOnSelect="false" mode="ios">
-            <ng-template>
-              <ion-content color="light">
-                <ion-datetime 
-                  presentation="date" 
-                  size="fixed" 
-                  [showDefaultButtons]="true"
-                  doneText="Seleccionar"
-                  cancelText="Cerrar">
-                </ion-datetime>
-              </ion-content>
-            </ng-template>
-          </ion-popover>
-        </div>
-
       </ion-content>
     </ion-menu>
-    <ion-router-outlet id="main-content"></ion-router-outlet>
+
+    <div class="ion-page" id="main-content">
+      <ion-header class="ion-no-border">
+        <ion-toolbar color="primary" style="--min-height: 85px;">
+          <ion-buttons slot="start" style="margin-left: 10px;">
+            <ion-menu-button style="color: white;"></ion-menu-button>
+            <div style="width: 55px; height: 55px; border-radius: 50%; overflow: hidden; background: white; display: flex; align-items: center; justify-content: center;">
+              <img src="assets/images/civ-logo.png" alt="CIV" style="height: 80%; width: auto; object-fit: contain;">
+            </div>
+          </ion-buttons>
+
+          <ion-title style="font-weight: 800; font-size: 1.5rem; color: white; text-align: center; text-transform: uppercase; letter-spacing: 2px;">
+            Bienvenidos a mi Portafolio Profesional
+          </ion-title>
+
+          <ion-buttons slot="end" style="margin-right: 15px;">
+            <div style="width: 55px; height: 55px; border-radius: 50%; overflow: hidden; background: white; display: flex; align-items: center; justify-content: center;">
+              <img src="assets/images/uneti-logo.jpg" alt="UNETI" style="height: 100%; width: 100%; object-fit: cover; mix-blend-mode: multiply;">
+            </div>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-router-outlet></ion-router-outlet>
+    </div>
   </ion-split-pane>
 </ion-app>
