@@ -1,84 +1,84 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Perfil Profesional</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true">
+  <div id="container" style="margin-top: 90px; padding: 10px; max-width: 1100px; margin-left: auto; margin-right: auto;">
+    
+    <div style="text-align: center; margin-bottom: 30px;">
+      <div style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 3px solid var(--ion-color-primary); margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <img src="assets/images/profile.jpg" alt="Jorge Linares" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <h2 style="color: var(--ion-color-primary); font-weight: 800; text-transform: uppercase; margin: 0; font-size: 1.6rem;">Perfil Profesional</h2>
+      <p style="color: #666; font-weight: 600; margin-top: 5px;">ING. JORGE LUIS LINARES</p>
+    </div>
 
-<ion-content class="ion-padding">
-  <div *ngIf="loading" class="ion-text-center ion-padding">
-    <ion-spinner name="crescent" color="primary"></ion-spinner>
-    <p>Sincronizando Vista Fiel...</p>
-  </div>
+    <ion-grid style="padding: 0;">
+      <ion-row>
+        
+        <ion-col size="12" size-md="6">
+          <ion-card mode="ios" style="margin: 5px; height: calc(100% - 10px); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <ion-card-header style="background: var(--ion-color-primary);">
+              <ion-card-title style="color: white; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                <ion-icon name="briefcase-outline"></ion-icon> TRAYECTORIA LABORAL
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content style="padding-top: 15px;">
+              <div style="border-left: 2px solid #ddd; padding-left: 15px; margin-left: 10px;">
+                <p style="margin-bottom: 12px; font-weight: 600; color: #333;">• Gerente de Operaciones (Edo. Carabobo)</p>
+                <p style="margin-bottom: 12px; font-weight: 600; color: #333;">• Supervisor de Operación y Mantenimiento</p>
+                <p style="margin-bottom: 12px; font-weight: 600; color: #333;">• Supervisor de Sistema Fibra Óptica</p>
+                <p style="margin-bottom: 12px; font-weight: 600; color: #333;">• Supervisor de Área de Transmisión</p>
+                <p style="margin-bottom: 12px; font-weight: 600; color: #333;">• Técnico Especialista de Transmisión</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
 
-  <div *ngIf="!loading && perfil">
-    <div class="ion-text-center">
-      <ion-avatar style="width: 160px; height: 160px; margin: 20px auto; border: 4px solid #3880ff;">
-        <img [src]="perfil.foto_url || 'assets/icon/favicon.png'" [alt]="perfil.nombres_apellidos" />
-      </ion-avatar>
-      
-      <h2 style="font-weight: bold; color: #3880ff; margin-bottom: 0;">{{ perfil.nombres_apellidos }}</h2>
-      
-      <p style="font-style: italic; color: #666; font-size: 1.1em; margin-top: 5px;">
-        {{ perfil.subtitulos }}
-      </p>
-      
-      <ion-button (click)="solicitarCV()" color="success" shape="round" class="ion-margin-top">
-        <ion-icon name="document-text-outline" slot="start"></ion-icon>
+        <ion-col size="12" size-md="6">
+          
+          <ion-card mode="ios" style="margin: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <ion-card-header style="background: #2dd36f;">
+              <ion-card-title style="color: white; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                <ion-icon name="school-outline"></ion-icon> FORMACIÓN ACADÉMICA
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content style="padding-top: 15px;">
+              <p style="margin-bottom: 8px;"><strong>Ingeniero en Telecomunicaciones</strong> - UNETI</p>
+              <p style="margin-bottom: 8px;"><strong>Ingeniero en Informática</strong> - UNETI (4to Trayecto)</p>
+              <p style="margin-bottom: 8px;"><strong>TSU en Telecomunicaciones</strong> - CET Cantv</p>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card mode="ios" style="margin: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <ion-card-header style="background: #eb445a;">
+              <ion-card-title style="color: white; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                <ion-icon name="star-outline"></ion-icon> COMPETENCIAS CLAVE
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content style="padding: 15px; display: flex; flex-wrap: wrap; gap: 5px;">
+              <ion-badge color="light" style="padding: 8px;">Ionic/Angular</ion-badge>
+              <ion-badge color="light" style="padding: 8px;">Gestión de Proyectos</ion-badge>
+              <ion-badge color="light" style="padding: 8px;">Bases de Datos SQL</ion-badge>
+              <ion-badge color="light" style="padding: 8px;">Scrum/Agile</ion-badge>
+              <ion-badge color="light" style="padding: 8px;">Fibra Óptica</ion-badge>
+              <ion-badge color="light" style="padding: 8px;">Gpon</ion-badge>
+              <ion-badge color="light" style="padding: 8px;">Enlaces de Radio</ion-badge>
+              <ion-badge color="light" style="padding: 8px;">Sistemas Satelitales</ion-badge>
+            </ion-card-content>
+          </ion-card>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <div style="text-align: center; margin-top: 25px; padding-bottom: 40px;">
+      <ion-button 
+        href="mailto:jluis7616@gmail.com?subject=Solicitud de Hoja de Vida - Portafolio Web"
+        color="success" 
+        mode="ios" 
+        style="--border-radius: 20px; font-weight: 700;">
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
         Solicitar Hoja de Vida
       </ion-button>
     </div>
 
-    <div class="ion-padding-top">
-      <ion-list-header class="ion-no-padding">
-        <ion-label style="font-weight: bold; font-size: 1.2em; color: #222;">
-          Registros del Sistema - Vista Fiel
-        </ion-label>
-      </ion-list-header>
-
-      <ion-card mode="ios" class="ion-no-margin ion-margin-bottom shadow-card">
-        <ion-card-content>
-          
-          <div class="profile-data-container">
-            
-            <div class="data-group" *ngIf="perfil.trayectoria">
-              <h3 class="data-title">Trayectoria</h3>
-              <div class="data-list-text">{{ perfil.trayectoria }}</div>
-            </div>
-
-            <div class="data-group" *ngIf="perfil.formacion">
-              <h3 class="data-title">Formación Académica</h3>
-              <div class="data-list-text">{{ perfil.formacion }}</div>
-            </div>
-
-            <div class="data-group" *ngIf="perfil.experiencia_laboral">
-              <h3 class="data-title">Experiencia Laboral</h3>
-              <div class="data-list-text">{{ perfil.experiencia_laboral }}</div>
-            </div>
-
-            <div class="data-group" *ngIf="perfil.cursos">
-              <h3 class="data-title">Cursos y Certificaciones</h3>
-              <div class="data-list-text">{{ perfil.cursos }}</div>
-            </div>
-
-            <div class="data-group" *ngIf="perfil.referencias_personales">
-              <h3 class="data-title">Referencias Personales</h3>
-              <div class="data-list-text">{{ perfil.referencias_personales }}</div>
-            </div>
-
-            <div class="data-group contact-info">
-              <h3 class="data-title" style="color: #666;">Contacto y Ubicación</h3>
-              <p><ion-icon name="location-outline" color="primary"></ion-icon> <strong>Dirección:</strong> {{ perfil.direccion }}</p>
-              <p><ion-icon name="call-outline" color="primary"></ion-icon> <strong>Teléfono:</strong> {{ perfil.telefono }}</p>
-              <p><ion-icon name="mail-outline" color="primary"></ion-icon> <strong>Correo:</strong> {{ perfil.correo }}</p>
-            </div>
-
-          </div>
-        </ion-card-content>
-      </ion-card>
-    </div>
   </div>
 </ion-content>
 
