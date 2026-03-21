@@ -1,80 +1,66 @@
-#container {
+// Forzamos a que el contenedor ocupe el ancho total del móvil
+.home-wrapper {
   text-align: center;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 2rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; // Asegura que no se desborde horizontalmente
+  box-sizing: border-box;
 }
 
-#container strong {
-  font-size: 28px;
-  line-height: 36px;
-  font-weight: 700;
-  color: var(--ion-color-primary);
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-#container p {
-  font-size: 18px;
-  line-height: 28px;
-  color: var(--ion-color-medium);
-  margin: 0.5rem 0;
-}
-
-#container p:last-child {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--ion-text-color);
-  margin-top: 1.5rem;
-}
-#container {
-  text-align: center;
-  padding: 0 15px;
-  margin-top: 2rem;
-}
-
-.profile-avatar-wrapper {
-  // Tamaño en PC
-  width: 200px; 
-  height: 200px;
-  margin: 0 auto 1.5rem;
+.profile-avatar {
+  // Tamaño ideal para pantallas de Android
+  width: 150px; 
+  height: 150px;
+  margin: 1.5rem auto;
   border-radius: 50%;
   border: 4px solid var(--ion-color-primary);
   box-shadow: 0 8px 20px rgba(56, 128, 255, 0.2);
   overflow: hidden;
 
-  // Ajuste automático para celulares pequeños
-  @media (max-width: 400px) {
-    width: 150px;
-    height: 150px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  // Crece solo si es una tablet o PC
+  @media (min-width: 768px) {
+    width: 220px;
+    height: 220px;
   }
 }
 
-.main-title {
+.main-name {
   color: var(--ion-color-primary);
   font-weight: 800;
-  font-size: 1.8rem; // Más pequeño para que no se corte el nombre
+  font-size: 1.4rem; // Un poco más pequeño para evitar saltos de línea feos
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin: 10px 0;
+  width: 100%;
 
   @media (min-width: 768px) {
-    font-size: 2.5rem; // Tamaño original solo en PC
+    font-size: 2.3rem;
   }
 }
 
-.intro-text {
-  font-size: 1.1rem;
+.short-bio {
+  font-size: 1.05rem; 
   color: #333;
   line-height: 1.4;
   font-weight: 500;
+  max-width: 95%; // Casi todo el ancho del celular
   margin: 0 auto;
-  max-width: 90%;
 
   @media (min-width: 768px) {
-    font-size: 1.35rem;
-    max-width: 700px;
+    font-size: 1.3rem;
+    max-width: 650px;
   }
+}
+
+.divider {
+  border-top: 1px solid #ddd;
+  width: 50%;
+  margin: 15px auto;
 }
