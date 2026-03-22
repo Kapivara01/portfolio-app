@@ -3,7 +3,7 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header>Portfolio</ion-list-header>
+          <ion-list-header style="font-weight: 800; color: var(--ion-color-primary);">Portfolio</ion-list-header>
           <ion-note>Bienvenido</ion-note>
           
           @for (p of appPages; track p; let i = $index) {
@@ -16,9 +16,10 @@
           }
         </ion-list>
         
-        <div style="margin: 20px 16px; padding: 15px; border-radius: 10px; background-color: rgba(56, 128, 255, 0.05); border: 1px solid rgba(56, 128, 255, 0.2);">
-          <ion-note style="font-weight: 800; color: #3880ff; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 10px;">CONTACTO</ion-note>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="margin: 20px 16px; padding: 15px; border-radius: 12px; background-color: white; border: 1px solid rgba(56, 128, 255, 0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+          <ion-note style="font-weight: 800; color: #3880ff; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 12px;">CONTACTO</ion-note>
+          
+          <div style="display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 15px;">
             <div style="display: flex; align-items: center; gap: 10px;">
               <ion-icon name="call-outline" style="color: #3880ff; font-size: 18px;"></ion-icon>
               <span style="font-weight: 700; color: #222; font-size: 0.9rem;">+58 0414-4838711</span>
@@ -26,6 +27,27 @@
             <div style="display: flex; align-items: center; gap: 10px;">
               <ion-icon name="mail-outline" style="color: #3880ff; font-size: 18px;"></ion-icon>
               <span style="font-weight: 700; color: #222; font-size: 0.9rem;">jluis7616&#64;gmail.com</span>
+            </div>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
+              <ion-icon name="calendar-clear-outline" style="color: #3880ff;"></ion-icon>
+              <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #666;">{{ fechaActual }}</span>
+            </div>
+            
+            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+              <ion-datetime-button datetime="datetime"></ion-datetime-button>
+            </div>
+
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="datetime" presentation="date" locale="es-VE" [showDefaultButtons]="true" doneText="Agendar" cancelText="Cerrar"></ion-datetime>
+              </ng-template>
+            </ion-modal>
+
+            <div style="font-size: 18px; font-weight: 900; color: #1a1a1a; padding-top: 8px; border-top: 1px dotted #ccc; font-family: monospace;">
+              {{ horaActual }}
             </div>
           </div>
         </div>
