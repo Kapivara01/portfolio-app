@@ -1,0 +1,23 @@
+{
+  "name": "Portafolio Ing. Jorge Linares",
+  "short_name": "Ing. Linares",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#002d5b",
+  "theme_color": "#002d5b",
+  "description": "Portafolio profesional de Ingeniería en Telecomunicaciones e Informática",
+  "icons": [
+    {
+      "src": "assets/icon/196.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
