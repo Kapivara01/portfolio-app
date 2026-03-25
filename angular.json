@@ -20,6 +20,9 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
               {
                 "glob": "**/*",
                 "input": "src/assets",
@@ -110,6 +113,9 @@
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
               {
                 "glob": "**/*",
                 "input": "src/assets",
