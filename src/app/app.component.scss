@@ -123,3 +123,15 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
+/* Estilo para que tu botón de instalación resalte */
+.btn-primary.btn-lg {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    transform: scale(1.05); /* Se agranda un poquito al pasar el mouse */
+    background-color: #ffd700 !important; /* Cambia a dorado */
+    color: #003366 !important; /* El texto pasa a azul oscuro */
+    border-color: #003366 !important;
+  }
+}

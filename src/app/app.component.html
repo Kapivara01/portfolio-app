@@ -1,21 +1,28 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
+    
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header style="font-weight: 800; color: var(--ion-color-primary);">Portfolio</ion-list-header>
-          <ion-note>Bienvenido</ion-note>
-          
-          @for (p of appPages; track p; let i = $index) {
-            <ion-menu-toggle auto-hide="false">
-              <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-                <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-                <ion-label>{{ p.title }}</ion-label>
-              </ion-item>
-            </ion-menu-toggle>
-          }
+          <ion-list-header style="font-weight: 800; color: #3880ff;">PORTFOLIO</ion-list-header>
+          <ion-note style="margin-left: 16px;">Bienvenido</ion-note>
+
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
+            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+              <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
         </ion-list>
-        
+
+        <div *ngIf="showInstallButton" style="padding: 0 16px; margin-top: 10px;">
+          <button (click)="installPWA()" 
+                  style="width: 100%; background-color: #003366; color: #ffd700; border: 2px solid #ffd700; border-radius: 8px; padding: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <ion-icon name="download-outline"></ion-icon>
+            INSTALAR APP
+          </button>
+        </div>
+
         <div style="margin: 20px 16px; padding: 15px; border-radius: 12px; background-color: white; border: 1px solid rgba(56, 128, 255, 0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
           <ion-note style="font-weight: 800; color: #3880ff; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 12px;">CONTACTO</ion-note>
           
@@ -36,16 +43,6 @@
               <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #666;">{{ fechaActual }}</span>
             </div>
             
-            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
-              <ion-datetime-button datetime="datetime"></ion-datetime-button>
-            </div>
-
-            <ion-modal [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime id="datetime" presentation="date" locale="es-VE" [showDefaultButtons]="true" doneText="Agendar" cancelText="Cerrar"></ion-datetime>
-              </ng-template>
-            </ion-modal>
-
             <div style="font-size: 18px; font-weight: 900; color: #1a1a1a; padding-top: 8px; border-top: 1px dotted #ccc; font-family: monospace;">
               {{ horaActual }}
             </div>
@@ -56,26 +53,28 @@
 
     <div class="ion-page" id="main-content">
       <ion-header class="ion-no-border">
-        <ion-toolbar color="primary" style="--min-height: 80px; padding: 0 10px;">
+        <ion-toolbar color="primary" style="--min-height: 80px;">
           <ion-buttons slot="start">
             <ion-menu-button style="color: white;"></ion-menu-button>
-            <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; background: white; display: flex; align-items: center; justify-content: center; margin-left: 5px;">
-              <img src="assets/images/civ-logo.png" alt="CIV" style="height: 80%; width: auto; object-fit: contain;">
+            <div style="width: 45px; height: 45px; border-radius: 50%; overflow: hidden; background: white; margin-left: 10px; display: flex; align-items: center; justify-content: center;">
+              <img src="assets/images/civ-logo.png" style="height: 80%;">
             </div>
           </ion-buttons>
 
-          <ion-title style="font-weight: 800; font-size: clamp(1rem, 4vw, 1.5rem); color: white; text-align: center; text-transform: uppercase; letter-spacing: 1px; padding: 0 5px;">
+          <ion-title style="font-weight: 800; color: white; text-align: center; text-transform: uppercase; font-size: 1.1rem;">
             Bienvenidos a mi Portafolio Profesional
           </ion-title>
 
           <ion-buttons slot="end">
-            <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; background: white; display: flex; align-items: center; justify-content: center; margin-right: 5px;">
-              <img src="assets/images/uneti-logo.jpg" alt="UNETI" style="height: 100%; width: 100%; object-fit: cover; mix-blend-mode: multiply;">
+            <div style="width: 45px; height: 45px; border-radius: 50%; overflow: hidden; background: white; margin-right: 10px; display: flex; align-items: center; justify-content: center;">
+              <img src="assets/images/uneti-logo.jpg" style="height: 100%;">
             </div>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
+
       <ion-router-outlet></ion-router-outlet>
     </div>
+
   </ion-split-pane>
 </ion-app>
