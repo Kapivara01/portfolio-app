@@ -4,16 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { PortfolioPageRoutingModule } from './portfolio-routing.module';
 
-// CAMBIA ESTO: De PortfolioPage a PortafolioPage
+// Importamos la página corregida
 import { PortafolioPage } from './portfolio.page'; 
+
+// 1. IMPORTAMOS EL COMPONENTE FOOTER AQUÍ
+import { FooterComponent } from '../../components/footer/footer.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PortfolioPageRoutingModule
+    PortfolioPageRoutingModule,
+    FooterComponent // 2. AGREGAMOS EL FOOTER AQUÍ EN IMPORTS
   ],
-  declarations: [PortafolioPage] // CAMBIA ESTO TAMBIÉN
+  declarations: [PortafolioPage] 
 })
 export class PortfolioPageModule {}

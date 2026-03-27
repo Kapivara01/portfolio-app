@@ -1,104 +1,67 @@
-.footer-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1rem;
-    max-width: 600px;
-    margin: 0 auto;
-    width: 100%;
+.footer-master-container {
+  background-color: #001f3f !important;
+  border-top: 4px solid #ffd700 !important;
+  height: 85px !important; /* Altura fija para controlar el centro */
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important; /* Cambiamos a start para manejar el empuje manual */
+  padding: 0 !important;
+  overflow: visible !important;
 }
 
-
-.footer-section {
-    text-align: center;
-
-    h3 {
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
-        font-weight: 600;
-        color: var(--ion-color-primary);
-    }
-
-    p {
-        margin: 0.2rem 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.4rem;
-        font-size: 0.95rem;
-        opacity: 0.9;
-
-        ion-icon {
-            font-size: 0.9rem;
-        }
-    }
+.footer-content-flex {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 25px !important;
+  width: 100% !important;
+  height: 100% !important;
+  
+  /* ESTA ES LA CLAVE: Subimos todo el bloque manualmente */
+  transform: translateY(-5px) !important; 
 }
 
-.social-links {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 0.3rem;
-
-    ion-button {
-        --padding-start: 0.4rem;
-        --padding-end: 0.4rem;
-        margin: 0;
-        height: 36px;
-
-        ion-icon {
-            font-size: 1.2rem;
-        }
-
-        &:hover {
-            transform: scale(1.1);
-        }
-    }
+.label-oro {
+  color: #ffd700 !important;
+  font-weight: 800 !important;
+  font-size: 13px !important;
+  margin: 0 !important;
+  display: inline-block !important;
 }
 
-.copyright {
-    padding-top: 0.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: 0.3rem;
-
-    p {
-        font-size: 0.65rem;
-        opacity: 0.7;
-    }
+.social-icons {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+  
+  ion-icon {
+    font-size: 22px !important;
+    color: white !important;
+    display: block !important;
+  }
 }
 
-@media (min-width: 768px) {
-    .footer-content {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        align-items: flex-start;
-        gap: 1rem;
-    }
+.vertical-divider {
+  width: 1px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.3);
+}
 
-    .footer-section {
-        text-align: left;
-        flex: 0 1 auto;
-        min-width: 100px;
+.copyright-text {
+  color: white !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  display: inline-block !important;
+}
 
-        p {
-            justify-content: flex-start;
-        }
-
-        &.copyright {
-            flex-basis: 100%;
-            text-align: center;
-            border-top: 1px solid rgba(122, 120, 120, 0.1);
-            margin-top: 0.3rem;
-
-            p {
-                justify-content: center;
-            }
-        }
-    }
-
-    .social-links {
-        justify-content: flex-start;
-    }
+/* Ajuste móvil para que no se pierda la elevación */
+@media (max-width: 768px) {
+  .footer-master-container { height: 100px !important; }
+  .footer-content-flex { 
+    flex-direction: column !important; 
+    gap: 8px !important;
+    transform: translateY(0) !important; /* En móvil suele centrarse solo */
+  }
+  .vertical-divider { display: none; }
 }

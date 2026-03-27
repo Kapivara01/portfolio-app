@@ -1,13 +1,17 @@
 <ion-header [translucent]="true">
-    <ion-toolbar>
+    <ion-toolbar color="primary" style="--background: #002d5b; border-bottom: 4px solid #ffc107;">
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Motor IA</ion-title>
+        <ion-title style="font-weight: bold;">MOTOR IA</ion-title>
     </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <iframe src="https://jorge-linares-ia-uneti.netlify.app" style="width: 100%; height: 100%; border: none;"
-        title="Motor IA"></iframe>
+    <iframe src="https://jorge-linares-ia-uneti.netlify.app" 
+            style="width: 100%; height: calc(100% - 2px); border: none;"
+            title="Motor IA">
+    </iframe>
 </ion-content>
+
+<app-footer></app-footer>
