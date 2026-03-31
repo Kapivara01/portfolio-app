@@ -13,7 +13,7 @@ export class SupabaseService {
     this.supabase = createClient(environment.supabase.url, environment.supabase.key);
   }
 
-  /* --- CRUD PERFIL PROFESIONAL (Sincronizado) --- */
+  /* --- CRUD PERFIL PROFESIONAL --- */
   async getPerfil() {
     return await this.supabase
       .from('perfil_profesional')
@@ -36,7 +36,7 @@ export class SupabaseService {
       .eq('id', id);
   }
 
-  /* --- CRUD PORTAFOLIO / PROYECTOS (Dashboard Estable) --- */
+  /* --- CRUD PORTAFOLIO / PROYECTOS --- */
   async getProyectos() {
     return await this.supabase.from('portfolio_items').select('*').order('id', { ascending: false });
   }
@@ -55,7 +55,7 @@ export class SupabaseService {
     return await this.supabase.from('portfolio_items').delete().eq('id', id);
   }
 
-  /* --- NUEVO: GESTIÓN DE REPORTE HOJA DE VIDA --- */
+  /* --- GESTIÓN DE REPORTE HOJA DE VIDA --- */
   async getHojaDeVida() {
     return await this.supabase
       .from('hoja_de_vida_pro')
@@ -68,6 +68,31 @@ export class SupabaseService {
     return await this.supabase
       .from('hoja_de_vida_pro')
       .upsert({ ...datos, user_id: this.MI_USER_ID });
+  }
+
+  /* --- SECCIÓN CURSOS NIOS --- */
+  async getCursosNios() {
+    return await this.supabase
+      .from('cursos_nios')
+      .select('*')
+      .order('id', { ascending: true });
+  }
+
+  /* --- NUEVO: REGISTRO DE INTERACCIONES Y VISITAS --- */
+  async registrarInteraccion(evento: string, detalles: any = {}) {
+    return await this.supabase
+      .from('interacciones')
+      .insert([
+        { 
+          tipo_evento: evento, 
+          user_id: this.MI_USER_ID,
+          detalles: { 
+            ...detalles,
+            navegador: window.navigator.userAgent,
+            fecha_local: new Date().toLocaleString()
+          }
+        }
+      ]);
   }
 
   /* --- STORAGE Y OTROS --- */
@@ -89,5 +114,21 @@ export class SupabaseService {
 
   async signOut() {
     return await this.supabase.auth.signOut();
+  }
+  /* --- GESTIÓN DE INTERACCIONES WEB (SOLICITUDES Y CITAS) --- */
+
+  // Esta función elimina el error de compilación del Dashboard
+  async getInteracciones() {
+    return await this.supabase
+      .from('interacciones_web')
+      .select('*')
+      .order('fecha', { ascending: false });
+  }
+
+  // Esta función permite a los visitantes enviar datos desde la web
+  async enviarSolicitudWeb(datos: any) {
+    return await this.supabase
+      .from('interacciones_web')
+      .insert([datos]);
   }
 }

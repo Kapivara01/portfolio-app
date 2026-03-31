@@ -82,3 +82,17 @@ ion-modal {
 ion-content {
   --padding-bottom: 100px;
 }
+/* Estilo para un Dashboard de Ingeniería */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  padding: 10px;
+}
+
+.stat-card {
+  border-left: 4px solid var(--ion-color-primary);
+  background: #ffffff;
+  h3 { font-size: 1.1rem; color: #333; }
+  p { font-size: 0.85rem; color: #666; }
+}

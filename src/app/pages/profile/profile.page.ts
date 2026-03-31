@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SupabaseService } from '../../services/supabase.service';
+import { AlertController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-profile',
@@ -8,88 +9,83 @@ import { SupabaseService } from '../../services/supabase.service';
 })
 export class ProfilePage implements OnInit {
   
-  // Variables de Perfil (Sincronización Tabla perfil_profesional)
   perfil: any = null;
   loading: boolean = true;
 
-  // Variables de Proyectos (Sincronización Tabla portfolio_items)
-  registros: any[] = [];
-  proyectosCargando: boolean = true;
-
-  constructor(private supabaseService: SupabaseService) { }
+  constructor(
+    private supabaseService: SupabaseService,
+    private alertController: AlertController,
+    private toastController: ToastController
+  ) { }
 
   async ngOnInit() {
-    console.log('Iniciando Sincronización Total: Perfil + Proyectos');
-    // Ejecutamos ambas cargas en paralelo para mayor velocidad
-    await Promise.all([
-      this.cargarPerfilDesdeBD(),
-      this.cargarProyectosDesdeBD()
-    ]);
+    await this.cargarPerfil();
+    this.supabaseService.registrarInteraccion('VISITA_PERFIL');
   }
 
-  // --- CARGA DE PERFIL PROFESIONAL ---
-  async cargarPerfilDesdeBD() {
+  async cargarPerfil() {
     this.loading = true;
     try {
-      // Usamos tu función getPerfil() del servicio
       const { data, error } = await this.supabaseService.getPerfil();
-      
       if (error) throw error;
-
       if (data && data.length > 0) {
-        this.perfil = data[0]; // Extraemos el primer registro del array
-        console.log('Perfil sincronizado con éxito:', this.perfil.nombres_apellidos);
+        this.perfil = data[0];
       }
     } catch (err) {
-      console.error('Error al sincronizar Perfil:', err);
+      console.error('Error:', err);
     } finally {
       this.loading = false;
     }
   }
 
-  // --- CARGA DE PROYECTOS (VISTA ESPEJO DASHBOARD) ---
-  async cargarProyectosDesdeBD() {
-    this.proyectosCargando = true;
-    try {
-      const { data, error } = await this.supabaseService.getProyectos();
-      
-      if (error) throw error;
+  // NUEVA FUNCIÓN: Formulario interno para evitar que el usuario se pierda
+  async solicitarCV() {
+    const alert = await this.alertController.create({
+      header: 'Solicitar Información',
+      subHeader: 'Deje sus datos y el Ing. Linares le contactará',
+      inputs: [
+        { name: 'nombre', type: 'text', placeholder: 'Su nombre completo' },
+        { name: 'contacto', type: 'text', placeholder: 'Correo o Teléfono' },
+        { name: 'mensaje', type: 'textarea', placeholder: '¿Qué necesita? (CV, Cita, etc.)' }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Enviar Solicitud',
+          handler: async (data) => {
+            if (!data.nombre || !data.contacto) {
+              this.mostrarToast('Por favor, complete su nombre y contacto', 'warning');
+              return false;
+            }
 
-      if (data) {
-        // Mapeamos los datos para que coincidan con la estructura de tu HTML
-        this.registros = data.map(item => ({
-          titulo: item.titulo || 'Proyecto sin título',
-          descripcion: item.descripcion || 'Sin descripción disponible',
-          categoria: item.categoria || 'General',
-          estado: item.estado || 'Activo'
-        }));
-        console.log('Proyectos cargados para Vista Fiel:', this.registros.length);
-      }
-    } catch (err) {
-      console.error('Error al cargar proyectos:', err);
-    } finally {
-      this.proyectosCargando = false;
-    }
+            // Guardamos la solicitud directamente en Supabase
+            const { error } = await this.supabaseService.registrarInteraccion('FORMULARIO_CONTACTO', {
+              nombre: data.nombre,
+              contacto: data.contacto,
+              mensaje: data.mensaje
+            });
+
+            if (!error) {
+              this.mostrarToast('¡Solicitud enviada con éxito! El Ing. le contactará pronto.', 'success');
+            } else {
+              this.mostrarToast('Error al enviar. Intente más tarde.', 'danger');
+            }
+            return true;
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
-  // --- ACCIONES DE USUARIO ---
-  solicitarCV() {
-    if (!this.perfil) {
-      console.warn('Perfil no cargado, usando datos por defecto.');
-      window.location.href = `mailto:jlinares7616@gmail.com?subject=Solicitud de Hoja de Vida`;
-      return;
-    }
-
-    const email = this.perfil.correo || 'jlinares7616@gmail.com';
-    const nombre = this.perfil.nombres_apellidos || 'Ing. Jorge Luis Linares';
-    const subject = encodeURIComponent(`Solicitud de Hoja de Vida - ${nombre}`);
-    const body = encodeURIComponent(`Estimado ${nombre},\n\nHe visto su portafolio profesional y me gustaría solicitar su Hoja de Vida actualizada.\n\nQuedo atento a su respuesta.`);
-
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-  }
-
-  // Función para formatear fechas si las llegas a usar en el HTML
-  formatFecha(fecha: string) {
-    return new Date(fecha).toLocaleDateString('es-VE');
+  async mostrarToast(msg: string, color: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 3000,
+      color: color,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }
