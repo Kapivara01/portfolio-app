@@ -22,9 +22,7 @@
 
   <div *ngIf="seccionActiva === 'perfil'">
     <ion-card mode="ios">
-      <ion-card-header>
-        <ion-card-title>Configuración de Perfil Profesional</ion-card-title>
-      </ion-card-header>
+      <ion-card-header><ion-card-title>Configuración de Perfil Profesional</ion-card-title></ion-card-header>
       <ion-card-content>
         <ion-item><ion-label position="floating">Nombres y Apellidos</ion-label><ion-input [(ngModel)]="perfil.nombres_apellidos"></ion-input></ion-item>
         <ion-item class="ion-margin-top"><ion-label position="floating">Subtítulo / Especialidad</ion-label><ion-input [(ngModel)]="perfil.subtitulos"></ion-input></ion-item>
@@ -56,12 +54,9 @@
 
   <div *ngIf="seccionActiva === 'portafolio'">
     <ion-card mode="ios">
-      <ion-card-header>
-        <ion-card-title>{{ editando ? 'Editar Proyecto' : 'Nuevo Proyecto' }}</ion-card-title>
-      </ion-card-header>
+      <ion-card-header><ion-card-title>{{ editando ? 'Editar Proyecto' : 'Nuevo Proyecto' }}</ion-card-title></ion-card-header>
       <ion-card-content>
         <ion-item lines="full"><ion-label position="floating">Título del Proyecto</ion-label><ion-input [(ngModel)]="nuevoProyecto.title"></ion-input></ion-item>
-        
         <ion-item lines="full" class="ion-margin-top">
           <ion-label position="floating">Categoría (Especialidad)</ion-label>
           <ion-select [(ngModel)]="nuevoProyecto.category" mode="ios">
@@ -69,15 +64,19 @@
             <ion-select-option value="Telecomunicaciones">Telecomunicaciones</ion-select-option>
           </ion-select>
         </ion-item>
-
         <ion-item lines="full" class="ion-margin-top"><ion-label position="floating">Fase Actual / Sprint</ion-label><ion-input [(ngModel)]="nuevoProyecto.phase"></ion-input></ion-item>
+        <ion-item lines="full" class="ion-margin-top"><ion-label position="floating">Descripción Técnica</ion-label><ion-textarea rows="3" [(ngModel)]="nuevoProyecto.description"></ion-textarea></ion-item>
 
-        <ion-item lines="full" class="ion-margin-top">
-          <ion-label position="floating">Descripción Técnica</ion-label>
-          <ion-textarea rows="3" [(ngModel)]="nuevoProyecto.description"></ion-textarea>
-        </ion-item>
-
-        <ion-item lines="full" class="ion-margin-top"><ion-label position="floating">URL Imagen</ion-label><ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input></ion-item>
+        <div class="ion-margin-top p-2 bg-light rounded border" style="border: 2px dashed #002d5b !important;">
+          <input type="file" #fileProject (change)="cargarFotoProyecto($event)" style="display: none;" accept="image/*">
+          <ion-button expand="block" color="primary" fill="outline" (click)="fileProject.click()">
+            <ion-icon name="camera-outline" slot="start"></ion-icon> EXPLORAR FOTO EN PC
+          </ion-button>
+          <div *ngIf="nuevoProyecto.image_url" class="ion-text-center ion-margin-top">
+            <img [src]="nuevoProyecto.image_url" style="max-height: 80px; border-radius: 5px; border: 1px solid #ccc;">
+            <p style="font-size: 0.8rem; color: green;">URL capturada correctamente</p>
+          </div>
+        </div>
 
         <ion-button expand="block" [color]="editando ? 'warning' : 'success'" (click)="guardarProyecto()" class="ion-margin-top">
           <ion-icon [name]="editando ? 'sync-outline' : 'add-circle-outline'" slot="start"></ion-icon>
@@ -88,14 +87,12 @@
     </ion-card>
 
     <ion-list lines="inset">
-      <ion-list-header><ion-label>Proyectos Activos</ion-label></ion-list-header>
       <ion-item-sliding *ngFor="let p of proyectos">
         <ion-item>
           <ion-thumbnail slot="start" *ngIf="p.image_url"><img [src]="p.image_url" /></ion-thumbnail>
           <ion-label>
             <h2 style="font-weight: bold;">{{ p.title }}</h2>
-            <p><b>{{ p.category }}</b> — <ion-badge color="tertiary">{{ p.phase }}</ion-badge></p>
-            <p style="font-size: 0.85rem; color: #666;" class="ion-text-wrap">{{ p.description }}</p>
+            <p><b>{{ p.category }}</b> — <ion-badge color="tertiary">{{ p.project_url }}</ion-badge></p>
           </ion-label>
           <ion-buttons slot="end">
             <ion-button (click)="prepararEdicion(p)"><ion-icon name="create-outline" color="primary"></ion-icon></ion-button>
@@ -108,17 +105,14 @@
 
   <div *ngIf="seccionActiva === 'reporte'">
     <ion-card mode="ios">
-      <ion-card-header>
-        <ion-card-title>Generador de Hoja de Vida</ion-card-title>
-        <ion-card-subtitle>Sincroniza para actualizar el PDF con los datos del perfil.</ion-card-subtitle>
-      </ion-card-header>
+      <ion-card-header><ion-card-title>Generador de Hoja de Vida</ion-card-title></ion-card-header>
       <ion-card-content>
         <ion-item><ion-label position="floating">Nombre en Reporte</ion-label><ion-input [(ngModel)]="reporte.titulo"></ion-input></ion-item>
-        <ion-item class="ion-margin-top"><ion-label position="floating">Resumen Profesional (Cuerpo del PDF)</ion-label><ion-textarea rows="6" [(ngModel)]="reporte.contenido_detalle"></ion-textarea></ion-item>
+        <ion-item class="ion-margin-top"><ion-label position="floating">Resumen Profesional</ion-label><ion-textarea rows="6" [(ngModel)]="reporte.contenido_detalle"></ion-textarea></ion-item>
         <ion-grid>
           <ion-row>
-            <ion-col size="6"><ion-button expand="block" color="warning" (click)="guardarReporte()"><ion-icon name="sync-outline" slot="start"></ion-icon> SINCRONIZAR</ion-button></ion-col>
-            <ion-col size="6"><ion-button expand="block" color="tertiary" (click)="imprimirReporte()"><ion-icon name="print-outline" slot="start"></ion-icon> IMPRIMIR PDF</ion-button></ion-col>
+            <ion-col size="6"><ion-button expand="block" color="warning" (click)="guardarReporte()">SINCRONIZAR</ion-button></ion-col>
+            <ion-col size="6"><ion-button expand="block" color="tertiary" (click)="imprimirReporte()">IMPRIMIR PDF</ion-button></ion-col>
           </ion-row>
         </ion-grid>
       </ion-card-content>
@@ -127,38 +121,19 @@
 
   <div *ngIf="seccionActiva === 'archivos'">
     <ion-card mode="ios">
-      <ion-card-header>
-        <ion-card-title color="primary">Gestión de Archivos (Storage)</ion-card-title>
-      </ion-card-header>
       <ion-card-content>
-        <div class="ion-text-center ion-margin-bottom">
-          <input type="file" #fileInput (change)="subirArchivoDashboard($event)" style="display: none;">
-          <ion-button expand="block" color="primary" (click)="fileInput.click()">
-            <ion-icon name="cloud-upload-outline" slot="start"></ion-icon> EXPLORAR ARCHIVOS EN MI PC
-          </ion-button>
-        </div>
-
+        <input type="file" #fileInput (change)="subirArchivoDashboard($event)" style="display: none;">
+        <ion-button expand="block" color="primary" (click)="fileInput.click()">EXPLORAR ARCHIVOS EN MI PC</ion-button>
         <ion-list lines="full">
-          <ion-list-header><ion-label color="dark"><b>Archivos en Servidor</b></ion-label></ion-list-header>
           <ion-item *ngFor="let archivo of listaArchivosReales">
-            <ion-icon [name]="archivo.name.endsWith('.pdf') ? 'document-text-outline' : 'image-outline'" slot="start" color="secondary"></ion-icon>
-            <ion-label>
-              <h2 style="font-weight: bold; font-size: 0.9rem;">{{ archivo.nombreMostrar }}</h2>
-              <p>Tamaño: {{ (archivo.metadata.size / 1024).toFixed(1) }} KB</p>
-            </ion-label>
+            <ion-label><h2>{{ archivo.nombreMostrar }}</h2></ion-label>
             <ion-buttons slot="end">
-              <ion-button (click)="compartirArchivo(archivo)" color="primary"><ion-icon name="share-social-outline"></ion-icon></ion-button>
               <ion-button (click)="incorporarAFuncionalidad(archivo)" color="success"><ion-icon name="link-outline"></ion-icon></ion-button>
               <ion-button (click)="borrarArchivoDashboard(archivo.name)" color="danger"><ion-icon name="trash-outline"></ion-icon></ion-button>
             </ion-buttons>
-          </ion-item>
-          <ion-item *ngIf="listaArchivosReales.length === 0" lines="none">
-            <ion-label class="ion-text-center" color="medium"><p>No hay archivos cargados.</p></ion-label>
           </ion-item>
         </ion-list>
       </ion-card-content>
     </ion-card>
   </div>
-
 </ion-content>
-

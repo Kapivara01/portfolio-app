@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SupabaseService } from 'src/app/services/supabase.service';
-import { AlertController, ToastController, NavController } from '@ionic/angular';
+import { AlertController, ToastController, NavController, LoadingController } from '@ionic/angular';
 import { jsPDF } from 'jspdf';
 
 @Component({
@@ -15,12 +15,11 @@ export class AdminDashboardPage implements OnInit {
 
   perfil: any = {
     id: null, nombres_apellidos: '', subtitulos: '', trayectoria: '', formacion: '',
-    foto_url: '', telefono: '', direccion: '', correo: '', linkedin: '',
-    cursos: '', experiencia_laboral: '', referencias_personales: ''
+    foto_url: '', telefono: '', direccion: '', correo: '', linkedin: '', github: '',
+    disponibilidad: '', cursos: '', experiencia_laboral: '', referencias_personales: ''
   };
 
   proyectos: any[] = [];
-  // Estructura interna para el formulario
   nuevoProyecto: any = { id: null, title: '', category: '', image_url: '', phase: '', description: '' };
   reporte: any = { titulo: '', contenido_detalle: '', experiencia_profesional: '' };
   listaArchivosReales: any[] = [];
@@ -29,13 +28,13 @@ export class AdminDashboardPage implements OnInit {
     private supabaseService: SupabaseService,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private loadingCtrl: LoadingController // Añadido para feedback visual
   ) {}
 
   async ngOnInit() { await this.cargarTodo(); }
 
   async cargarTodo() {
-    // 1. Cargar Perfil
     const { data: pData } = await this.supabaseService.getPerfil();
     if (pData && pData.length > 0) {
       this.perfil = { ...this.perfil, ...pData[0] };
@@ -44,11 +43,9 @@ export class AdminDashboardPage implements OnInit {
       this.reporte.experiencia_profesional = this.perfil.experiencia_laboral;
     }
 
-    // 2. Cargar Proyectos desde la tabla portfolio_items
     const { data: prData } = await this.supabaseService.getProyectos();
     this.proyectos = prData || [];
 
-    // 3. Cargar Archivos con Limpieza de Nombre
     const { data: fData } = await this.supabaseService.listLinks('imagenes', 'uploads');
     if (fData) {
       this.listaArchivosReales = fData
@@ -57,27 +54,42 @@ export class AdminDashboardPage implements OnInit {
           const { data } = this.supabaseService.getPublicUrl('imagenes', `uploads/${f.name}`);
           const partes = f.name.split('_');
           const nombreLimpio = partes.length > 1 ? partes.slice(1).join('_') : f.name;
-
-          return { 
-            ...f, 
-            url: data.publicUrl,
-            nombreMostrar: nombreLimpio 
-          };
+          return { ...f, url: data.publicUrl, nombreMostrar: nombreLimpio };
         });
     }
   }
 
-  // --- GESTIÓN DE ARCHIVOS ---
-  async subirArchivoDashboard(event: any) {
+  // --- NUEVA FUNCIÓN: CARGA DE FOTO DIRECTA PARA PROYECTO ---
+  async cargarFotoProyecto(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
+    const loading = await this.loadingCtrl.create({ message: 'Subiendo imagen...' });
+    await loading.present();
+
+    const filePath = `uploads/project_${Date.now()}_${file.name}`;
+    
+    try {
+      const { error } = await this.supabaseService.uploadFile('imagenes', filePath, file);
+      if (error) throw error;
+
+      const { data } = this.supabaseService.getPublicUrl('imagenes', filePath);
+      this.nuevoProyecto.image_url = data.publicUrl; 
+      this.mostrarToast('✅ Foto cargada correctamente.');
+    } catch (error: any) {
+      this.mostrarToast('❌ Error: ' + error.message);
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+  async subirArchivoDashboard(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
     const loader = await this.toastCtrl.create({ message: 'Subiendo archivo...', duration: 1000 });
     await loader.present();
-
     const filePath = `uploads/${Date.now()}_${file.name}`;
     const { error } = await this.supabaseService.uploadFile('imagenes', filePath, file);
-
     if (error) {
       this.mostrarToast('❌ Error al subir: ' + error.message);
     } else {
@@ -93,11 +105,10 @@ export class AdminDashboardPage implements OnInit {
       buttons: [
         { text: 'Cancelar' },
         { text: 'Borrar', handler: async () => {
-            await this.supabaseService.deleteFile('imagenes', [`uploads/${nombreReal}`]);
-            this.mostrarToast('Archivo eliminado.');
-            await this.cargarTodo();
-          }
-        }
+          await this.supabaseService.deleteFile('imagenes', [`uploads/${nombreReal}`]);
+          this.mostrarToast('Archivo eliminado.');
+          await this.cargarTodo();
+        }}
       ]
     });
     await alert.present();
@@ -109,7 +120,6 @@ export class AdminDashboardPage implements OnInit {
       text: `Te comparto: ${archivo.nombreMostrar}`,
       url: archivo.url
     };
-
     if (navigator.share) {
       navigator.share(shareData).catch(() => this.fallbackCompartir(archivo.url));
     } else {
@@ -127,7 +137,6 @@ export class AdminDashboardPage implements OnInit {
     this.mostrarToast('URL vinculada al formulario de Proyecto.');
   }
 
-  // --- CRUD PERFIL Y PROYECTOS ---
   async guardarPerfil() {
     const { id, ...datos } = this.perfil;
     await this.supabaseService.updatePerfil(id, datos);
@@ -140,16 +149,13 @@ export class AdminDashboardPage implements OnInit {
       this.mostrarToast('⚠️ Título y Categoría son obligatorios.');
       return;
     }
-
-    // MAPEO QUIRÚRGICO: Aseguramos que los nombres coincidan con las columnas de tu imagen
     const datosParaSupabase = {
       title: this.nuevoProyecto.title,
       description: this.nuevoProyecto.description || '',
-      category: this.nuevoProyecto.category, // 'INFORMATICA' o 'TELECOM'
+      category: this.nuevoProyecto.category,
       image_url: this.nuevoProyecto.image_url || '',
-      project_url: this.nuevoProyecto.phase || '' // Usamos el campo phase para project_url
+      project_url: this.nuevoProyecto.phase || ''
     };
-
     try {
       if (this.editando) {
         await this.supabaseService.updateProyecto(this.nuevoProyecto.id, datosParaSupabase);
@@ -157,25 +163,19 @@ export class AdminDashboardPage implements OnInit {
       } else {
         const { error } = await this.supabaseService.addProyecto(datosParaSupabase);
         if (error) throw error;
-        this.mostrarToast('✅ Proyecto guardado en portfolio_items.');
+        this.mostrarToast('✅ Proyecto guardado.');
       }
       this.limpiarForm();
       await this.cargarTodo();
     } catch (error: any) {
-      this.mostrarToast('❌ Error al guardar: ' + error.message);
-      console.error(error);
+      this.mostrarToast('❌ Error: ' + error.message);
     }
   }
 
   prepararEdicion(p: any) {
-    // Mapeo inverso para que el formulario reconozca los datos de la DB
     this.nuevoProyecto = { 
-      id: p.id,
-      title: p.title,
-      category: p.category,
-      image_url: p.image_url,
-      phase: p.project_url, // project_url vuelve al campo de fase
-      description: p.description
+      id: p.id, title: p.title, category: p.category, 
+      image_url: p.image_url, phase: p.project_url, description: p.description
     };
     this.editando = true;
     this.seccionActiva = 'portafolio';
@@ -263,7 +263,6 @@ export class AdminDashboardPage implements OnInit {
         y += (lines.length * 4.5) + 6; 
       }
     });
-
     doc.save(`CV_Jorge_Linares.pdf`);
   }
 
@@ -275,8 +274,7 @@ export class AdminDashboardPage implements OnInit {
   async cerrarSesion() { await this.supabaseService.signOut(); this.navCtrl.navigateRoot('/home'); }
 
   async mostrarToast(msj: string) { 
-    const t = await this.toastCtrl.create({ message: msj, duration: 2000 }); 
+    const t = await this.toastCtrl.create({ message: msj, duration: 2000 });
     t.present(); 
   }
 }
-
