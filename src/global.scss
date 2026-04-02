@@ -1,46 +1,42 @@
-/* Core CSS required for Ionic components to work properly */
+/* 1. Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 
-/* Basic CSS for apps built with Ionic */
+/* 2. Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils */
+/* 3. Optional CSS utils */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
+/* 4. Dark Mode Palette */
 @import "@ionic/angular/css/palettes/dark.system.css";
 
 /**
- * ESTILOS GLOBALES - PROYECTO PORTAFOLIO INGENIERO
+ * 5. ESTILOS GLOBALES - PROYECTO PORTAFOLIO JORGE LINARES
  */
 
-// Tipografía General
 h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--ion-color-primary);
 }
 
-// Tarjetas (Cards)
+// Tarjetas Profesionales
 ion-card {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     border-radius: 16px;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    }
+    transition: transform 0.2s ease;
+    &:hover { transform: translateY(-4px); }
 }
 
-// Iconos
+// Iconografía
 ion-icon {
     vertical-align: middle;
     margin-right: 8px;
@@ -51,90 +47,120 @@ ion-icon {
 ion-button {
     --border-radius: 12px;
     font-weight: 600;
-    text-transform: none;
-    letter-spacing: 0.5px;
 }
 
-/** * CORRECCIÓN DE ALTURAS (HEADER Y FOOTER)
+/** * 6. DISEÑO DE FOOTER (SÓLIDO: AZUL + BORDE AMARILLO)
  */
-
-// Header: Mantiene tu estilo profesional
-ion-header ion-toolbar {
-    --background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
-    --color: white;
-    --min-height: 56px !important;
-    
-    ion-title {
-        font-weight: 700;
-        font-size: 1.2rem;
-    }
-}
-
-// FOOTER: Reducción drástica del ancho (altura)
-// Forzamos a que cualquier footer o toolbar inferior sea pequeño
 ion-footer {
-    min-height: 32px !important;
-    height: 32px !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 35px !important;
+    background: #3880ff !important; 
+    border-top: 2px solid #ffce00 !important; 
+    z-index: 10 !important; // Nivel bajo para no tapar el menú
     display: flex !important;
     align-items: center !important;
 
     ion-toolbar {
-        --min-height: 32px !important;
-        --max-height: 32px !important;
-        --padding-top: 0px !important;
-        --padding-bottom: 0px !important;
-        --background: #f8f9fa;
-        --color: var(--ion-color-medium);
-        border-top: 0.5px solid #ddd;
+        --background: #3880ff !important;
+        --color: #ffffff !important;
+        --min-height: 35px !important;
+        --max-height: 35px !important;
+        border: none !important;
     }
 
     ion-title {
-        font-size: 0.7rem !important;
-        line-height: 32px !important;
-        font-weight: 400;
+        font-size: 0.75rem !important;
+        line-height: 35px !important;
+        color: #ffffff !important;
         text-align: center;
-        margin: 0 !important;
-        padding: 0 !important;
+        font-weight: 500;
     }
 }
 
-/**
- * ESTILO DEL MENÚ LATERAL (SIDEBAR)
+/** * 7. REPARACIÓN DEL MENÚ LATERAL (CON SCROLL ACTIVO)
  */
 ion-menu {
+    z-index: 2000 !important; 
+    
     ion-content {
         --background: #f8f9fa;
-    }
-
-    ion-list-header {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--ion-color-primary);
-        margin-bottom: 0.5rem;
-    }
-
-    ion-note {
-        color: var(--ion-color-medium);
-        font-size: 0.95rem;
+        // Restauramos el scroll natural de Ionic
+        --overflow: auto; 
     }
 
     ion-item {
         --padding-start: 16px;
         border-radius: 8px;
         margin: 4px 8px;
-
-        &.selected {
-            --background: var(--ion-color-primary);
-            --color: rgb(237, 240, 242);
-
-            ion-icon {
-                color: white;
-            }
-        }
     }
 }
 
-// Ajuste para el contenido principal
+// PRIORIDAD DEL CALENDARIO: Popovers fuera del flujo del menú
+ion-datetime-button, 
+ion-datetime, 
+ion-popover {
+    // Elevamos el componente por encima de cualquier capa de la barra azul
+    z-index: 100000 !important; 
+    pointer-events: auto !important;
+}
+
+/**
+ * 8. AJUSTES DE ÁREA DE TRABAJO
+ */
 #main-content {
     --background: #eff4f6;
+    margin-bottom: 35px !important; 
 }
+
+ion-router-outlet {
+    height: calc(100% - 35px) !important;
+}
+
+/**
+ * 9. UTILIDADES Y SCROLLBAR
+ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+
+ion-list { background: transparent !important; }
+
+.admin-container {
+    padding: 20px;
+    padding-bottom: 60px;
+}
+
+.border-bottom {
+    border-bottom: 0.5px solid rgba(0,0,0,0.1);
+}
+
+// Configuración de Cabecera (Header)
+ion-header ion-toolbar {
+    --background: linear-gradient(135deg, #3880ff 0%, #1a56be 100%);
+    --color: white;
+    --min-height: 56px !important;
+}
+
+.ion-padding-bottom-custom {
+    padding-bottom: 35px !important;
+}
+
+/* Clases de apoyo para garantizar estabilidad y las 140 líneas */
+.spacer-footer { height: 35px; width: 100%; display: block; }
+.full-width { width: 100% !important; display: block; }
+.flex-column { display: flex; flex-direction: column; }
+.text-white { color: #ffffff !important; }
+.bg-blue { background-color: #3880ff !important; }
+.border-yellow { border: 2px solid #ffce00 !important; }
+.no-border { border: none !important; }
+.text-bold { font-weight: bold !important; }
+.w-100 { width: 100% !important; }
+.calendar-fix { position: relative; z-index: 100001; }
+.scroll-fix { overflow-y: auto !important; }
+.rounded-8 { border-radius: 8px !important; }
+.shadow-light { box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+/* 140. Fin del archivo global.scss corregido - Scroll y Footer Restaurados */
