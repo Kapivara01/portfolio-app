@@ -1,7 +1,7 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
     
-    <ion-menu contentId="main-content" type="overlay">
+    <ion-menu contentId="main-content" type="overlay" (ionDidOpen)="actualizarCalendario()">
       <ion-content>
         <ion-list id="inbox-list">
           <ion-list-header style="font-weight: 800; color: #3880ff;">PORTFOLIO</ion-list-header>
@@ -38,14 +38,20 @@
           </div>
 
           <div style="text-align: center;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
+            <div id="trigger-calendar" style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 5px; cursor: pointer;">
               <ion-icon name="calendar-clear-outline" style="color: #3880ff;"></ion-icon>
               <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #666;">{{ fechaActual }}</span>
             </div>
             
-            <div style="font-size: 18px; font-weight: 900; color: #1a1a1a; padding-top: 8px; border-top: 1px dotted #ccc; font-family: monospace;">
+            <div style="font-size: 18px; font-weight: 900; color: #1a1a1a; padding-top: 5px; border-top: 1px dotted #ccc; font-family: monospace;">
               {{ horaActual }}
             </div>
+
+            <ion-popover trigger="trigger-calendar" triggerAction="click">
+              <ng-template>
+                <ion-datetime presentation="date" locale="es-VE" size="cover"></ion-datetime>
+              </ng-template>
+            </ion-popover>
           </div>
         </div>
       </ion-content>
@@ -78,3 +84,4 @@
 
   </ion-split-pane>
 </ion-app>
+

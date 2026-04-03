@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core'; // Añadimos HostListener aquí
+import { Component, OnInit, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -15,11 +15,10 @@ export class AppComponent implements OnInit {
     { title: 'Administrador', url: '/admin/login', icon: 'lock-closed' },
   ];
 
-  // Variables para el calendario, reloj e instalación
   fechaActual: string = '';
   horaActual: string = '';
   deferredPrompt: any;
-  showInstallButton = true; // Lo ponemos en true para que lo veas de una vez
+  showInstallButton = true;
 
   constructor() { }
 
@@ -28,6 +27,15 @@ export class AppComponent implements OnInit {
     setInterval(() => {
       this.actualizarReloj();
     }, 1000);
+  }
+
+  // Esta función asegura que el menú y sus componentes interactivos 
+  // se recalculen correctamente al abrirse en el entorno local (serve).
+  actualizarCalendario() {
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      console.log('Menú lateral listo e interactivo');
+    }, 100);
   }
 
   actualizarReloj() {
@@ -43,7 +51,6 @@ export class AppComponent implements OnInit {
   }
 
   // --- LÓGICA DE INSTALACIÓN PWA ---
-
   @HostListener('window:beforeinstallprompt', ['$event'])
   onBeforeInstallPrompt(e: any) {
     e.preventDefault();
@@ -53,7 +60,7 @@ export class AppComponent implements OnInit {
 
   installPWA() {
     if (!this.deferredPrompt) {
-      alert("El navegador aún está preparando la instalación. Por favor, intenta de nuevo en unos segundos.");
+      alert("El navegador está preparando la instalación. Por favor, intenta de nuevo en unos segundos.");
       return;
     }
     this.deferredPrompt.prompt();
@@ -64,4 +71,4 @@ export class AppComponent implements OnInit {
       this.deferredPrompt = null;
     });
   }
-} // <--- Asegúrate de que esta llave cierre todo al final
+}
