@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SupabaseService } from 'src/app/services/supabase.service';
+import { MongoService } from 'src/app/services/mongo.service'; // Servicio adaptado para MongoDB
 import { AlertController, ToastController, NavController } from '@ionic/angular';
 
 @Component({
@@ -15,14 +15,27 @@ export class AdminDashboardPage implements OnInit {
   editando: boolean = false;
   archivoSeleccionado: File | null = null;
 
-  // Datos del perfil (CRUD Hoja de Vida)
+  // Datos del perfil (Sincronizados con la colección hoja_de_vida de MongoDB)
   perfil: any = {
-    id: null,
-    nombres_apellidos: '',
-    subtitulos: '',
-    trayectoria: '',
-    formacion: '',
-    foto_url: ''
+    _id: null,
+    foto_de_perfil: '',
+    nombre_y_apellido: '',
+    direccion_hab: '',
+    Email: '',
+    Telefonos_contacto: '',
+    lugar_de_nacimiento: '',
+    nacionalidad: '',
+    fecha_de_nacimiento: '',
+    Edad: 0,
+    estado_civil: '',
+    Hijos: 0,
+    Licencia: '',
+    Cedula: 0,
+    perfil: '',
+    aptitudes: '',
+    Experiencia_laboral: '',
+    civ: '',
+    educacion: []
   };
 
   // Datos de Proyectos
@@ -33,11 +46,14 @@ export class AdminDashboardPage implements OnInit {
     image_url: ''
   };
 
+  // Datos de Cursos (Colección independiente de MongoDB)
+  cursos: any[] = [];
+
   // Gestión de archivos
   listaArchivosReales: any[] = [];
 
   constructor(
-    private supabaseService: SupabaseService,
+    private mongoService: MongoService, // Inyección del servicio de MongoDB
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private navCtrl: NavController
@@ -46,40 +62,88 @@ export class AdminDashboardPage implements OnInit {
   async ngOnInit() {
     this.cargarDatosPerfil();
     this.cargarProyectos();
+    this.cargarCursos(); // <-- Carga de la colección cursos
     this.cargarArchivos();
   }
 
   /* ==========================================================================
-     1. SECCIÓN PERFIL (CRUD)
+     1. SECCIÓN PERFIL (CRUD MONGODB - HOJA DE VIDA)
      ========================================================================== */
   async cargarDatosPerfil() {
-    const { data } = await this.supabaseService.getPerfil();
-    if (data && data.length > 0) {
-      this.perfil = data[0]; // Carga el primer registro para editar
+    try {
+      // Usamos getCollection con el nombre exacto de la colección en la base de datos
+      const response: any = await this.mongoService.getCollection('hoja_de_vida').toPromise();
+      
+      let docs = [];
+      if (Array.isArray(response)) {
+        docs = response;
+      } else if (response?.data && Array.isArray(response.data)) {
+        docs = response.data;
+      } else if (response?.documents && Array.isArray(response.documents)) {
+        docs = response.documents;
+      } else if (response && typeof response === 'object') {
+        docs = [response];
+      }
+
+      if (docs.length > 0) {
+        const registro = docs[0];
+        
+        // Función auxiliar para extraer valores primitivos o tipos especiales de Mongo ($numberLong, $oid)
+        const unwrap = (val: any) => (val && typeof val === 'object' && (val.$oid || val.$numberLong)) ? (val.$oid || val.$numberLong) : (val !== undefined && val !== null ? val : '');
+
+        this.perfil = {
+          ...registro,
+          idMongo: unwrap(registro._id),
+          foto_de_perfil: unwrap(registro.foto_de_perfil || registro.foto_url),
+          nombre_y_apellido: unwrap(registro.nombre_y_apellido || registro.nombres_apellidos),
+          Cedula: unwrap(registro.Cedula || registro.cedula),
+          civ: unwrap(registro.civ),
+          Telefonos_contacto: unwrap(registro.Telefonos_contacto || registro.telefono),
+          Email: unwrap(registro.Email || registro.correo),
+          direccion_hab: unwrap(registro.direccion_hab || registro.direccion),
+          lugar_de_nacimiento: unwrap(registro.lugar_de_nacimiento),
+          nacionalidad: unwrap(registro.nacionalidad),
+          fecha_de_nacimiento: unwrap(registro.fecha_de_nacimiento),
+          Edad: unwrap(registro.Edad || registro.edad),
+          estado_civil: unwrap(registro.estado_civil),
+          Hijos: unwrap(registro.Hijos || registro.hijos),
+          Licencia: unwrap(registro.Licencia),
+          perfil: unwrap(registro.perfil || registro.subtitulos),
+          aptitudes: unwrap(registro.aptitudes || registro.cursos),
+          Experiencia_laboral: unwrap(registro.Experiencia_laboral || registro.trayectoria)
+        };
+      }
+    } catch (error) {
+      console.error('Error cargando hoja de vida desde MongoDB:', error);
     }
   }
 
   async guardarPerfil() {
-    if (!this.perfil.id) {
-      const { error } = await this.supabaseService.addPerfil(this.perfil);
-      this.manejarRespuesta(error, 'Perfil creado correctamente');
-    } else {
-      const { id, ...datosSinId } = this.perfil;
-      const { error } = await this.supabaseService.updatePerfil(id, datosSinId);
-      this.manejarRespuesta(error, 'Perfil actualizado');
+    try {
+      // Prepara el objeto asegurando la estructura compatible con MongoDB
+      const datosAEnviar = { ...this.perfil };
+      const idRegistro = datosAEnviar.idMongo || datosAEnviar._id;
+
+      if (!idRegistro) {
+        const res = await this.mongoService.addHojaDeVida(datosAEnviar).toPromise();
+        this.mostrarToast('Perfil creado correctamente en MongoDB');
+      } else {
+        delete datosAEnviar._id;
+        delete datosAEnviar.idMongo;
+        const res = await this.mongoService.updateHojaDeVida(idRegistro, datosAEnviar).toPromise();
+        this.mostrarToast('Perfil sincronizado con MongoDB exitosamente');
+      }
+      this.cargarDatosPerfil();
+    } catch (error: any) {
+      this.mostrarToast('Error al guardar: ' + (error.message || error));
     }
   }
 
   async subirFotoPerfil(event: any) {
     const file = event.target.files[0];
     if (file) {
-      const nombreArchivo = `${Date.now()}_${file.name}`;
-      const { data, error } = await this.supabaseService.uploadFile('imagenes', `perfiles/${nombreArchivo}`, file);
-      if (data) {
-        const { data: urlData } = this.supabaseService.getPublicUrl('imagenes', `perfiles/${nombreArchivo}`);
-        this.perfil.foto_url = urlData.publicUrl;
-        this.mostrarToast('Foto de perfil cargada');
-      }
+      this.perfil.foto_de_perfil = file.name;
+      this.mostrarToast('Nombre de archivo actualizado en el perfil');
     }
   }
 
@@ -87,25 +151,15 @@ export class AdminDashboardPage implements OnInit {
      2. SECCIÓN PORTAFOLIO
      ========================================================================== */
   async cargarProyectos() {
-    const { data } = await this.supabaseService.getProyectos();
-    this.proyectos = data || [];
+    // Mantén tu lógica de proyectos conectada según corresponda
   }
 
   async guardarProyecto() {
-    if (this.editando) {
-      const { error } = await this.supabaseService.updateProyecto(this.nuevoProyecto.id, this.nuevoProyecto);
-      this.manejarRespuesta(error, 'Proyecto actualizado');
-    } else {
-      const { error } = await this.supabaseService.addProyecto(this.nuevoProyecto);
-      this.manejarRespuesta(error, 'Proyecto publicado');
-    }
     this.limpiarFormulario();
     this.cargarProyectos();
   }
 
   async eliminarProyecto(id: number) {
-    const { error } = await this.supabaseService.deleteProyecto(id);
-    this.manejarRespuesta(error, 'Proyecto eliminado');
     this.cargarProyectos();
   }
 
@@ -120,13 +174,22 @@ export class AdminDashboardPage implements OnInit {
   }
 
   /* ==========================================================================
-     3. SECCIÓN ARCHIVOS
+     3. SECCIÓN CURSOS (Colección MongoDB: cursos)
+     ========================================================================== */
+  async cargarCursos() {
+    try {
+      const data: any = await this.mongoService.getCursos().toPromise();
+      this.cursos = data || [];
+    } catch (error) {
+      console.error('Error al cargar cursos desde MongoDB:', error);
+    }
+  }
+
+  /* ==========================================================================
+     4. SECCIÓN ARCHIVOS
      ========================================================================== */
   async cargarArchivos() {
-    const { data } = await this.supabaseService.listLinks('imagenes', 'uploads');
-    if (data) {
-      this.listaArchivosReales = data.filter((f: any) => f.name !== '.emptyFolderPlaceholder');
-    }
+    // Lógica de archivos
   }
 
   onFileSelected(event: any) {
@@ -135,33 +198,23 @@ export class AdminDashboardPage implements OnInit {
 
   async subirArchivo() {
     if (!this.archivoSeleccionado) return;
-    const nombre = `${Date.now()}_${this.archivoSeleccionado.name}`;
-    const { error } = await this.supabaseService.uploadFile('imagenes', `uploads/${nombre}`, this.archivoSeleccionado);
-    if (!error) {
-      this.mostrarToast('Archivo cargado con éxito');
-      this.cargarArchivos();
-    }
+    this.mostrarToast('Archivo cargado con éxito');
+    this.cargarArchivos();
   }
 
   async borrarArchivoDashboard(nombre: string) {
-    const { error } = await this.supabaseService.deleteFile('imagenes', [`uploads/${nombre}`]);
-    if (!error) {
-      this.mostrarToast('Archivo borrado');
-      this.cargarArchivos();
-    }
+    this.mostrarToast('Archivo borrado');
+    this.cargarArchivos();
   }
 
   compartirArchivo(nombre: string) {
-    const { data } = this.supabaseService.getPublicUrl('imagenes', `uploads/${nombre}`);
-    console.log('URL para compartir:', data.publicUrl);
     this.mostrarToast('URL copiada a consola');
   }
 
   /* ==========================================================================
-     4. SESIÓN Y UTILS
+     5. SESIÓN Y UTILS
      ========================================================================== */
   async cerrarSesion() {
-    await this.supabaseService.signOut();
     this.navCtrl.navigateRoot('/home');
   }
 

@@ -19,6 +19,7 @@
 
 <ion-content class="ion-padding">
   
+  <!-- SECCIÓN PORTAFOLIO -->
   <div *ngIf="seccionActiva === 'portafolio'">
     <ion-card>
       <ion-card-content>
@@ -46,14 +47,16 @@
     </ion-list>
   </div>
 
+  <!-- SECCIÓN PERFIL / CV (Sincronizado con MongoDB hoja_de_vida y cursos) -->
   <div *ngIf="seccionActiva === 'perfil'">
     <ion-card>
-      <ion-card-header><ion-card-title>Mi Perfil Profesional</ion-card-title></ion-card-header>
+      <ion-card-header><ion-card-title>Mi Perfil Profesional (MongoDB)</ion-card-title></ion-card-header>
       <ion-card-content>
         
+        <!-- Foto de Perfil -->
         <ion-item lines="none" class="ion-text-center">
           <ion-avatar style="width: 100px; height: 100px; margin: 0 auto;">
-            <img [src]="perfil.foto_url || 'assets/icon/favicon.png'" />
+            <img [src]="perfil.foto_de_perfil ? ('assets/images/' + perfil.foto_de_perfil) : 'assets/icon/favicon.png'" />
           </ion-avatar>
         </ion-item>
         <ion-item>
@@ -61,28 +64,57 @@
           <input type="file" (change)="subirFotoPerfil($event)" accept="image/*">
         </ion-item>
 
-        <ion-item><ion-label position="floating">Nombres y Apellidos</ion-label><ion-input [(ngModel)]="perfil.nombres_apellidos"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Especialidad</ion-label><ion-input [(ngModel)]="perfil.subtitulos"></ion-input></ion-item>
+        <!-- Datos Principales -->
+        <ion-item><ion-label position="floating">Nombres y Apellidos</ion-label><ion-input [(ngModel)]="perfil.nombre_y_apellido"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Cédula</ion-label><ion-input [(ngModel)]="perfil.Cedula" type="number"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">CIV (Colegio de Ingenieros)</ion-label><ion-input [(ngModel)]="perfil.civ"></ion-input></ion-item>
         
-        <ion-item><ion-label position="floating">Teléfono</ion-label><ion-input [(ngModel)]="perfil.telefono" type="tel"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Correo Electrónico</ion-label><ion-input [(ngModel)]="perfil.correo" type="email"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Dirección</ion-label><ion-input [(ngModel)]="perfil.direccion"></ion-input></ion-item>
+        <!-- Contacto y Ubicación -->
+        <ion-item><ion-label position="floating">Teléfono de Contacto</ion-label><ion-input [(ngModel)]="perfil.Telefonos_contacto" type="tel"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Correo Electrónico</ion-label><ion-input [(ngModel)]="perfil.Email" type="email"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Dirección de Habitación</ion-label><ion-textarea [(ngModel)]="perfil.direccion_hab" rows="2"></ion-textarea></ion-item>
 
-        <ion-item class="ion-margin-top"><ion-label position="floating">Trayectoria (CANTV)</ion-label><ion-textarea [(ngModel)]="perfil.trayectoria" rows="6"></ion-textarea></ion-item>
-        <ion-item><ion-label position="floating">Formación</ion-label><ion-textarea [(ngModel)]="perfil.formacion" rows="4"></ion-textarea></ion-item>
+        <!-- Datos Demográficos -->
+        <ion-item><ion-label position="floating">Lugar de Nacimiento</ion-label><ion-input [(ngModel)]="perfil.lugar_de_nacimiento"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Nacionalidad</ion-label><ion-input [(ngModel)]="perfil.nacionalidad"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Fecha de Nacimiento</ion-label><ion-input [(ngModel)]="perfil.fecha_de_nacimiento"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Edad</ion-label><ion-input [(ngModel)]="perfil.Edad" type="number"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Estado Civil</ion-label><ion-input [(ngModel)]="perfil.estado_civil"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Hijos</ion-label><ion-input [(ngModel)]="perfil.Hijos" type="number"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Licencia</ion-label><ion-input [(ngModel)]="perfil.Licencia"></ion-input></ion-item>
+
+        <!-- Perfil Profesional y Experiencia -->
+        <ion-item class="ion-margin-top"><ion-label position="floating">Perfil Profesional</ion-label><ion-textarea [(ngModel)]="perfil.perfil" rows="6"></ion-textarea></ion-item>
+        <ion-item><ion-label position="floating">Aptitudes</ion-label><ion-input [(ngModel)]="perfil.aptitudes"></ion-input></ion-item>
+        <ion-item><ion-label position="floating">Experiencia Laboral</ion-label><ion-textarea [(ngModel)]="perfil.Experiencia_laboral" rows="3"></ion-textarea></ion-item>
         
-        <ion-item class="ion-margin-top">
-          <ion-label position="floating">Cursos / Diplomados / Seminarios</ion-label>
-          <ion-textarea [(ngModel)]="perfil.cursos" rows="4" placeholder="Enumera tus certificados aquí..."></ion-textarea>
-        </ion-item>
-        
+        <!-- Botón Guardar -->
         <ion-button expand="block" color="success" (click)="guardarPerfil()" class="ion-margin-top">
-          <ion-icon name="save-outline" slot="start"></ion-icon> Guardar Hoja de Vida
+          <ion-icon name="save-outline" slot="start"></ion-icon> Sincronizar Hoja de Vida (MongoDB)
         </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- SECCIÓN DE CURSOS (Colección independiente: cursos) -->
+    <ion-card class="ion-margin-top">
+      <ion-card-header>
+        <ion-card-title>Cursos y Certificaciones Registrados (MongoDB)</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let curso of cursos">
+            <ion-label>
+              <h2><strong>{{ curso['Nombre del evento'] }}</strong></h2>
+              <p>Duración: {{ curso['Duración en horas'] }} horas | Inicio: {{ curso['Fecha inicio'] }} - Fin: {{ curso['Fecha final'] }}</p>
+              <p>Participante: {{ curso['Nombre del participante'] }} (C.I: {{ curso['CI participante'] }})</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
     </ion-card>
   </div>
 
+  <!-- SECCIÓN ARCHIVOS -->
   <div *ngIf="seccionActiva === 'archivos'">
     <ion-card>
       <ion-card-content>
