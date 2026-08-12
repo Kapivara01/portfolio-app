@@ -15,6 +15,11 @@ export class MongoService {
     return this.http.get(`${this.apiUrl}/${nombreColeccion}`);
   }
 
+  // --- MÉTODO GENÉRICO PARA INSERTAR EN COLECCIONES (Requerido por el Dashboard) ---
+  postCollection(nombreColeccion: string, data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${nombreColeccion}`, data);
+  }
+
   // --- MÉTODOS PARA HOJA DE VIDA (Sincronización con MongoDB) ---
 
   getHojaDeVida(): Observable<any> {

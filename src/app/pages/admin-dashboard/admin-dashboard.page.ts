@@ -38,12 +38,14 @@ export class AdminDashboardPage implements OnInit {
     educacion: []
   };
 
-  // Datos de Proyectos
+  // Datos de Proyectos (Estructura normalizada y alineada con MongoDB)
   proyectos: any[] = [];
   nuevoProyecto: any = {
-    title: '',
-    category: '',
-    image_url: ''
+    titulo: '',
+    descripcion: '',
+    status: 'Completado',
+    categoria: '',
+    foto: ''
   };
 
   // Datos de Cursos (Colección independiente de MongoDB)
@@ -125,12 +127,12 @@ export class AdminDashboardPage implements OnInit {
       const idRegistro = datosAEnviar.idMongo || datosAEnviar._id;
 
       if (!idRegistro) {
-        const res = await this.mongoService.addHojaDeVida(datosAEnviar).toPromise();
+        await this.mongoService.addHojaDeVida(datosAEnviar).toPromise();
         this.mostrarToast('Perfil creado correctamente en MongoDB');
       } else {
         delete datosAEnviar._id;
         delete datosAEnviar.idMongo;
-        const res = await this.mongoService.updateHojaDeVida(idRegistro, datosAEnviar).toPromise();
+        await this.mongoService.updateHojaDeVida(idRegistro, datosAEnviar).toPromise();
         this.mostrarToast('Perfil sincronizado con MongoDB exitosamente');
       }
       this.cargarDatosPerfil();
@@ -148,18 +150,37 @@ export class AdminDashboardPage implements OnInit {
   }
 
   /* ==========================================================================
-     2. SECCIÓN PORTAFOLIO
+     2. SECCIÓN PORTAFOLIO (Sincronizado con MongoDB)
      ========================================================================== */
   async cargarProyectos() {
-    // Mantén tu lógica de proyectos conectada según corresponda
+    try {
+      const data: any = await this.mongoService.getCollection('proyectos').toPromise();
+      this.proyectos = Array.isArray(data) ? data : (data?.documents || []);
+    } catch (error) {
+      console.error('Error al cargar proyectos desde MongoDB:', error);
+    }
   }
 
   async guardarProyecto() {
-    this.limpiarFormulario();
-    this.cargarProyectos();
+    try {
+      if (!this.nuevoProyecto.titulo || !this.nuevoProyecto.categoria) {
+        this.mostrarToast('Por favor completa el Título y la Categoría');
+        return;
+      }
+
+      // Envía al endpoint general /api/proyectos para activar la sincronización automática
+      await this.mongoService.postCollection('proyectos', this.nuevoProyecto).toPromise();
+      
+      this.mostrarToast('Proyecto guardado y sincronizado con éxito');
+      this.limpiarFormulario();
+      this.cargarProyectos();
+    } catch (error: any) {
+      this.mostrarToast('Error al guardar el proyecto: ' + (error.message || error));
+    }
   }
 
-  async eliminarProyecto(id: number) {
+  async eliminarProyecto(id: string) {
+    // Lógica opcional de eliminación si tienes la ruta implementada
     this.cargarProyectos();
   }
 
@@ -169,7 +190,13 @@ export class AdminDashboardPage implements OnInit {
   }
 
   limpiarFormulario() {
-    this.nuevoProyecto = { title: '', category: '', image_url: '' };
+    this.nuevoProyecto = { 
+      titulo: '', 
+      descripcion: '', 
+      status: 'Completado', 
+      categoria: '', 
+      foto: '' 
+    };
     this.editando = false;
   }
 

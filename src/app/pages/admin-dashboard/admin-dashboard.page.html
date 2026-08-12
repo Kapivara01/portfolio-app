@@ -23,25 +23,46 @@
   <div *ngIf="seccionActiva === 'portafolio'">
     <ion-card>
       <ion-card-content>
-        <ion-item><ion-label position="floating">Título</ion-label><ion-input [(ngModel)]="nuevoProyecto.title"></ion-input></ion-item>
-        <ion-item><ion-label position="floating">Categoría</ion-label>
-          <ion-select [(ngModel)]="nuevoProyecto.category" interface="popover">
-            <ion-select-option value="TELECOMUNICACIONES">TELECOMUNICACIONES</ion-select-option>
-            <ion-select-option value="INFORMÁTICA">INFORMÁTICA</ion-select-option>
+        <ion-item>
+          <ion-input label="Título del Proyecto" labelPlacement="floating" [(ngModel)]="nuevoProyecto.titulo" placeholder="Ej. Sistema de Transmisión"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-select label="Categoría" labelPlacement="floating" [(ngModel)]="nuevoProyecto.categoria" interface="popover" placeholder="Selecciona la categoría">
+            <ion-select-option value="telecomunicacion">TELECOMUNICACIÓN</ion-select-option>
+            <ion-select-option value="informatica">INFORMÁTICA</ion-select-option>
           </ion-select>
         </ion-item>
-        <ion-item><ion-label position="floating">URL Imagen</ion-label><ion-input [(ngModel)]="nuevoProyecto.image_url"></ion-input></ion-item>
-        <ion-button expand="block" (click)="guardarProyecto()" class="ion-margin-top">{{ editando ? 'Actualizar' : 'Publicar' }}</ion-button>
+
+        <ion-item>
+          <ion-textarea label="Descripción" labelPlacement="floating" [(ngModel)]="nuevoProyecto.descripcion" rows="3" placeholder="Breve descripción del proyecto..."></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-input label="Status" labelPlacement="floating" [(ngModel)]="nuevoProyecto.status" placeholder="Ej. Completado / En desarrollo"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input label="URL / Nombre de Imagen" labelPlacement="floating" [(ngModel)]="nuevoProyecto.foto" placeholder="nombre_foto.jpg"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" (click)="guardarProyecto()" class="ion-margin-top">
+          {{ editando ? 'Actualizar Proyecto' : 'Publicar y Sincronizar' }}
+        </ion-button>
         <ion-button *ngIf="editando" expand="block" color="light" (click)="limpiarFormulario()">Cancelar</ion-button>
       </ion-card-content>
     </ion-card>
 
     <ion-list>
       <ion-item *ngFor="let p of proyectos">
-        <ion-label><h2>{{ p.title }}</h2><p>{{ p.category }}</p></ion-label>
+        <ion-label>
+          <h2><strong>{{ p.titulo }}</strong></h2>
+          <p><strong>Categoría:</strong> {{ p.categoria }} | <strong>Status:</strong> {{ p.status }}</p>
+          <p>{{ p.descripcion }}</p>
+        </ion-label>
         <ion-buttons slot="end">
           <ion-button (click)="prepararEdicion(p)"><ion-icon name="create-outline"></ion-icon></ion-button>
-          <ion-button color="danger" (click)="eliminarProyecto(p.id)"><ion-icon name="trash-outline"></ion-icon></ion-button>
+          <ion-button color="danger" (click)="eliminarProyecto(p._id)"><ion-icon name="trash-outline"></ion-icon></ion-button>
         </ion-buttons>
       </ion-item>
     </ion-list>

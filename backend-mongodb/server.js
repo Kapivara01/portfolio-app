@@ -9,12 +9,50 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Conexión a MongoDB (Ajusta el nombre de tu base de datos si es necesario)
-const MONGO_URI = 'mongodb://localhost:27017/portfolio_db'; // <--- Cambia 'tu_base_de_datos' por el nombre real de tu BD
+// Conexión a MongoDB
+const MONGO_URI = 'mongodb://localhost:27017/portfolio_db';
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log('¡Conectado exitosamente a MongoDB!'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
+
+// Endpoint específico para gestionar proyectos con sincronización automática
+app.post('/api/proyectos', async (req, res) => {
+  try {
+    const db = mongoose.connection.db;
+    const { titulo, descripcion, status, categoria, foto } = req.body;
+
+    // Estructura normalizada del proyecto
+    const nuevoProyecto = {
+      titulo,
+      descripcion,
+      status,
+      categoria,
+      foto,
+      createdAt: new Date()
+    };
+
+    // 1. Guardar en la colección principal "proyectos"
+    const resultProyectos = await db.collection('proyectos').insertOne(nuevoProyecto);
+
+    // 2. Sincronizar automáticamente con su respectiva colección según la categoría
+    if (categoria) {
+      const catLower = categoria.toLowerCase().trim();
+      if (catLower === 'informatica') {
+        await db.collection('informatica').insertOne(nuevoProyecto);
+      } else if (catLower === 'telecomunicacion' || catLower === 'telecomunicaciones') {
+        await db.collection('telecomunicacion').insertOne(nuevoProyecto);
+      }
+    }
+
+    res.status(201).json({ 
+      message: 'Proyecto guardado y sincronizado con éxito', 
+      result: resultProyectos 
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al insertar y sincronizar el proyecto', details: error.message });
+  }
+});
 
 // Endpoint genérico para obtener documentos de cualquier colección existente
 app.get('/api/:collection', async (req, res) => {
@@ -28,7 +66,7 @@ app.get('/api/:collection', async (req, res) => {
   }
 });
 
-// Endpoint genérico para insertar documentos en una colección
+// Endpoint genérico para insertar documentos en otras colecciones
 app.post('/api/:collection', async (req, res) => {
   try {
     const collectionName = req.params.collection;

@@ -23,7 +23,7 @@
         <ion-label>TODOS</ion-label>
       </ion-segment-button>
       
-      <ion-segment-button value="TELECOM">
+      <ion-segment-button value="TELECOMUNICACION">
         <ion-label>TELECOM.</ion-label>
       </ion-segment-button>
 
@@ -42,16 +42,23 @@
       <ion-row>
         <ion-col size="12" size-md="6" *ngFor="let proyecto of proyectosFiltrados">
           <ion-card mode="ios" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); background: #ffffff; margin-bottom: 20px;">
-            <img [src]="proyecto.image_url || 'https://via.placeholder.com/400x200'" 
-                 style="width: 100%; height: 200px; object-fit: cover;" />
+            
+            <!-- Imagen dinámica enlazada a la propiedad local del proyecto -->
+            <div style="width: 100%; height: 200px; background-color: #f1f5f9; overflow: hidden;">
+              <img [src]="proyecto.imagenUrlLocal" 
+                   style="width: 100%; height: 200px; object-fit: cover; display: block;" 
+                   alt="Imagen del Proyecto" 
+                   onerror="this.src='assets/images/informatica.png'" />
+            </div>
+
             <ion-card-header>
               <ion-note color="primary" style="text-transform: uppercase; font-weight: bold;">
-                {{ proyecto.category || proyecto.categoria }}
+                {{ proyecto.categoria || proyecto.category }} | Estado: {{ proyecto.status || 'Completado' }}
               </ion-note>
-              <ion-card-title style="color: #0f172a; font-size: 1.25rem;">{{ proyecto.title }}</ion-card-title>
+              <ion-card-title style="color: #0f172a; font-size: 1.25rem;">{{ proyecto.titulo || proyecto.title }}</ion-card-title>
             </ion-card-header>
             <ion-card-content style="color: #475569; line-height: 1.6;">
-              {{ proyecto.description }}
+              {{ proyecto.descripcion || proyecto.description }}
             </ion-card-content>
           </ion-card>
         </ion-col>
