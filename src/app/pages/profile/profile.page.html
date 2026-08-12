@@ -47,53 +47,11 @@
         <div><strong>Licencia:</strong> <span style="color: #475569;">{{ perfil.Licencia }}</span></div>
       </div>
 
-      <!-- PERFIL PROFESIONAL -->
-      <div style="margin-bottom: 25px;" *ngIf="perfil.perfil">
-        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <ion-icon name="person-outline" color="primary"></ion-icon> Perfil Profesional
-        </h4>
-        <p style="color: #334155; line-height: 1.7; font-size: 0.95rem; white-space: pre-wrap; background: #f8fafc; padding: 16px; border-radius: 12px; border-left: 4px solid #2563eb; margin: 0;">
-          {{ perfil.perfil }}
-        </p>
-      </div>
-
-      <!-- EXPERIENCIA LABORAL -->
-      <div style="margin-bottom: 25px;" *ngIf="perfil.Experiencia_laboral">
-        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <ion-icon name="briefcase-outline" color="primary"></ion-icon> Experiencia Laboral
-        </h4>
-        <p style="color: #334155; line-height: 1.7; font-size: 0.95rem; white-space: pre-wrap; background: #f8fafc; padding: 16px; border-radius: 12px; border-left: 4px solid #0f172a; margin: 0;">
-          {{ perfil.Experiencia_laboral }}
-        </p>
-      </div>
-
-      <!-- APTITUDES -->
-      <div style="margin-bottom: 25px;" *ngIf="perfil.aptitudes">
-        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <ion-icon name="ribbon-outline" color="primary"></ion-icon> Aptitudes
-        </h4>
-        <div style="padding: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; color: #334155; line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap;">
-          {{ perfil.aptitudes }}
-        </div>
-      </div>
-
-      <!-- CURSOS Y CERTIFICACIONES CON SCROLL -->
-      <div style="margin-bottom: 25px;" *ngIf="cursos && cursos.length > 0">
-        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <ion-icon name="school-outline" color="primary"></ion-icon> Cursos y Certificaciones
-        </h4>
-        
-        <!-- Contenedor con altura limitada y scroll -->
-        <div style="max-height: 280px; overflow-y: auto; padding-right: 6px; display: flex; flex-direction: column; gap: 10px;">
-          <div *ngFor="let curso of cursos" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #2563eb;">
-            <div style="font-weight: 700; color: #1e3a8a; font-size: 1rem;">{{ curso.nombre }}</div>
-          </div>
-        </div>
-      </div>
-
       <!-- CONTACTO Y UBICACIÓN -->
-      <div style="border-top: 2px solid #f1f5f9; padding-top: 20px; margin-top: 20px;">
-        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px;">Contacto y Ubicación</h4>
+      <div style="margin-bottom: 25px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
+        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.1rem; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+          <ion-icon name="map-outline" color="primary"></ion-icon> Contacto y Ubicación
+        </h4>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
           <div *ngIf="perfil.Telefonos_contacto" style="display: flex; align-items: center; gap: 10px; color: #475569; font-size: 0.95rem;">
@@ -110,6 +68,130 @@
             <ion-icon name="location-outline" color="primary" style="font-size: 1.2rem; flex-shrink: 0;"></ion-icon>
             <span><strong>Dirección:</strong> {{ perfil.direccion_hab }}</span>
           </div>
+        </div>
+      </div>
+
+      <!-- PERFIL PROFESIONAL -->
+      <div style="margin-bottom: 25px;" *ngIf="perfil.perfil">
+        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <ion-icon name="person-outline" color="primary"></ion-icon> Perfil Profesional
+        </h4>
+        <p style="color: #334155; line-height: 1.7; font-size: 0.95rem; white-space: pre-wrap; background: #f8fafc; padding: 16px; border-radius: 12px; border-left: 4px solid #2563eb; margin: 0;">
+          {{ perfil.perfil }}
+        </p>
+      </div>
+
+      <!-- EXPERIENCIA LABORAL -->
+      <div style="margin-bottom: 25px;" *ngIf="perfil.Experiencia_laboral && perfil.Experiencia_laboral.length > 0">
+        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <ion-icon name="briefcase-outline" color="primary"></ion-icon> Experiencia Laboral
+        </h4>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div *ngFor="let exp of perfil.Experiencia_laboral" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #0f172a; color: #334155; font-size: 0.95rem; font-weight: 500;">
+            {{ exp }}
+          </div>
+        </div>
+      </div>
+
+      <!-- LOGROS PROFESIONALES -->
+      <div style="margin-bottom: 25px;" *ngIf="perfil.logros && perfil.logros.length > 0">
+        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <ion-icon name="trophy-outline" color="primary"></ion-icon> Logros Profesionales
+        </h4>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div *ngFor="let logro of perfil.logros" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #10b981; color: #334155; font-size: 0.95rem;">
+            {{ logro }}
+          </div>
+        </div>
+      </div>
+
+      <!-- APTITUDES -->
+      <div style="margin-bottom: 25px;" *ngIf="perfil.aptitudes && perfil.aptitudes.length > 0">
+        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <ion-icon name="ribbon-outline" color="primary"></ion-icon> Aptitudes
+        </h4>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div *ngFor="let aptitud of perfil.aptitudes" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #2563eb; color: #334155; font-size: 0.95rem; font-weight: 500;">
+            {{ aptitud }}
+          </div>
+        </div>
+      </div>
+
+      <!-- CURSOS Y CERTIFICACIONES CON SCROLL -->
+      <div style="margin-bottom: 25px;" *ngIf="cursos && cursos.length > 0">
+        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <ion-icon name="school-outline" color="primary"></ion-icon> Cursos y Certificaciones
+        </h4>
+        
+        <div style="max-height: 280px; overflow-y: auto; padding-right: 6px; display: flex; flex-direction: column; gap: 10px;">
+          <div *ngFor="let curso of cursos" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #2563eb;">
+            <div style="font-weight: 700; color: #1e3a8a; font-size: 1rem;">{{ curso.nombre }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REFERENCIAS PERSONALES -->
+      <div style="margin-bottom: 25px;" *ngIf="perfil.referencias_personales && perfil.referencias_personales.length > 0">
+        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <ion-icon name="people-outline" color="primary"></ion-icon> Referencias Personales
+        </h4>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div *ngFor="let ref of perfil.referencias_personales" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #8b5cf6; color: #334155; font-size: 0.95rem;">
+            <div style="font-weight: 700; color: #1e3a8a; font-size: 1rem; margin-bottom: 4px;">{{ ref.nombre }}</div>
+            <div style="font-size: 0.9rem; color: #475569;"><strong>Empresa/Institución:</strong> {{ ref.empresa }}</div>
+            <div style="font-size: 0.9rem; color: #475569;" *ngIf="ref.telefono"><strong>Teléfono:</strong> {{ ref.telefono }}</div>
+            <div style="font-size: 0.9rem; color: #475569;" *ngIf="ref.email"><strong>Correo:</strong> {{ ref.email }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISPONIBILIDAD Y PASATIEMPOS (GRID DE 2 COLUMNAS) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 25px;">
+        
+        <!-- Disponibilidad -->
+        <div *ngIf="perfil.disponibilidad" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; border-left: 4px solid #f59e0b;">
+          <h4 style="color: #0f172a; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; margin-top: 0; margin-bottom: 8px;">
+            <ion-icon name="time-outline" color="primary"></ion-icon> Disponibilidad
+          </h4>
+          <p style="color: #334155; font-size: 0.95rem; margin: 0; line-height: 1.5;">{{ perfil.disponibilidad }}</p>
+        </div>
+
+        <!-- Pasatiempos -->
+        <div *ngIf="perfil.pasatiempos" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; border-left: 4px solid #ec4899;">
+          <h4 style="color: #0f172a; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; margin-top: 0; margin-bottom: 8px;">
+            <ion-icon name="musical-notes-outline" color="primary"></ion-icon> Pasatiempos e Interés
+          </h4>
+          <p style="color: #334155; font-size: 0.95rem; margin: 0; line-height: 1.5;">{{ perfil.pasatiempos }}</p>
+        </div>
+
+      </div>
+
+      <!-- MI APP WEB -->
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; border-left: 4px solid #06b6d4; margin-bottom: 25px;" *ngIf="perfil.app_web">
+        <h4 style="color: #0f172a; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; margin-top: 0; margin-bottom: 8px;">
+          <ion-icon name="globe-outline" color="primary"></ion-icon> Mi App Web
+        </h4>
+        <a [href]="perfil.app_web" target="_blank" style="color: #2563eb; font-weight: 600; font-size: 0.95rem; text-decoration: none; word-break: break-all;">
+          {{ perfil.app_web }}
+        </a>
+      </div>
+
+      <!-- ACCIÓN: SOLICITAR CV -->
+      <div style="padding: 20px; background: #f1f5f9; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0;">
+        <h4 style="color: #0f172a; font-weight: 700; margin-top: 0; margin-bottom: 6px;">¿Te interesa mi perfil profesional?</h4>
+        <p style="color: #475569; font-size: 0.9rem; margin-bottom: 15px;">Haz clic en el botón para solicitar mi hoja de vida actualizada directamente a mi correo.</p>
+        
+        <ion-button expand="block" color="secondary" [href]="'mailto:' + emailContacto + '?subject=Solicitud de Hoja de Vida - Jorge Luis Linares&body=Hola Jorge, estoy interesado en tu hoja de vida. Por favor, ¿podrías enviármela? Gracias.'" style="font-weight: 600; margin-bottom: 15px;">
+          <ion-icon name="mail-unread-outline" slot="start"></ion-icon>
+          Solicitar Hoja de Vida
+        </ion-button>
+
+        <div style="font-size: 0.9rem; color: #475569; border-top: 1px solid #e2e8f0; padding-top: 12px; margin-top: 5px;">
+          O escríbeme directamente a: <strong style="color: #0f172a;">{{ emailContacto }}</strong>
         </div>
       </div>
 

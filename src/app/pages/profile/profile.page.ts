@@ -8,6 +8,9 @@ import { MongoService } from 'src/app/services/mongo.service';
   standalone: false,
 })
 export class ProfilePage implements OnInit {
+  // Variable para el correo directo y evitar errores de compilación con @
+  public emailContacto: string = 'jluis7616@gmail.com';
+
   perfil: any = {};
   cursos: any[] = [];
   cargando: boolean = true;
@@ -48,7 +51,11 @@ export class ProfilePage implements OnInit {
           perfil: unwrap(doc.perfil),
           aptitudes: unwrap(doc.aptitudes),
           Experiencia_laboral: unwrap(doc.Experiencia_laboral),
-          // Carga el valor de la BD y si está vacío, asigna por defecto 'foto_url.jpg'
+          logros: unwrap(doc.logros),
+          referencias_personales: unwrap(doc.referencias_personales),
+          disponibilidad: unwrap(doc.disponibilidad),
+          pasatiempos: unwrap(doc.pasatiempos),
+          app_web: unwrap(doc.app_web),
           foto_de_perfil: unwrap(doc.foto_de_perfil || doc.foto_url || doc.foto || doc.imagen) || 'foto_url.jpg'
         };
       }
