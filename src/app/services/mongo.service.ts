@@ -1,26 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MongoService {
-  private apiUrl = 'http://localhost:3000/api'; 
+  // Si existe una URL de producción en environment se usa, de lo contrario usa localhost para desarrollo local
+  private apiUrl = (environment as any).apiUrl || 'http://localhost:3000/api'; 
 
   constructor(private http: HttpClient) {}
 
-  // --- MÉTODO GENÉRICO PARA OBTENER COLECCIONES (Usado en Home y Profile) ---
   getCollection(nombreColeccion: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${nombreColeccion}`);
   }
 
-  // --- MÉTODO GENÉRICO PARA INSERTAR EN COLECCIONES (Requerido por el Dashboard) ---
   postCollection(nombreColeccion: string, data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/${nombreColeccion}`, data);
   }
-
-  // --- MÉTODOS PARA HOJA DE VIDA (Sincronización con MongoDB) ---
 
   getHojaDeVida(): Observable<any> {
     return this.http.get(`${this.apiUrl}/hoja-de-vida`);
@@ -34,7 +32,6 @@ export class MongoService {
     return this.http.put(`${this.apiUrl}/hoja-de-vida/${id}`, data);
   }
 
-  // --- MÉTODOS PARA LA COLECCIÓN CURSOS ---
   getCursos(): Observable<any> {
     return this.http.get(`${this.apiUrl}/cursos`);
   }
