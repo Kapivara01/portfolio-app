@@ -16,6 +16,7 @@
           }
         </ion-list>
 
+        <!-- BLOQUE DE CONTACTO -->
         <div style="margin: 20px 16px 10px 16px; padding: 15px; border-radius: 10px; background-color: rgba(56, 128, 255, 0.05); border: 1px solid rgba(56, 128, 255, 0.2);">
           <ion-note style="font-weight: 800; color: #3880ff; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 10px;">
             CONTACTO
@@ -36,30 +37,30 @@
           </div>
         </div>
 
+        <!-- BLOQUE DE AGENDAR / CONSULTAR -->
         <div style="margin: 0 16px; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 8px; border: 1px solid rgba(56, 128, 255, 0.2);">
           <span style="font-weight: 700; color: #444; font-size: 0.85rem;">Agendar/Consultar</span>
-          
           <ion-button id="open-calendar" fill="clear" style="--color: #3880ff; margin: 0;">
             <ion-icon slot="icon-only" name="calendar-number-outline" style="font-size: 24px;"></ion-icon>
           </ion-button>
-
-          <ion-popover trigger="open-calendar" dismissOnSelect="false" mode="ios">
-            <ng-template>
-              <ion-content color="light">
-                <ion-datetime 
-                  presentation="date" 
-                  size="fixed" 
-                  [showDefaultButtons]="true"
-                  doneText="Seleccionar"
-                  cancelText="Cerrar">
-                </ion-datetime>
-              </ion-content>
-            </ng-template>
-          </ion-popover>
         </div>
 
+        <!-- BLOQUE DE REDES SOCIALES -->
+        <div style="margin: 15px 16px 20px 16px; padding: 15px; background: #ffffff; border-radius: 10px; border: 1px solid rgba(56, 128, 255, 0.2); text-align: center;">
+          <div style="font-size: 0.75rem; font-weight: 800; color: #3880ff; letter-spacing: 0.5px; margin-bottom: 12px; text-transform: uppercase;">Conectemos</div>
+          <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            <a href="https://wa.me/584144838711" target="_blank" style="color: #25d366; font-size: 22px;"><ion-icon name="logo-whatsapp"></ion-icon></a>
+            <a href="https://t.me/Jorgell7616" target="_blank" style="color: #0088cc; font-size: 22px;"><ion-icon name="paper-plane-outline"></ion-icon></a>
+            <a href="https://youtube.com/@jluis7616" target="_blank" style="color: #ff0000; font-size: 22px;"><ion-icon name="logo-youtube"></ion-icon></a>
+            <a href="https://github.com/Kapivara01" target="_blank" style="color: #0f172a; font-size: 22px;"><ion-icon name="logo-github"></ion-icon></a>
+          </div>
+        </div>
       </ion-content>
     </ion-menu>
-    <ion-router-outlet id="main-content"></ion-router-outlet>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div id="main-content" style="display: flex; flex-direction: column; height: 100vh;">
+      <ion-router-outlet style="flex: 1;"></ion-router-outlet>
+    </div>
   </ion-split-pane>
 </ion-app>

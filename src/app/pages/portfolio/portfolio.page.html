@@ -1,10 +1,24 @@
+<!-- HEADER OFICIAL CON LOGOS AMPLIADOS Y SIMÉTRICOS -->
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-title>Mi Portafolio</ion-title>
+  <ion-toolbar color="light" style="padding: 5px 15px; --min-height: 85px;">
+    <ion-buttons slot="start">
+      <img src="assets/images/civ-logo.png" alt="Colegio de Ingenieros" style="height: 75px; width: 75px; object-fit: contain;" onerror="this.style.display='none'">
+    </ion-buttons>
+
+    <ion-title class="ion-text-center" style="font-size: 0.95rem; font-weight: 600;">
+      <span style="margin: 0 8px; cursor: pointer; color: #666;" routerLink="/home">inicio</span> |
+      <span style="margin: 0 8px; cursor: pointer; color: #666;" routerLink="/profile">perfil profesional</span> |
+      <span style="margin: 0 8px; cursor: pointer; color: var(--ion-color-primary);" routerLink="/portfolio">portafolio</span>
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <img src="assets/images/uneti-logo.jpg" alt="UNETI" style="height: 75px; width: 75px; object-fit: contain;" onerror="this.style.display='none'">
+    </ion-buttons>
   </ion-toolbar>
 
-  <ion-toolbar color="light">
-    <ion-segment (ionChange)="segmentChanged($event)" [value]="filtroCategoria" mode="md">
+  <!-- FILTROS DE CATEGORÍA LIMPIOS -->
+  <ion-toolbar color="light" style="border-top: 1px solid #e2e8f0;">
+    <ion-segment (ionChange)="segmentChanged($event)" [value]="filtroCategoria" mode="md" style="max-width: 500px; margin: 0 auto;">
       <ion-segment-button value="Todos">
         <ion-label>TODOS</ion-label>
       </ion-segment-button>
@@ -20,31 +34,46 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" size-md="6" *ngFor="let proyecto of proyectosFiltrados">
-        <ion-card mode="ios">
-          <img [src]="proyecto.image_url || 'https://via.placeholder.com/400x200'" 
-               style="width: 100%; height: 200px; object-fit: cover;" />
-          <ion-card-header>
-            <ion-note color="primary" style="text-transform: uppercase; font-weight: bold;">
-              {{ proyecto.category || proyecto.categoria }}
-            </ion-note>
-            <ion-card-title>{{ proyecto.title }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            {{ proyecto.description }}
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
+<!-- CONTENIDO PRINCIPAL -->
+<ion-content class="ion-padding" style="--background: #f8fafc;">
 
-    <div *ngIf="proyectosFiltrados.length === 0" class="ion-text-center ion-padding" style="margin-top: 40px;">
-      <ion-icon name="search-outline" style="font-size: 64px; color: #ccc;"></ion-icon>
-      <p style="color: #888;">No se encontraron proyectos para: <br>
-        <b style="color: var(--ion-color-primary);">{{ filtroCategoria }}</b>
-      </p>
-    </div>
-  </ion-grid>
+  <div style="max-width: 1000px; margin: 20px auto 40px auto; min-height: 60vh;">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="6" *ngFor="let proyecto of proyectosFiltrados">
+          <ion-card mode="ios" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); background: #ffffff; margin-bottom: 20px;">
+            <img [src]="proyecto.image_url || 'https://via.placeholder.com/400x200'" 
+                 style="width: 100%; height: 200px; object-fit: cover;" />
+            <ion-card-header>
+              <ion-note color="primary" style="text-transform: uppercase; font-weight: bold;">
+                {{ proyecto.category || proyecto.categoria }}
+              </ion-note>
+              <ion-card-title style="color: #0f172a; font-size: 1.25rem;">{{ proyecto.title }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content style="color: #475569; line-height: 1.6;">
+              {{ proyecto.description }}
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <div *ngIf="proyectosFiltrados.length === 0" class="ion-text-center ion-padding" style="margin-top: 40px;">
+        <ion-icon name="search-outline" style="font-size: 64px; color: #ccc;"></ion-icon>
+        <p style="color: #888;">No se encontraron proyectos para: <br>
+          <b style="color: var(--ion-color-primary);">{{ filtroCategoria }}</b>
+        </p>
+      </div>
+    </ion-grid>
+  </div>
+
+  <!-- FOOTER PROFESIONAL FIJO AL FINAL -->
+  <div style="background-color: #0f172a; border-top: 3px solid var(--ion-color-primary); padding: 25px 15px; text-align: center; width: 100%; margin-top: auto;">
+    <p style="font-size: 0.9rem; color: #ffffff; margin: 0 0 4px 0; font-weight: 600; letter-spacing: 0.5px;">
+      Ing. Jorge Luis Linares
+    </p>
+    <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">
+      &copy; 2026 - Portafolio Profesional Conectado a MongoDB
+    </p>
+  </div>
+
 </ion-content>

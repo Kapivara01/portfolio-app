@@ -1,9 +1,19 @@
+<!-- HEADER OFICIAL CON LOGOS AMPLIADOS Y SIMÉTRICOS -->
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
+  <ion-toolbar color="light" style="padding: 5px 15px; --min-height: 85px;">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <img src="assets/images/civ-logo.png" alt="Colegio de Ingenieros" style="height: 75px; width: 75px; object-fit: contain;" onerror="this.style.display='none'">
     </ion-buttons>
-    <ion-title>Perfil Profesional</ion-title>
+
+    <ion-title class="ion-text-center" style="font-size: 0.95rem; font-weight: 600;">
+      <span style="margin: 0 8px; cursor: pointer; color: #666;" routerLink="/home">inicio</span> |
+      <span style="margin: 0 8px; cursor: pointer; color: var(--ion-color-primary);" routerLink="/profile">perfil profesional</span> |
+      <span style="margin: 0 8px; cursor: pointer; color: #666;" routerLink="/portfolio">portafolio</span>
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <img src="assets/images/uneti-logo.jpg" alt="UNETI" style="height: 75px; width: 75px; object-fit: contain;" onerror="this.style.display='none'">
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -16,7 +26,7 @@
   </div>
 
   <!-- CONTENIDO PRINCIPAL -->
-  <div *ngIf="!cargando" style="max-width: 950px; margin: 20px auto;">
+  <div *ngIf="!cargando" style="max-width: 950px; margin: 20px auto 40px auto;">
     
     <ion-card style="border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); background: #ffffff; padding: 30px; margin: 0;">
       
@@ -196,6 +206,16 @@
       </div>
 
     </ion-card>
+  </div>
+
+  <!-- FOOTER PROFESIONAL INTEGRADO AL FINAL DEL SCROLL -->
+  <div style="background-color: #0f172a; border-top: 3px solid var(--ion-color-primary); padding: 25px 15px; text-align: center; width: 100%; margin-top: 40px;">
+    <p style="font-size: 0.9rem; color: #ffffff; margin: 0 0 4px 0; font-weight: 600; letter-spacing: 0.5px;">
+      Ing. Jorge Luis Linares
+    </p>
+    <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">
+      &copy; 2026 - Portafolio Profesional Conectado a MongoDB
+    </p>
   </div>
 
 </ion-content>
