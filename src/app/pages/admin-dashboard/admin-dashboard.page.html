@@ -49,7 +49,7 @@
         <ion-button expand="block" (click)="guardarProyecto()" class="ion-margin-top">
           {{ editando ? 'Actualizar Proyecto' : 'Publicar y Sincronizar' }}
         </ion-button>
-        <ion-button *ngIf="editando" expand="block" color="light" (click)="limpiarFormulario()">Cancelar</ion-button>
+        <ion-button *ngIf="editando" expand="block" color="light" (click)="limpiarFormularioProyecto()">Cancelar</ion-button>
       </ion-card-content>
     </ion-card>
 
@@ -61,14 +61,14 @@
           <p>{{ p.descripcion }}</p>
         </ion-label>
         <ion-buttons slot="end">
-          <ion-button (click)="prepararEdicion(p)"><ion-icon name="create-outline"></ion-icon></ion-button>
+          <ion-button (click)="prepararEdicionProyecto(p)"><ion-icon name="create-outline"></ion-icon></ion-button>
           <ion-button color="danger" (click)="eliminarProyecto(p._id)"><ion-icon name="trash-outline"></ion-icon></ion-button>
         </ion-buttons>
       </ion-item>
     </ion-list>
   </div>
 
-  <!-- SECCIÓN PERFIL / CV (Sincronizado con MongoDB hoja_de_vida y cursos) -->
+  <!-- SECCIÓN PERFIL / CV (Sincronizado con MongoDB hoja_de_vida, cursos y educacion) -->
   <div *ngIf="seccionActiva === 'perfil'">
     <ion-card>
       <ion-card-header><ion-card-title>Mi Perfil Profesional (MongoDB)</ion-card-title></ion-card-header>
@@ -129,6 +129,55 @@
               <p>Duración: {{ curso['Duración en horas'] }} horas | Inicio: {{ curso['Fecha inicio'] }} - Fin: {{ curso['Fecha final'] }}</p>
               <p>Participante: {{ curso['Nombre del participante'] }} (C.I: {{ curso['CI participante'] }})</p>
             </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- SECCIÓN DE EDUCACIÓN (Colección independiente: Educacion) -->
+    <ion-card class="ion-margin-top">
+      <ion-card-header>
+        <ion-card-title>Gestión de Educación y Títulos (MongoDB)</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <!-- Formulario de Educación -->
+        <ion-item>
+          <ion-input label="Entidad Educativa" labelPlacement="floating" [(ngModel)]="nuevaEducacion.entidad_educativa" placeholder="Ej. Universidad Experimental..."></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input label="Ciudad" labelPlacement="floating" [(ngModel)]="nuevaEducacion.ciudad" placeholder="Ej. Caracas"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input label="Nivel Educativo" labelPlacement="floating" [(ngModel)]="nuevaEducacion.nivel" placeholder="Ej. Ingenieria / T.S.U"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input label="Título Obtenido" labelPlacement="floating" [(ngModel)]="nuevaEducacion['Titulo Obtenido']" placeholder="Ej. Ingeniero Mencion Informatica"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input label="Año" labelPlacement="floating" [(ngModel)]="nuevaEducacion.anio" type="number" placeholder="Ej. 1926"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" color="secondary" (click)="guardarEducacion()" class="ion-margin-top">
+          {{ editandoEducacion ? 'Actualizar Título Educativo' : 'Agregar Nuevo Título' }}
+        </ion-button>
+        <ion-button *ngIf="editandoEducacion" expand="block" color="light" (click)="limpiarFormularioEducacion()">Cancelar</ion-button>
+
+        <!-- Lista de registros educativos existentes -->
+        <ion-list class="ion-margin-top">
+          <ion-item *ngFor="let edu of educacion">
+            <ion-label>
+              <h2><strong>{{ edu['Titulo Obtenido'] || edu.titulo_obtenido }}</strong></h2>
+              <p><strong>Institución:</strong> {{ edu.entidad_educativa }} ({{ edu.ciudad }})</p>
+              <p><strong>Nivel:</strong> {{ edu.nivel }} | <strong>Año:</strong> {{ edu['Año'] || edu.anio }}</p>
+            </ion-label>
+            <ion-buttons slot="end">
+              <ion-button (click)="prepararEdicionEducacion(edu)"><ion-icon name="create-outline"></ion-icon></ion-button>
+              <ion-button color="danger" (click)="eliminarEducacion(edu._id)"><ion-icon name="trash-outline"></ion-icon></ion-button>
+            </ion-buttons>
           </ion-item>
         </ion-list>
       </ion-card-content>

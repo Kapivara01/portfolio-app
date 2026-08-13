@@ -13,6 +13,7 @@ export class ProfilePage implements OnInit {
 
   perfil: any = {};
   cursos: any[] = [];
+  educacion: any[] = []; // <-- Variable declarada para solucionar el error de compilación
   cargando: boolean = true;
 
   constructor(private mongoService: MongoService) {}
@@ -67,6 +68,18 @@ export class ProfilePage implements OnInit {
       this.cursos = listaCursos.map((c: any) => ({
         nombre: c['Nombre del evento'] || c.nombre || c.titulo || c.curso || 'Evento sin nombre'
       }));
+
+      // 3. Cargar Educación desde la colección de MongoDB
+      const educacionData: any = await this.mongoService.getEducacion().toPromise();
+      if (Array.isArray(educacionData)) {
+        this.educacion = educacionData;
+      } else if (educacionData?.data && Array.isArray(educacionData.data)) {
+        this.educacion = educacionData.data;
+      } else if (educacionData?.documents && Array.isArray(educacionData.documents)) {
+        this.educacion = educacionData.documents;
+      } else {
+        this.educacion = [];
+      }
 
     } catch (error) {
       console.error('Error al cargar datos:', error);

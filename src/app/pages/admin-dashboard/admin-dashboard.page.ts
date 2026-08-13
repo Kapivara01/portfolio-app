@@ -13,6 +13,7 @@ export class AdminDashboardPage implements OnInit {
   // Variables de control de interfaz
   seccionActiva: string = 'perfil';
   editando: boolean = false;
+  editandoEducacion: boolean = false;
   archivoSeleccionado: File | null = null;
 
   // Datos del perfil (Sincronizados con la colección hoja_de_vida de MongoDB)
@@ -51,6 +52,16 @@ export class AdminDashboardPage implements OnInit {
   // Datos de Cursos (Colección independiente de MongoDB)
   cursos: any[] = [];
 
+  // Datos de Educación (Colección independiente de MongoDB)
+  educacion: any[] = [];
+  nuevaEducacion: any = {
+    entidad_educativa: '',
+    ciudad: '',
+    nivel: '',
+    'Titulo Obtenido': '',
+    anio: ''
+  };
+
   // Gestión de archivos
   listaArchivosReales: any[] = [];
 
@@ -64,7 +75,8 @@ export class AdminDashboardPage implements OnInit {
   async ngOnInit() {
     this.cargarDatosPerfil();
     this.cargarProyectos();
-    this.cargarCursos(); // <-- Carga de la colección cursos
+    this.cargarCursos();
+    this.cargarEducacion(); // <-- Carga de la colección Educación
     this.cargarArchivos();
   }
 
@@ -73,7 +85,6 @@ export class AdminDashboardPage implements OnInit {
      ========================================================================== */
   async cargarDatosPerfil() {
     try {
-      // Usamos getCollection con el nombre exacto de la colección en la base de datos
       const response: any = await this.mongoService.getCollection('hoja_de_vida').toPromise();
       
       let docs = [];
@@ -90,7 +101,6 @@ export class AdminDashboardPage implements OnInit {
       if (docs.length > 0) {
         const registro = docs[0];
         
-        // Función auxiliar para extraer valores primitivos o tipos especiales de Mongo ($numberLong, $oid)
         const unwrap = (val: any) => (val && typeof val === 'object' && (val.$oid || val.$numberLong)) ? (val.$oid || val.$numberLong) : (val !== undefined && val !== null ? val : '');
 
         this.perfil = {
@@ -122,7 +132,6 @@ export class AdminDashboardPage implements OnInit {
 
   async guardarPerfil() {
     try {
-      // Prepara el objeto asegurando la estructura compatible con MongoDB
       const datosAEnviar = { ...this.perfil };
       const idRegistro = datosAEnviar.idMongo || datosAEnviar._id;
 
@@ -168,11 +177,10 @@ export class AdminDashboardPage implements OnInit {
         return;
       }
 
-      // Envía al endpoint general /api/proyectos para activar la sincronización automática
       await this.mongoService.postCollection('proyectos', this.nuevoProyecto).toPromise();
       
       this.mostrarToast('Proyecto guardado y sincronizado con éxito');
-      this.limpiarFormulario();
+      this.limpiarFormularioProyecto();
       this.cargarProyectos();
     } catch (error: any) {
       this.mostrarToast('Error al guardar el proyecto: ' + (error.message || error));
@@ -180,16 +188,15 @@ export class AdminDashboardPage implements OnInit {
   }
 
   async eliminarProyecto(id: string) {
-    // Lógica opcional de eliminación si tienes la ruta implementada
     this.cargarProyectos();
   }
 
-  prepararEdicion(p: any) {
+  prepararEdicionProyecto(p: any) {
     this.nuevoProyecto = { ...p };
     this.editando = true;
   }
 
-  limpiarFormulario() {
+  limpiarFormularioProyecto() {
     this.nuevoProyecto = { 
       titulo: '', 
       descripcion: '', 
@@ -213,7 +220,106 @@ export class AdminDashboardPage implements OnInit {
   }
 
   /* ==========================================================================
-     4. SECCIÓN ARCHIVOS
+     4. SECCIÓN EDUCACIÓN (Colección MongoDB: Educacion)
+     ========================================================================== */
+  async cargarEducacion() {
+    try {
+      const response: any = await this.mongoService.getEducacion().toPromise();
+      console.log('Datos recibidos de la colección Educacion:', response);
+
+      if (Array.isArray(response)) {
+        this.educacion = response;
+      } else if (response && Array.isArray(response.data)) {
+        this.educacion = response.data;
+      } else if (response && Array.isArray(response.documents)) {
+        this.educacion = response.documents;
+      } else if (response && Array.isArray(response.Educacion)) {
+        this.educacion = response.Educacion;
+      } else if (response && typeof response === 'object') {
+        // Extrae cualquier arreglo interno que encuentre en el objeto de respuesta
+        const posibleArreglo = Object.values(response).find(val => Array.isArray(val));
+        this.educacion = Array.isArray(posibleArreglo) ? posibleArreglo : [];
+      } else {
+        this.educacion = [];
+      }
+    } catch (error) {
+      console.error('Error al cargar educación desde MongoDB:', error);
+    }
+  }
+
+  async guardarEducacion() {
+    try {
+      if (!this.nuevaEducacion.entidad_educativa || !this.nuevaEducacion['Titulo Obtenido']) {
+        this.mostrarToast('Por favor completa la Entidad Educativa y el Título');
+        return;
+      }
+
+      const idRegistro = this.nuevaEducacion._id || this.nuevaEducacion.idMongo;
+
+      const objetoASubir = {
+        entidad_educativa: this.nuevaEducacion.entidad_educativa,
+        ciudad: this.nuevaEducacion.ciudad,
+        nivel: this.nuevaEducacion.nivel,
+        'Titulo Obtenido': this.nuevaEducacion['Titulo Obtenido'],
+        'Año': Number(this.nuevaEducacion.anio) || 0
+      };
+
+      if (!idRegistro) {
+        await this.mongoService.addEducacion(objetoASubir).toPromise();
+        this.mostrarToast('Registro de educación creado correctamente');
+      } else {
+        await this.mongoService.updateEducacion(idRegistro, objetoASubir).toPromise();
+        this.mostrarToast('Registro de educación actualizado correctamente');
+      }
+
+      this.limpiarFormularioEducacion();
+      this.cargarEducacion();
+    } catch (error: any) {
+      this.mostrarToast('Error al guardar educación: ' + (error.message || error));
+    }
+  }
+
+  prepararEdicionEducacion(e: any) {
+    const unwrap = (val: any) => (val && typeof val === 'object' && (val.$oid || val.$numberLong)) ? (val.$oid || val.$numberLong) : val;
+    this.nuevaEducacion = { 
+      ...e,
+      anio: e['Año'] || e.anio || '',
+      idMongo: unwrap(e._id)
+    };
+    this.editandoEducacion = true;
+  }
+
+  limpiarFormularioEducacion() {
+    this.nuevaEducacion = {
+      entidad_educativa: '',
+      ciudad: '',
+      nivel: '',
+      'Titulo Obtenido': '',
+      anio: ''
+    };
+    this.editandoEducacion = false;
+  }
+
+  async eliminarEducacion(id: any) {
+    try {
+      const unwrapId = (val: any) => (val && typeof val === 'object' && val.$oid) ? val.$oid : val;
+      const idReal = unwrapId(id);
+
+      if (!idReal) {
+        this.mostrarToast('ID de registro no válido');
+        return;
+      }
+
+      await this.mongoService.deleteEducacion(idReal).toPromise();
+      this.mostrarToast('Registro de educación eliminado correctamente');
+      this.cargarEducacion();
+    } catch (error: any) {
+      this.mostrarToast('Error al eliminar educación: ' + (error.message || error));
+    }
+  }
+
+  /* ==========================================================================
+     5. SECCIÓN ARCHIVOS
      ========================================================================== */
   async cargarArchivos() {
     // Lógica de archivos
@@ -239,7 +345,7 @@ export class AdminDashboardPage implements OnInit {
   }
 
   /* ==========================================================================
-     5. SESIÓN Y UTILS
+     6. SESIÓN Y UTILS
      ========================================================================== */
   async cerrarSesion() {
     this.navCtrl.navigateRoot('/home');
