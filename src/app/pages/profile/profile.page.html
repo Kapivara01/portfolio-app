@@ -5,10 +5,10 @@
       <img src="assets/images/civ-logo.png" alt="Colegio de Ingenieros" style="height: 75px; width: 75px; object-fit: contain;" onerror="this.style.display='none'">
     </ion-buttons>
 
-    <ion-title class="ion-text-center" style="font-size: 0.95rem; font-weight: 600;">
-      <span style="margin: 0 8px; cursor: pointer; color: #666;" routerLink="/home">inicio</span> |
-      <span style="margin: 0 8px; cursor: pointer; color: var(--ion-color-primary);" routerLink="/profile">perfil profesional</span> |
-      <span style="margin: 0 8px; cursor: pointer; color: #666;" routerLink="/portfolio">portafolio</span>
+    <ion-title class="ion-text-center" style="font-size: 1.35rem; font-weight: 700; letter-spacing: 0.5px; text-transform: none;">
+      <span style="margin: 0 12px; cursor: pointer; color: #666;" routerLink="/home">Inicio</span> |
+      <span style="margin: 0 12px; cursor: pointer; color: var(--ion-color-primary);" routerLink="/profile">Perfil Profesional</span> |
+      <span style="margin: 0 12px; cursor: pointer; color: #666;" routerLink="/portfolio">Portafolio</span>
     </ion-title>
 
     <ion-buttons slot="end">
@@ -46,58 +46,58 @@
         </div>
       </div>
 
-      <!-- DATOS GENERALES (GRID) -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
-        <div><strong>Lugar de Nacimiento:</strong> <span style="color: #475569;">{{ perfil.lugar_de_nacimiento }}</span></div>
-        <div><strong>Nacionalidad:</strong> <span style="color: #475569;">{{ perfil.nacionalidad }}</span></div>
-        <div><strong>Fecha de Nacimiento:</strong> <span style="color: #475569;">{{ perfil.fecha_de_nacimiento }}</span></div>
-        <div><strong>Edad:</strong> <span style="color: #475569;">{{ perfil.Edad }} años</span></div>
-        <div><strong>Estado Civil:</strong> <span style="color: #475569;">{{ perfil.estado_civil }}</span></div>
-        <div><strong>Hijos:</strong> <span style="color: #475569;">{{ perfil.Hijos }}</span></div>
-        <div><strong>Licencia:</strong> <span style="color: #475569;">{{ perfil.Licencia }}</span></div>
+      <!-- DATOS GENERALES (GRID CON LETRA MÁS GRANDE Y NEGRILLA) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e2e8f0; font-size: 1.05rem;">
+        <div><strong>Lugar de Nacimiento:</strong> <span style="color: #1e293b; font-weight: bold;">{{ perfil.lugar_de_nacimiento }}</span></div>
+        <div><strong>Nacionalidad:</strong> <span style="color: #1e293b; font-weight: bold;">{{ perfil.nacionalidad }}</span></div>
+        <div><strong>Fecha de Nacimiento:</strong> <span style="color: #1e293b; font-weight: bold;">{{ perfil.fecha_de_nacimiento }}</span></div>
+        <div><strong>Edad:</strong> <span style="color: #1e293b; font-weight: bold;">{{ perfil.Edad }} años</span></div>
+        <div><strong>Estado Civil:</strong> <span style="color: #1e293b; font-weight: bold;">{{ perfil.estado_civil }}</span></div>
+        <div><strong>Hijos:</strong> <span style="color: #1e293b; font-weight: bold;">{{ perfil.Hijos }}</span></div>
+        <div><strong>Licencia:</strong> <span style="color: #1e293b; font-weight: bold;">{{ perfil.Licencia }}</span></div>
       </div>
 
-      <!-- CONTACTO Y UBICACIÓN -->
+      <!-- CONTACTO Y UBICACIÓN (CON LETRA MÁS GRANDE Y EN NEGRILLA) -->
       <div style="margin-bottom: 25px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
         <h4 style="color: #0f172a; font-weight: 700; font-size: 1.1rem; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
           <ion-icon name="map-outline" color="primary"></ion-icon> Contacto y Ubicación
         </h4>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
-          <div *ngIf="perfil.Telefonos_contacto" style="display: flex; align-items: center; gap: 10px; color: #475569; font-size: 0.95rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; font-size: 1.05rem;">
+          <div *ngIf="perfil.Telefonos_contacto" style="display: flex; align-items: center; gap: 10px; color: #1e293b; font-weight: bold;">
             <ion-icon name="call-outline" color="primary" style="font-size: 1.2rem;"></ion-icon>
-            <span><strong>Teléfono:</strong> {{ perfil.Telefonos_contacto }}</span>
+            <span>Teléfono: <span style="font-weight: bold;">{{ perfil.Telefonos_contacto }}</span></span>
           </div>
           
-          <div *ngIf="perfil.Email" style="display: flex; align-items: center; gap: 10px; color: #475569; font-size: 0.95rem;">
+          <div *ngIf="perfil.Email" style="display: flex; align-items: center; gap: 10px; color: #1e293b; font-weight: bold;">
             <ion-icon name="mail-outline" color="primary" style="font-size: 1.2rem;"></ion-icon>
-            <span><strong>Correo:</strong> {{ perfil.Email }}</span>
+            <span>Correo: <span style="font-weight: bold;">{{ perfil.Email }}</span></span>
           </div>
           
-          <div *ngIf="perfil.direccion_hab" style="display: flex; align-items: center; gap: 10px; color: #475569; font-size: 0.95rem; grid-column: 1 / -1;">
+          <div *ngIf="perfil.direccion_hab" style="display: flex; align-items: center; gap: 10px; color: #1e293b; font-weight: bold; grid-column: 1 / -1;">
             <ion-icon name="location-outline" color="primary" style="font-size: 1.2rem; flex-shrink: 0;"></ion-icon>
-            <span><strong>Dirección:</strong> {{ perfil.direccion_hab }}</span>
+            <span>Dirección: <span style="font-weight: bold;">{{ perfil.direccion_hab }}</span></span>
           </div>
         </div>
       </div>
 
-      <!-- PERFIL PROFESIONAL -->
+      <!-- PERFIL PROFESIONAL (CON LETRA MÁS GRANDE Y EN NEGRILLA) -->
       <div style="margin-bottom: 25px;" *ngIf="perfil.perfil">
         <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
           <ion-icon name="person-outline" color="primary"></ion-icon> Perfil Profesional
         </h4>
-        <p style="color: #334155; line-height: 1.7; font-size: 0.95rem; white-space: pre-wrap; background: #f8fafc; padding: 16px; border-radius: 12px; border-left: 4px solid #2563eb; margin: 0;">
+        <p style="color: #1e293b; font-weight: bold; line-height: 1.7; font-size: 1.05rem; white-space: pre-wrap; background: #f8fafc; padding: 16px; border-radius: 12px; border-left: 4px solid #2563eb; margin: 0;">
           {{ perfil.perfil }}
         </p>
       </div>
 
-      <!-- EDUCACIÓN Y TÍTULOS ACADÉMICOS CON SCROLL -->
+      <!-- EDUCACIÓN Y TÍTULOS ACADÉMICOS -->
       <div style="margin-bottom: 25px;" *ngIf="educacion && educacion.length > 0">
         <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
           <ion-icon name="library-outline" color="primary"></ion-icon> Educación y Títulos Académicos
         </h4>
         
-        <div style="max-height: 280px; overflow-y: auto; padding-right: 6px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
           <div *ngFor="let edu of educacion" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #2563eb;">
             <div style="font-weight: 700; color: #1e3a8a; font-size: 1rem; margin-bottom: 4px;">{{ edu['Titulo Obtenido'] }}</div>
             <div style="font-size: 0.9rem; color: #475569;"><strong>Institución:</strong> {{ edu.entidad_educativa }} ({{ edu.ciudad }})</div>
@@ -106,13 +106,13 @@
         </div>
       </div>
 
-      <!-- EXPERIENCIA LABORAL CON SCROLL -->
+      <!-- EXPERIENCIA LABORAL -->
       <div style="margin-bottom: 25px;" *ngIf="perfil.Experiencia_laboral && perfil.Experiencia_laboral.length > 0">
         <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
           <ion-icon name="briefcase-outline" color="primary"></ion-icon> Experiencia Laboral
         </h4>
         
-        <div style="max-height: 280px; overflow-y: auto; padding-right: 6px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
           <div *ngFor="let exp of perfil.Experiencia_laboral" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #0f172a; color: #334155; font-size: 0.95rem; font-weight: 500;">
             {{ exp }}
           </div>
@@ -145,13 +145,13 @@
         </div>
       </div>
 
-      <!-- CURSOS Y CERTIFICACIONES CON SCROLL -->
+      <!-- CURSOS Y CERTIFICACIONES -->
       <div style="margin-bottom: 25px;" *ngIf="cursos && cursos.length > 0">
         <h4 style="color: #0f172a; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
           <ion-icon name="school-outline" color="primary"></ion-icon> Cursos y Certificaciones
         </h4>
         
-        <div style="max-height: 280px; overflow-y: auto; padding-right: 6px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
           <div *ngFor="let curso of cursos" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; border-left: 4px solid #2563eb;">
             <div style="font-weight: 700; color: #1e3a8a; font-size: 1rem;">{{ curso.nombre }}</div>
           </div>

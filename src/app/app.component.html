@@ -6,7 +6,7 @@
           <ion-list-header>Portfolio</ion-list-header>
           <ion-note>Bienvenido</ion-note>
 
-          @for (p of appPages; track p; let i = $index) {
+          @for (p of appPages; track p) {
             <ion-menu-toggle auto-hide="false">
               <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
                 <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
@@ -18,9 +18,7 @@
 
         <!-- BLOQUE DE CONTACTO -->
         <div style="margin: 20px 16px 10px 16px; padding: 15px; border-radius: 10px; background-color: rgba(56, 128, 255, 0.05); border: 1px solid rgba(56, 128, 255, 0.2);">
-          <ion-note style="font-weight: 800; color: #3880ff; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 10px;">
-            CONTACTO
-          </ion-note>
+          <ion-note style="font-weight: 800; color: #3880ff; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 10px;">CONTACTO</ion-note>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 10px;">
               <ion-icon name="call-outline" style="color: #3880ff; font-size: 18px;"></ion-icon>
@@ -40,10 +38,19 @@
         <!-- BLOQUE DE AGENDAR / CONSULTAR -->
         <div style="margin: 0 16px; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 8px; border: 1px solid rgba(56, 128, 255, 0.2);">
           <span style="font-weight: 700; color: #444; font-size: 0.85rem;">Agendar/Consultar</span>
-          <ion-button id="open-calendar" fill="clear" style="--color: #3880ff; margin: 0;">
+          <ion-button id="btn-calendario" fill="clear" style="--color: #3880ff; margin: 0;">
             <ion-icon slot="icon-only" name="calendar-number-outline" style="font-size: 24px;"></ion-icon>
           </ion-button>
         </div>
+
+        <!-- EL CALENDARIO (Se abre al presionar el botón de arriba) -->
+        <ion-popover trigger="btn-calendario" side="bottom" alignment="center">
+          <ng-template>
+            <ion-content style="--padding-top: 10px;">
+              <ion-datetime presentation="date"></ion-datetime>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
 
         <!-- BLOQUE DE REDES SOCIALES -->
         <div style="margin: 15px 16px 20px 16px; padding: 15px; background: #ffffff; border-radius: 10px; border: 1px solid rgba(56, 128, 255, 0.2); text-align: center;">
@@ -58,7 +65,6 @@
       </ion-content>
     </ion-menu>
 
-    <!-- CONTENEDOR PRINCIPAL -->
     <div id="main-content" style="display: flex; flex-direction: column; height: 100vh;">
       <ion-router-outlet style="flex: 1;"></ion-router-outlet>
     </div>
