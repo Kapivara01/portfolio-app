@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Conexión a MongoDB
-const MONGO_URI = 'mongodb://localhost:27017/portfolio_db';
+// Conexión a MongoDB (Usa la variable de entorno en producción o localhost para desarrollo)
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio_db';
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log('¡Conectado exitosamente a MongoDB!'))
