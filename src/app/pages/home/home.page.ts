@@ -1,4 +1,4 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { 
   IonHeader, IonToolbar, IonTitle, IonButtons, 
@@ -7,9 +7,40 @@ import {
 import { MongoService } from '../../services/mongo.service';
 
 @Component({
+  selector: 'app-calendario-modal',
+  template: `
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Agenda y Consulta</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrar()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding ion-text-center">
+      <p style="color: #64748b; font-weight: 500; margin-bottom: 15px;">Selecciona una fecha para tu consulta:</p>
+      <ion-datetime presentation="date" style="margin: 0 auto;"></ion-datetime>
+    </ion-content>
+  `,
+  standalone: true,
+  imports: [
+    IonHeader, IonToolbar, IonTitle, IonButtons, 
+    IonButton, IonContent, IonDatetime
+  ]
+})
+export class CalendarioModalComponent {
+  constructor(private modalController: ModalController) {}
+
+  cerrar() {
+    this.modalController.dismiss();
+  }
+}
+
+@Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
+  // Nota: HomePage NO es standalone porque se declara en home.module.ts
 })
 export class HomePage implements OnInit {
   cursos: any[] = [];
@@ -41,7 +72,6 @@ export class HomePage implements OnInit {
           if (col === 'cursos') {
             this.cursos = data;
           }
-          console.log(`${col} cargados:`, data);
         },
         (error: any) => console.error(`Error cargando ${col}:`, error)
       );
@@ -56,36 +86,5 @@ export class HomePage implements OnInit {
       initialBreakpoint: 0.5
     });
     await modal.present();
-  }
-}
-
-@Component({
-  selector: 'app-calendario-modal',
-  template: `
-    <ion-header>
-      <ion-toolbar color="primary">
-        <ion-title>Agenda y Consulta</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="cerrar()">Cerrar</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding ion-text-center">
-      <p style="color: #64748b; font-weight: 500; margin-bottom: 15px;">Selecciona una fecha para tu consulta:</p>
-      <ion-datetime presentation="date" style="margin: 0 auto;"></ion-datetime>
-    </ion-content>
-  `,
-  standalone: true,
-  imports: [
-    IonHeader, IonToolbar, IonTitle, IonButtons, 
-    IonButton, IonContent, IonDatetime
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
-})
-export class CalendarioModalComponent {
-  constructor(private modalController: ModalController) {}
-
-  cerrar() {
-    this.modalController.dismiss();
   }
 }
