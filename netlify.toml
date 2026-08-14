@@ -2,9 +2,9 @@
   command = "npx ionic build --prod"
   publish = "www"
 
-# Si tu aplicación usa rutas de cliente (Single Page Application - SPA) 
-# como es el caso de Angular/Ionic, esto es necesario para evitar 
-# errores 404 al recargar la página.
+[build.environment]
+  NODE_VERSION = "18"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
