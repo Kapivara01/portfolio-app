@@ -28,8 +28,10 @@
     "@capacitor/status-bar": "6.0.0",
     "@ionic/angular": "^8.0.0",
     "@supabase/supabase-js": "^2.43.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "ionicons": "^7.0.0",
-    "mongoose": "^9.9.1",
+    "mongoose": "^9.9.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.0"
@@ -62,5 +64,16 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.4.0"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "main": "karma.conf.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kapivara01/portfolio-app.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Kapivara01/portfolio-app/issues"
+  }
 }
