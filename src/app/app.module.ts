@@ -20,3 +20,4 @@ import { AppRoutingModule } from './app-routing.module';
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+// Comentario para forzar el build
