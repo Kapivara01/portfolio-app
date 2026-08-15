@@ -1,3 +1,4 @@
+require('dotenv').config(); // Carga las variables de entorno desde el archivo .env
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
