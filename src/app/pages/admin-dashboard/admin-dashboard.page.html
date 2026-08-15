@@ -186,6 +186,24 @@
 
   <!-- SECCIÓN ARCHIVOS -->
   <div *ngIf="seccionActiva === 'archivos'">
+    
+    <!-- NUEVA TARJETA: GENERADOR Y ACCESO A QR DE PAGO MÓVIL -->
+    <ion-card class="ion-margin-bottom">
+      <ion-card-header>
+        <ion-card-title class="text-primary">Mi QR de Pago Móvil (Privado)</ion-card-title>
+        <ion-card-subtitle>Generado con tus datos bancarios y personales</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content class="text-center">
+        <div style="display: flex; justify-content: center; align-items: center; margin: 15px 0;">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%---%20DATOS%20PERSONALES%20---%0ANombre%3A%20Jorge%20Luis%20Linares%0AFecha%20de%20Nacimiento%3A%2007%20de%20Marzo%20de%201957%0AEdad%3A%2069%20a%C3%B1os%0ANacionalidad%3A%20Venezolana%0AC%C3%A9dula%3A%204.857.936%0AEstado%20Civil%3A%20Casado%0ADirecci%C3%B3n%3A%20La%20granja%2C%20Naguanagua%2C%20Valencia%2C%20Carabobo%0AC%C3%B3digo%20Postal%3A%202001%0AEmail%3A%20jluis7616%40gmail.com%0A%0A---%20PAGO%20M%C3%93VIL%20---%0ABanco%3A%20Banco%20de%20Venezuela%0ATel%C3%A9fono%3A%2004144838711%0AC%C3%A9dula%3A%204838711" 
+               alt="QR Pago Móvil Jorge Linares" 
+               style="border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border-radius: 8px; max-width: 200px;" />
+        </div>
+        <p class="small text-muted">Haz clic derecho sobre la imagen y selecciona <strong>"Copiar imagen"</strong> o <strong>"Guardar imagen como..."</strong> para enviarla por correo o redes sociales cuando te la soliciten.</p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- GESTIÓN DE ARCHIVOS EXISTENTE -->
     <ion-card>
       <ion-card-content>
         <div style="border: 1px dashed #ccc; padding: 10px; text-align: center;">
