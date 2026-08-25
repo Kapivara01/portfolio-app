@@ -1,4 +1,4 @@
-require('dotenv').config(); // Carga las variables de entorno desde el archivo .env
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -6,37 +6,63 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Conexión a MongoDB (Usa la variable de entorno en producción o localhost para desarrollo)
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio_db';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/portfolio_db';
 
 mongoose.connect(MONGO_URI)
-  .then(() => console.log('¡Conectado exitosamente a MongoDB!'))
+  .then(() => {
+    console.log('¡Conectado exitosamente a MongoDB!');
+    console.log('-> Base de datos activa en Mongoose:', mongoose.connection.name);
+  })
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 
-// Endpoint específico para gestionar proyectos con sincronización automática
+// Endpoint de Login con depuración detallada
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    console.log('\n--- INTENTO DE ACCESO RECIBIDO ---');
+    console.log('Email enviado desde Angular:', JSON.stringify(email));
+    console.log('Password enviado desde Angular:', JSON.stringify(password));
+
+    const db = mongoose.connection.db;
+    
+    // Verificamos primero si el correo existe solo por email
+    const adminEmailCheck = await db.collection('admins').findOne({ email: email ? email.trim() : '' });
+    console.log('¿Correo encontrado en la colección "admins"?:', adminEmailCheck ? 'SÍ' : 'NO');
+    if (adminEmailCheck) {
+      console.log('Password registrado en la BD:', JSON.stringify(adminEmailCheck.password));
+    }
+
+    // Búsqueda completa exacta
+    const admin = await db.collection('admins').findOne({ 
+      email: email ? email.trim() : '', 
+      password: password 
+    });
+
+    if (!admin) {
+      console.log('-> Resultado: Credenciales NO coinciden o usuario no existe.');
+      return res.status(401).json({ success: false, error: 'Credenciales inválidas' });
+    }
+
+    console.log('-> Resultado: ¡AUTENTICACIÓN EXITOSA!');
+    res.json({ success: true, message: 'Autenticación exitosa' });
+  } catch (error) {
+    console.error('Error crítico en el login:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Endpoint de Proyectos
 app.post('/api/proyectos', async (req, res) => {
   try {
     const db = mongoose.connection.db;
     const { titulo, descripcion, status, categoria, foto } = req.body;
+    const nuevoProyecto = { titulo, descripcion, status, categoria, foto, createdAt: new Date() };
 
-    // Estructura normalizada del proyecto
-    const nuevoProyecto = {
-      titulo,
-      descripcion,
-      status,
-      categoria,
-      foto,
-      createdAt: new Date()
-    };
-
-    // 1. Guardar en la colección principal "proyectos"
     const resultProyectos = await db.collection('proyectos').insertOne(nuevoProyecto);
 
-    // 2. Sincronizar automáticamente con su respectiva colección según la categoría
     if (categoria) {
       const catLower = categoria.toLowerCase().trim();
       if (catLower === 'informatica') {
@@ -46,16 +72,13 @@ app.post('/api/proyectos', async (req, res) => {
       }
     }
 
-    res.status(201).json({ 
-      message: 'Proyecto guardado y sincronizado con éxito', 
-      result: resultProyectos 
-    });
+    res.status(201).json({ message: 'Proyecto guardado y sincronizado con éxito', result: resultProyectos });
   } catch (error) {
     res.status(500).json({ error: 'Error al insertar y sincronizar el proyecto', details: error.message });
   }
 });
 
-// Endpoint genérico para obtener documentos de cualquier colección existente
+// Endpoints genéricos
 app.get('/api/:collection', async (req, res) => {
   try {
     const collectionName = req.params.collection;
@@ -67,7 +90,6 @@ app.get('/api/:collection', async (req, res) => {
   }
 });
 
-// Endpoint genérico para insertar documentos en otras colecciones
 app.post('/api/:collection', async (req, res) => {
   try {
     const collectionName = req.params.collection;
@@ -79,7 +101,26 @@ app.post('/api/:collection', async (req, res) => {
   }
 });
 
-// Iniciar servidor
+app.delete('/api/:collection/:id', async (req, res) => {
+  try {
+    const collectionName = req.params.collection;
+    const id = req.params.id;
+    const db = mongoose.connection.db;
+    let queryId = id;
+    try {
+      queryId = new mongoose.Types.ObjectId(id);
+    } catch (e) {}
+
+    const result = await db.collection(collectionName).deleteOne({ _id: queryId });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: 'Documento no encontrado en la colección' });
+    }
+    res.json({ message: 'Documento eliminado con éxito', result });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar el documento', details: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

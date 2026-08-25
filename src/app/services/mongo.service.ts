@@ -12,6 +12,11 @@ export class MongoService {
 
   constructor(private http: HttpClient) {}
 
+  // --- Autenticación de Administrador ---
+  loginAdmin(credenciales: { email: string, password: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, credenciales);
+  }
+
   // --- Métodos Genéricos ---
   getCollection(nombreColeccion: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${nombreColeccion}`);

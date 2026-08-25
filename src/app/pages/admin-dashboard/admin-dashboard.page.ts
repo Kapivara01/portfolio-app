@@ -187,8 +187,22 @@ export class AdminDashboardPage implements OnInit {
     }
   }
 
-  async eliminarProyecto(id: string) {
-    this.cargarProyectos();
+  async eliminarProyecto(id: any) {
+    try {
+      const unwrapId = (val: any) => (val && typeof val === 'object' && val.$oid) ? val.$oid : val;
+      const idReal = unwrapId(id);
+
+      if (!idReal) {
+        this.mostrarToast('ID de proyecto no válido');
+        return;
+      }
+
+      await this.mongoService.deleteCollectionItem('proyectos', idReal).toPromise();
+      this.mostrarToast('Proyecto eliminado correctamente');
+      this.cargarProyectos();
+    } catch (error: any) {
+      this.mostrarToast('Error al eliminar el proyecto: ' + (error.message || error));
+    }
   }
 
   prepararEdicionProyecto(p: any) {
@@ -236,7 +250,6 @@ export class AdminDashboardPage implements OnInit {
       } else if (response && Array.isArray(response.Educacion)) {
         this.educacion = response.Educacion;
       } else if (response && typeof response === 'object') {
-        // Extrae cualquier arreglo interno que encuentre en el objeto de respuesta
         const posibleArreglo = Object.values(response).find(val => Array.isArray(val));
         this.educacion = Array.isArray(posibleArreglo) ? posibleArreglo : [];
       } else {
